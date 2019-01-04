@@ -50,3 +50,5 @@ config.h
 *.o
 src/gstm
 po/POTFILES
+*.swp
+*~
