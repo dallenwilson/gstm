@@ -21,10 +21,11 @@
  *  Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
  */
 
+#include "conffile.h"
 #include "fniface.h"
+#include "fnssht.h"
 #include "support.h"
 #include "common.h"
-#include "conffile.h"
 #include "interface.h"
 #include "callbacks.h"
 
@@ -451,7 +452,7 @@ void gstm_interface_properties(int tid) {
 	}
 }
 
-void gstm_dockletmenu_tunnelitem_new(GtkWidget *menu, const gchar *t_name, int t_id, gboolean t_active) {
+void gstm_dockletmenu_tunnelitem_new(GtkWidget *menu, const gchar *t_name, intptr_t t_id, gboolean t_active) {
   GtkWidget *item_tunnel;
   GtkWidget *img_yesno;
   GdkPixbuf *pb;

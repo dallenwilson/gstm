@@ -22,10 +22,13 @@
  */
 
 #include "conffile.h"
+#include "fnssht.h"
+#include "fniface.h"
 #include <sys/types.h>
 #include <dirent.h>
 
 gboolean noerrors=FALSE;
+
 void gstm_free1tunnel(struct sshtunnel *tun) {
 	int j;
 	if (tun!=NULL) {

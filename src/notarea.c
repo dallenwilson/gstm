@@ -34,9 +34,12 @@
 #include "eggtrayicon.h"
 EggTrayIcon *docklet = NULL;
 static GtkWidget *image = NULL;
-extern void docklet_clicked(int);
 
+
+extern void docklet_clicked(int);
 static void docklet_x11_destroyed_cb(GtkWidget *widget, void *data);
+
+extern GdkPixbuf *create_pixbuf(const gchar * filename);
 
 static void
 docklet_x11_clicked_cb(GtkWidget *button, GdkEventButton *event, void *data)

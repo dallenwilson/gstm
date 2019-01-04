@@ -11,14 +11,15 @@ AM_CPPFLAGS = \
 bin_PROGRAMS = gstm
 
 gstm_SOURCES = \
-	main.c common.h \
+	main.c main.h common.h \
 	support.c support.h \
 	interface.c interface.h \
 	callbacks.c callbacks.h \
 	conffile.c conffile.h \
 	fniface.c fniface.h \
 	fnssht.c fnssht.h \
-	notarea.c eggtrayicon.c eggtrayicon.h
+	notarea.c notarea.h \
+	eggtrayicon.c eggtrayicon.h
 
 gstm_LDADD = @PACKAGE_LIBS@ $(XML_LIBS) $(X11_LIBS) $(INTLLIBS)
 

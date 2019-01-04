@@ -23,8 +23,10 @@
 
 #include <stdlib.h>
 #include <sys/types.h>
+#include <sys/wait.h>
 #include <signal.h>
 #include <unistd.h>
+#include <glib.h>
 
 #include "fnssht.h"
 #include "fniface.h"
@@ -219,7 +221,8 @@ int gstm_ssht_starttunnel(int id) {
 		hargs->sshargs = gstm_ssht_addssharg(hargs->sshargs, NULL); //end list
 		
 		// good, now start the helper thread
-		ret = g_thread_create((GThreadFunc)gstm_ssht_helperthread,hargs,FALSE,NULL);
+		//ret = g_thread_create((GThreadFunc)gstm_ssht_helperthread,hargs,FALSE,NULL);
+		ret = g_thread_new (NULL, (GThreadFunc)gstm_ssht_helperthread, hargs);
 		if (ret!=NULL) {
 			gSTMtunnels[id]->active = TRUE;
 			activeCount++;

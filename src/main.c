@@ -28,12 +28,13 @@
 #include <gnome.h>
 #include <signal.h>
 
+#include "main.h"
 #include "interface.h"
 #include "fniface.h"
 #include "support.h"
-
+#include "fnssht.h"
 #include "conffile.h"
-
+#include "notarea.h"
 #include "common.h"
 #include "eggtrayicon.h"
 
@@ -43,13 +44,6 @@ GtkListStore *tunnellist_store=NULL;
 char *gstmdir=NULL;
 extern EggTrayIcon *docklet;
 
-void signalexit(int sig_num);
-int gstm_init(void);
-void gstm_init_treeview(GtkTreeView *view);
-void gstm_populate_treeview(GtkWidget *dialog, const char *objname, struct sshtunnel **STMtunnels, int tcnt);
-int gstm_process_autostart(struct sshtunnel **STMtunnels, int tcnt);
-void gstm_quit();
-
 /**
   ***************************************
   MAIN
@@ -58,10 +52,6 @@ void gstm_quit();
 int main (int argc, char *argv[]) {
 	struct sshtunnel *thetunnel;
 	int a_cnt=0;
-	
-	//initialize gthreads if nescesarry
-	if (!g_thread_supported ()) g_thread_init (NULL);
-	gdk_threads_init();
 
     LIBXML_TEST_VERSION
 	

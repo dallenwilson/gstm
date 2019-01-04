@@ -7,14 +7,13 @@
 #include "callbacks.h"
 #include "interface.h"
 #include "support.h"
-
+#include "conffile.h"
 #include "common.h"
 #include "fniface.h"
-#include "conffile.h"
+#include "fnssht.h"
+#include "notarea.h"
+#include "main.h"
 
-extern void gstm_quit(void);
-extern void docklet_x11_create(void);
-extern void docklet_x11_position_menu(GtkMenu *menu, int *x, int *y, gboolean *push_in, gpointer user_data);
 
 /* quit handlers */
 void
@@ -426,7 +425,7 @@ on_dockletmenu_toggle_activate           (GtkMenuItem     *menuitem,
 void
 on_dockletmenu_tunnel_activate           (GtkMenuItem     *menuitem,
                                         gpointer         user_data) {
-	int id = (int)user_data;
+	int id = (intptr_t)user_data;
 	int selid=-1;
 	gboolean active = gSTMtunnels[id]->active;
 	GtkTreeSelection *s;
