@@ -1,0 +1,51 @@
+
+2006/08/03 - version 1.2
+  * added docklet menu (pops up by right-clicking the tray icon)
+  * added 'Copy' button, for copying an existing tunnel to a new one
+  * fixed gstm.desktop file (reported by Ladislav Hagara)
+  * cleaned up tray icon code (fixed docklet_x11_destroy; thanks again Tom)
+  * gSTM now starts 'minimized to tray' if there are 'autostart' tunnels and the notification area is available
+  * redone some of the conffile reading code to fix initial sorting
+  * fixed a bug that could cause gSTM to lock.
+
+2006/08/01 - version 1.1
+  * improved 'minimize to tray' behaviour: icon now always shown; clicking it shows/hides gstm main dialog)
+    (thanks to Tom Mahieu for providing comments and a patch)
+
+2006/07/20 - version 1.0
+  * moved project status from beta to stable. /cheer
+  * added notification-area icon, ie. "minimize to tray" (Feature Request #1259737)
+  * added configurable autostarting of tunnels on gSTM startup (Feature Request #1419976)
+  * added support for a custom identity file location per tunnel (Feature Request #1525512)
+  * added support for 'dynamic' application-level port forwarding, ie. "socks" (Feature Request #1280851)
+  * adjusted properties dialog layout
+  * added separate dialog for redirection entry, managing inputs as required (depends on type)
+  * fixed bug #1525514 (list of tunnels doesn't refresh name after edit)
+  * fixed bug #1420369 (gstm locks)
+  * added support to 'edit' an existing redirect (Feature Request #1445785)
+
+2005/10/17 - version 0.3
+  * replaced delete, exit and error dialogs with GtkMessageDialogs
+  * minor changes to properties dialog; will need some more love soon.
+  * adjusted layout of "New Tunnel" dialog.
+  * replaced buttons in maindialog (text centered, used stock buttons where possible)
+  * replaced shape-shifting start/stop button with separate start and stop buttons
+  * replaced label at bottom with GtkStatusBar
+  * allow resizing of maindialog (top banner still needs fixing)
+  * provide gstm.desktop, which places gstm in the GNOME/KDE menus.
+  * updated configure.in to check for gtk+ >= 2.6
+  * fixed bug #1260685 (unpriviliged port doesnt report)
+
+2005/08/13 - version 0.2
+ * added 'Add' dialog and code
+ * added 'Delete' dialog and code
+ * added 'Properties' dialog and code
+ * moved the pthreads code to gdk threads
+ * removed threads ssht_error wrapper
+ * removed SIGUSR2 from the main process
+ * cleaned up ssh argumentlist code
+ * fixed a segfault bug with empty xml elements
+ * fixed a memory leak in xml parser code
+
+2005/08/08 - version 0.1
+ * initial release; see README for info and KNOWN BUGS
