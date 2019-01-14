@@ -1,7 +1,9 @@
+/* -*- Mode: C; indent-tabs-mode: t; c-basic-offset: 4; tab-width: 4 -*-  */
 /*
- * notarea.h
+ * systray.h
  *
- * Copyright (C) 2019 - Dallen Wilson <dwjwilson@lavabit.com>
+ * Copyright (c) 2005-2019	Mark Smulders <msmulders@elsar.nl>
+ * Copyright (C) 2019		Dallen Wilson <dwjwilson@lavabit.com>
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -17,11 +19,12 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-#ifndef _NOTAREA_H
-#define _NOTAREA_H
+#include <gtk/gtk.h>
 
-void docklet_x11_create(void);
-void docklet_x11_destroy();
-void docklet_x11_position_menu(GtkMenu *menu, int *x, int *y, gboolean *push_in, gpointer user_data);
+GtkStatusIcon *ci;
 
-#endif
+void gstm_docklet_create ();
+void gstm_toggle_mainwindow ();
+void gstm_docklet_activated_cb (GtkWidget *widget, gpointer user_data);
+void gstm_docklet_popupmenu_cb (GtkWidget *widget, gpointer user_data);
+GtkMenu* gstm_docklet_menu_regen ();

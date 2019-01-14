@@ -7,15 +7,16 @@
                  attribute="Interfaces"
                  value="IAnjutaProjectManager"/>
 	</plugin>
-	<plugin name= "Autotools backend"
+	<plugin name="AutoTools Project Backend"
+            url="http://anjuta.org/plugins/"
             mandatory="yes">
-         <require group="Anjuta Plugin"
-                  attribute="Location"
-                  value="am-project:AmpPlugin"/>
-         <require group="Anjuta Plugin"
-                  attribute="Interfaces"
-                  value="IAnjutaProjectBackend"/>
-    </plugin>
+		<require group="Anjuta Plugin"
+                 attribute="Interfaces"
+                 value="IAnjutaProjectBackend"/>
+		<require group="Project"
+                 attribute="Supported-Project-Types"
+                 value="automake"/>
+	</plugin>
 	<plugin name="Symbol Browser"
             url="http://anjuta.org/plugins/"
             mandatory="yes">

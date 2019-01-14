@@ -1,167 +1,46 @@
-#include <gnome.h>
+/* -*- Mode: C; indent-tabs-mode: t; c-basic-offset: 4; tab-width: 4 -*-  */
+/*
+ * callbacks.h
+ *
+ * Copyright (c) 2005-2019	Mark Smulders <msmulders@elsar.nl>
+ * Copyright (C) 2019		Dallen Wilson <dwjwilson@lavabit.com>
+ *
+ * This program is free software; you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation; either version 2 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program. If not, see <http://www.gnu.org/licenses/>.
+ */
 
-void
-on_maindialog_remove                   (GtkContainer    *container,
-                                        GtkWidget       *widget,
-                                        gpointer         user_data);
+void btn_start_clicked_cb			(GtkButton *button, gpointer user_data);
+void btn_stop_clicked_cb			(GtkButton *button, gpointer user_data);
+void btn_add_clicked_cb				(GtkButton *button, gpointer user_data);
+void btn_delete_clicked_cb			(GtkButton *button, gpointer user_data);
+void btn_properties_clicked_cb		(GtkButton *button, gpointer user_data);
+void btn_copy_clicked_cb			(GtkButton *button, gpointer user_data);
+void btn_close_clicked_cb			(GtkButton *button, gpointer user_data);
 
-void
-on_btn_close_clicked                   (GtkButton       *button,
-                                        gpointer         user_data);
+void newgd_btn_ok_clicked_cb		(GtkButton *button, gpointer user_data);
+void newdg_btn_cancel_clicked_cb	(GtkButton *button, gpointer user_data);
 
-gboolean
-on_logo_button_release_event           (GtkWidget       *widget,
-                                        GdkEventButton  *event,
-                                        gpointer         user_data);
+void tundg_btn_ok_clicked_cb		(GtkButton *button, gpointer user_data);
+void tundg_btn_cancel_clicked_cb	(GtkButton *button, gpointer user_data);
 
-gboolean
-on_logo_key_release_event              (GtkWidget       *widget,
-                                        GdkEventKey     *event,
-                                        gpointer         user_data);
+void btn_redir_add_clicked_cb		(GtkButton *button, gpointer user_data);
+void btn_redir_delete_clicked_cb	(GtkButton *button, gpointer user_data);
+void btn_redir_edit_clicked_cb		(GtkButton *button, gpointer user_data);
+void propdg_btn_ok_clicked_cb		(GtkButton *button, gpointer user_data);
+void propdg_btn_cancel_clicked_cb	(GtkButton *button, gpointer user_data);
 
-gboolean
-on_logo_button_press_event             (GtkWidget       *widget,
-                                        GdkEventButton  *event,
-                                        gpointer         user_data);
-
-gboolean
-on_eventbox1_button_press_event        (GtkWidget       *widget,
-                                        GdkEventButton  *event,
-                                        gpointer         user_data);
-
-void
-on_aboutdialog_close                   (GtkDialog       *dialog,
-                                        gpointer         user_data);
-
-void
-on_aboutdialog_remove                  (GtkContainer    *container,
-                                        GtkWidget       *widget,
-                                        gpointer         user_data);
-
-gboolean
-on_aboutdialog_destroy_event           (GtkWidget       *widget,
-                                        GdkEvent        *event,
-                                        gpointer         user_data);
-
-void
-on_aboutdialog_close                   (GtkDialog       *dialog,
-                                        gpointer         user_data);
-
-void
-on_aboutdialog_response                (GtkDialog       *dialog,
-                                        gint             response_id,
-                                        gpointer         user_data);
-
-gboolean
-on_tunnellist_unselect_all             (GtkTreeView     *treeview,
-                                        gpointer         user_data);
-
-void
-on_tunnellist_row_activated            (GtkTreeView     *treeview,
-                                        GtkTreePath     *path,
-                                        GtkTreeViewColumn *column,
-                                        gpointer         user_data);
-
-void
-on_tunnellist_cursor_changed           (GtkTreeView     *treeview,
-                                        gpointer         user_data);
-
-void
-on_btn_properties_clicked              (GtkButton       *button,
-                                        gpointer         user_data);
-
-void
-on_btn_add_clicked                     (GtkButton       *button,
-                                        gpointer         user_data);
-
-void
-on_btn_start_clicked                   (GtkButton       *button,
-                                        gpointer         user_data);
-
-void
-on_tunnellist_row_activated            (GtkTreeView     *treeview,
-                                        GtkTreePath     *path,
-                                        GtkTreeViewColumn *column,
-                                        gpointer         user_data);
-
-void
-on_btn_delete_clicked                  (GtkButton       *button,
-                                        gpointer         user_data);
-
-void
-on_tunnellist_cursor_changed           (GtkTreeView     *treeview,
-                                        gpointer         user_data);
-
-gboolean
-on_tunnellist_select_cursor_row        (GtkTreeView     *treeview,
-                                        gboolean         start_editing,
-                                        gpointer         user_data);
-
-gboolean
-on_tunnellist_move_cursor              (GtkTreeView     *treeview,
-                                        GtkMovementStep  step,
-                                        gint             count,
-                                        gpointer         user_data);
-
-gboolean
-on_tunnellist_select_cursor_parent     (GtkTreeView     *treeview,
-                                        gpointer         user_data);
-
-gboolean
-on_tunnellist_selection_clear_event    (GtkWidget       *widget,
-                                        GdkEventSelection *event,
-                                        gpointer         user_data);
-
-gboolean
-on_tunnellist_button_release_event     (GtkWidget       *widget,
-                                        GdkEventButton  *event,
-                                        gpointer         user_data);
-
-gboolean
-on_tunnellist_key_release_event        (GtkWidget       *widget,
-                                        GdkEventKey     *event,
-                                        gpointer         user_data);
-
-void
-on_btn_redir_add_clicked               (GtkButton       *button,
-                                        gpointer         user_data);
-
-void
-on_btn_redir_delete_clicked            (GtkButton       *button,
-                                        gpointer         user_data);
-
-
-void
-on_btn_start_clicked                   (GtkButton       *button,
-                                        gpointer         user_data);
-
-void
-on_check_auto_toggled                  (GtkToggleButton *togglebutton,
-                                        gpointer         user_data);
-
-void
-on_choice_type_changed                 (GtkComboBox     *combobox,
-                                        gpointer         user_data);
-
-gboolean
-on_maindialog_delete_event             (GtkWidget       *widget,
-                                        GdkEvent        *event,
-                                        gpointer         user_data);
-
-void
-on_btn_redir_edit_clicked              (GtkButton       *button,
-                                        gpointer         user_data);
-
-void
-on_dockletmenu_quit_activate           (GtkMenuItem     *menuitem,
-                                        gpointer         user_data);
-void
-on_dockletmenu_toggle_activate           (GtkMenuItem     *menuitem,
-                                        gpointer         user_data);
-void
-on_dockletmenu_tunnel_activate           (GtkMenuItem     *menuitem,
-                                        gpointer         user_data);
-
-void
-on_btn_copy_clicked                  (GtkButton       *button,
-                                        gpointer         user_data);
+//	Systray
+void on_dockletmenu_toggle_activate (GtkMenuItem *menuitem, gpointer user_data);
+void on_dockletmenu_tunnel_activate	(GtkMenuItem *menuitem, gpointer user_data);
+void on_dockletmenu_about_activate	(GtkMenuItem *menuitem, gpointer user_data);
+void on_dockletmenu_quit_activate	(GtkMenuItem *menuitem, gpointer user_data);

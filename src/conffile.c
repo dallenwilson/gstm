@@ -1,33 +1,34 @@
-/***************************************************************************
- *            conffile.c
- *
- *  Mon Aug  1 15:53:35 2005
- *  Copyright  2005  Mark Smulders
- *  msmulders@elsar.nl
- ****************************************************************************/
+/* -*- Mode: C; indent-tabs-mode: t; c-basic-offset: 4; tab-width: 4 -*-  */
 /*
- *  This program is free software; you can redistribute it and/or modify
- *  it under the terms of the GNU General Public License as published by
- *  the Free Software Foundation; either version 2 of the License, or
- *  (at your option) any later version.
+ * common.h
  *
- *  This program is distributed in the hope that it will be useful,
- *  but WITHOUT ANY WARRANTY; without even the implied warranty of
- *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- *  GNU General Public License for more details.
+ * Copyright (c) 2005-2019	Mark Smulders <msmulders@elsar.nl>
+ * Copyright (C) 2019		Dallen Wilson <dwjwilson@lavabit.com>
  *
- *  You should have received a copy of the GNU General Public License
- *  along with this program; if not, write to the Free Software
- *  Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
+ * This program is free software; you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation; either version 2 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-#include "conffile.h"
-#include "fnssht.h"
-#include "fniface.h"
 #include <sys/types.h>
 #include <dirent.h>
 
-gboolean noerrors=FALSE;
+#include "main.h"
+#include "conffile.h"
+#include "fniface.h"
+#include "fnssht.h"
+#include "support.h"
+
+gboolean noerrors = FALSE;
 
 void gstm_free1tunnel(struct sshtunnel *tun) {
 	int j;
@@ -50,37 +51,44 @@ void gstm_free1tunnel(struct sshtunnel *tun) {
 	}
 }
 
-char *gstm_name2filename(char *n) {
-	extern char *gstmdir;
+char *gstm_name2filename (char *n)
+{
 	char *fname, *retval=NULL;
 	int fd;
+	
 	//first, we use mkstemp to get our 'unique' filename
-	fname=malloc(strlen(gstmdir)+1+strlen(n)+7+1);
-	sprintf(fname,"%s/%s.XXXXXX",gstmdir,n);
-	if ((fd=mkstemp(fname))!=-1) {
-		close(fd);
-		unlink(fname);
-		retval = malloc(strlen(fname)+5+1);
-		sprintf(retval,"%s.gstm",fname);
-		free(fname);
+	fname = malloc (strlen (gstmdir) + 1 + strlen (n) + 7 + 1);
+	sprintf (fname, "%s/%s.XXXXXX", gstmdir, n);
+
+	if ((fd = mkstemp (fname)) != -1)
+	{
+		close (fd);
+		unlink (fname);
+		retval = malloc (strlen (fname) + 5 + 1);
+		sprintf (retval, "%s.gstm", fname);
+		free (fname);
 	}
+
 	return retval;
 }
 
-int gstm_tunnel_add(const char *tname) {
-	extern char *gstmdir;
+int gstm_tunnel_add(const char *tname)
+{
 	char *xname, *fname;
-	int i,rc,ret = -1;
+	int i,ret = -1; //TODO del rc
 	struct sshtunnel *tun;
-	GtkTreeIter    iter;
+	GtkTreeIter iter;
 	GdkPixbuf *pixbuf_red;
-	extern GtkListStore *tunnellist_store;
 
-	if (gstmdir != NULL && access(gstmdir,W_OK)==0) {
-		xname=(char *)tname;
+	if (gstmdir != NULL && access (gstmdir, W_OK) == 0)
+	{
+		xname = (char *)tname;
+		
 		//first we'll take care of some replacements
-		for (i=0; i<strlen(xname); i++) {
-			switch (xname[i]) {
+		for (i = 0; i < strlen (xname); i++)
+		{
+			switch (xname[i])
+			{
 				//case ' ':
 				case '/':
 				case '\\':
@@ -99,57 +107,67 @@ int gstm_tunnel_add(const char *tname) {
 					break;
 			}
 		}
+		
 		//now make it into a filename
-		if (fname=gstm_name2filename(xname)) {
+		if ((fname=gstm_name2filename(xname))) {
 
-			tun = malloc(sizeof(struct sshtunnel));
-			tun->name = malloc(strlen(xname)+1);
-			strcpy(tun->name, xname);
-			tun->host = malloc(1); tun->host[0]='\0';
-			tun->port = malloc(3); strcpy(tun->port,"22");
-			tun->login= malloc(1); tun->login[0]='\0';
-			tun->privkey = malloc(1); tun->privkey[0]='\0';
-			tun->portredirs=NULL;
-			tun->defcount=0;
-			tun->autostart=FALSE;
-			tun->active=FALSE;
-			tun->sshpid=0;
-			tun->fn = malloc(strlen(fname)+1); strcpy(tun->fn,fname);
+			tun = malloc (sizeof (struct sshtunnel));
+			tun->name = malloc (strlen (xname) + 1);
+			strcpy ((char *)tun->name, xname);
+			tun->host = malloc(1); tun->host[0] = '\0';
+			tun->port = malloc(3); strcpy ((char *)tun->port, "22");
+			tun->login= malloc(1); tun->login[0] = '\0';
+			tun->privkey = malloc(1); tun->privkey[0] = '\0';
+			tun->portredirs = NULL;
+			tun->defcount = 0;
+			tun->autostart = FALSE;
+			tun->active = FALSE;
+			tun->sshpid = 0;
+			tun->fn = malloc (strlen (fname) + 1); strcpy (tun->fn, fname);
 			
-			if (gstm_tunnel2file(tun,fname)) {
+			if (gstm_tunnel2file (tun, fname))
+			{
 				//put in list
-				gSTMtunnels = realloc(gSTMtunnels, (tunnelCount+1)*sizeof(struct sshtunnel *));
+				gSTMtunnels = realloc (gSTMtunnels, (tunnelCount+1) * sizeof (struct sshtunnel *));
 				gSTMtunnels[tunnelCount] = tun;
+				
 				//put in interface
-				pixbuf_red = create_pixbuf("gstm/red.xpm");
+				pixbuf_red = create_pixbuf ("red.xpm");
 				gtk_list_store_append (tunnellist_store, &iter);
-				gtk_list_store_set (tunnellist_store, &iter,
-								  COL_ACTIVE, pixbuf_red,
-								  COL_NAME, tun->name,
-								  COL_ID, tunnelCount,
-								  -1);
+				gtk_list_store_set (tunnellist_store, &iter, COL_ACTIVE,
+				                    pixbuf_red, COL_NAME, tun->name, COL_ID,
+				                    tunnelCount, -1);
 				ret = tunnelCount;
-				tunnelCount+=1;
+				tunnelCount += 1;
+				
 				//sort it again
-				gtk_tree_sortable_set_sort_column_id(GTK_TREE_SORTABLE(tunnellist_store),
-					 COL_NAME,
-					 GTK_SORT_ASCENDING);		
-			} else {
-				gstm_free1tunnel(tun);
-				gstm_interface_error("fileconversion failed");
+				gtk_tree_sortable_set_sort_column_id (GTK_TREE_SORTABLE (tunnellist_store),
+				                                      COL_NAME,
+				                                      GTK_SORT_ASCENDING);		
 			}
+			else
+			{
+				gstm_free1tunnel (tun);
+				gstm_interface_error ("fileconversion failed");
+			}
+			
 			free(fname);
-		} else {
-			gstm_interface_error("filename conversion failed");
+		}
+		else
+		{
+			gstm_interface_error ("filename conversion failed");
 		}			
-	} else {
-		gstm_interface_error(".gSTM directory not writeable!");
 	}
+	else
+	{
+		gstm_interface_error (".gSTM directory not writeable!");
+	}
+	
 	return ret;
 }
 
-gboolean gstm_tunnel_del(int id) {
-	char *fname;
+void gstm_tunnel_del(int id) {
+	//TODO del char *fname;
 	extern GtkListStore *tunnellist_store;
 	GtkTreeIter i;
 	int v_id;
@@ -184,7 +202,7 @@ gboolean gstm_tunnel_del(int id) {
 gboolean gstm_tunnel2file(struct sshtunnel *st, const char *fn) {
 	int rc,i;
 	xmlTextWriterPtr writer;
-	xmlChar *tmp;
+	//TDOD Del xmlChar *tmp;
 	gboolean ret=FALSE;
 
 	if (st!=NULL && fn!=NULL) {
@@ -196,7 +214,7 @@ gboolean gstm_tunnel2file(struct sshtunnel *st, const char *fn) {
 		}
 		
 		xmlTextWriterSetIndent(writer,1);
-		xmlTextWriterSetIndentString(writer,"\t");
+		xmlTextWriterSetIndentString(writer, (xmlChar *)"\t");
 		
 	    /* root element */
 		rc = xmlTextWriterStartElement(writer, BAD_CAST "sshtunnel");
@@ -300,7 +318,7 @@ gboolean gstm_tunnel_name_exists(const char *tname) {
 	int i;
 	gboolean ret=FALSE;
 	for (i=0; i<tunnelCount; i++) {
-		if (gSTMtunnels[i]!=NULL && strcasecmp(gSTMtunnels[i]->name,tname)==0) {
+		if ((gSTMtunnels[i] != NULL) && strcasecmp ((char *)gSTMtunnels[i]->name, tname) == 0) {
 			ret = TRUE;
 			break;
 		}
@@ -309,8 +327,7 @@ gboolean gstm_tunnel_name_exists(const char *tname) {
 }
 
 int gstm_readfiles(char *dir, struct sshtunnel ***tptr) {
-	DIR *mydir=NULL;
-	struct dirent *entry=NULL, **entrylist=NULL;
+	struct dirent **entrylist=NULL;
 	struct sshtunnel **mptr, *fptr=NULL;
 	char *sptr=NULL;
 	int len=0, scnt=0, listlen=0, l=0;
@@ -380,7 +397,7 @@ void gstm_freetunnels(struct sshtunnel ***tptr, int cnt) {
 int gstm_file2tunnel(char *file, struct sshtunnel *tunnel) {
 	int retval=0, halt=0;
 	xmlDocPtr doc;
-	xmlNodePtr cur, cur2;
+	xmlNodePtr cur;
 	xmlChar *tmp, *tmpauto;
 	tmpauto=NULL;
 	
@@ -397,7 +414,7 @@ int gstm_file2tunnel(char *file, struct sshtunnel *tunnel) {
 	}
 
 	// check toplevel name
-	if (xmlStrcmp(cur->name,"sshtunnel")) {
+	if (xmlStrcmp (cur->name, (xmlChar *)"sshtunnel")) {
 		fprintf(stderr,"** WARNING: not an sshtunnel document: '%s'\n",file);
 		xmlFreeDoc(doc);
 		return(retval);
@@ -417,31 +434,42 @@ int gstm_file2tunnel(char *file, struct sshtunnel *tunnel) {
 	tunnel->fn = malloc(strlen(file)+1); strcpy(tunnel->fn,file);
 	while (cur && !halt) {
 		if (!xmlIsBlankNode(cur)) {
-			if (!xmlStrcmp(cur->name, "tunnel")) {
+			if (!xmlStrcmp (cur->name, (xmlChar *)"tunnel")) {
 				if (gstm_addtunneldef2tunnel(doc, cur->xmlChildrenNode, tunnel, tunnel->defcount)) {
 					tunnel->defcount+=1;
 				}
 			} else {
 				tmp = xmlNodeListGetString(doc, cur->xmlChildrenNode, 1);
-				if (strcmp(cur->name,"name")==0 && tmp) {
-					tunnel->name = realloc(tunnel->name,strlen(tmp)+1);
-					strcpy(tunnel->name, tmp);
-				} else if (strcmp(cur->name,"host")==0 && tmp) {
-					tunnel->host = realloc(tunnel->host,strlen(tmp)+1);
-					strcpy(tunnel->host, tmp);
-				} else if (strcmp(cur->name,"port")==0 && tmp) {
-					tunnel->port = realloc(tunnel->port,strlen(tmp)+1);
-					strcpy(tunnel->port, tmp);
-				} else if (strcmp(cur->name,"login")==0 && tmp) {
-					tunnel->login = realloc(tunnel->login,strlen(tmp)+1);
-					strcpy(tunnel->login, tmp);
-				} else if (strcmp(cur->name,"privkey")==0 && tmp) {
-					tunnel->privkey = realloc(tunnel->privkey,strlen(tmp)+1);
-					strcpy(tunnel->privkey, tmp);
-				} else if (strcmp(cur->name,"autostart")==0 && tmp) {
-					tmpauto = malloc(strlen(tmp)+1);
-					strcpy(tmpauto,tmp);
-					if (strcmp(tmpauto,"1")==0) {
+				if ((strcmp ((char *)cur->name, "name") == 0) && tmp)
+				{
+					tunnel->name = realloc (tunnel->name, strlen ((char *)tmp) + 1);
+					strcpy ((char *)tunnel->name, (char *)tmp);
+				}
+				else if (strcmp ((char *)cur->name, "host") == 0 && tmp)
+				{
+					tunnel->host = realloc (tunnel->host, strlen ((char *)tmp) + 1);
+					strcpy ((char *)tunnel->host, (char *)tmp);
+				}
+				else if (strcmp ((char *)cur->name, "port") == 0 && tmp)
+				{
+					tunnel->port = realloc (tunnel->port, strlen ((char *)tmp) + 1);
+					strcpy ((char *)tunnel->port, (char *)tmp);
+				}
+				else if (strcmp ((char *)cur->name, "login") == 0 && tmp)
+				{
+					tunnel->login = realloc (tunnel->login, strlen ((char *)tmp) + 1);
+					strcpy ((char *)tunnel->login, (char *)tmp);
+				}
+				else if (strcmp ((char *)cur->name, "privkey") == 0 && tmp)
+				{
+					tunnel->privkey = realloc (tunnel->privkey, strlen ((char *)tmp) + 1);
+					strcpy ((char *)tunnel->privkey, (char *)tmp);
+				}
+				else if (strcmp ((char *)cur->name, "autostart") == 0 && tmp)
+				{
+					tmpauto = malloc (strlen ((char *)tmp) + 1);
+					strcpy ((char *)tmpauto, (char *)tmp);
+					if (strcmp ((char *)tmpauto, "1") == 0) {
 						tunnel->autostart = TRUE;
 					}
 					free(tmpauto);
@@ -456,9 +484,9 @@ int gstm_file2tunnel(char *file, struct sshtunnel *tunnel) {
 		}
 		cur = cur->next;
 	}
-	if (strlen(tunnel->port) == 0) {
+	if (strlen ((char *)tunnel->port) == 0) {
 		tunnel->port = realloc(tunnel->port,3);
-		strcpy(tunnel->port, "22");
+		strcpy ((char *)tunnel->port, "22");
 	}
 	
 	retval=1;
@@ -492,18 +520,18 @@ int gstm_addtunneldef2tunnel(xmlDocPtr doc, xmlNodePtr def, struct sshtunnel *tu
 	while (def && !halt) {
 		if (!xmlIsBlankNode(def)) {
 			tmp = xmlNodeListGetString(doc, def->xmlChildrenNode, 1);
-			if (strcmp(def->name,"type")==0 && tmp) {
-				tdef->type = realloc(tdef->type, strlen(tmp)+1);
-				strcpy(tdef->type, tmp);
-			} else if (strcmp(def->name,"port1")==0 && tmp) {
-				tdef->port1 = realloc(tdef->port1,strlen(tmp)+1);
-				strcpy(tdef->port1, xmlNodeListGetString(doc, def->xmlChildrenNode, 1));
-			} else if (strcmp(def->name,"host")==0 && tmp) {
-				tdef->host = realloc(tdef->host,strlen(tmp)+1);
-				strcpy(tdef->host, tmp);
-			} else if (strcmp(def->name,"port2")==0 && tmp) {
-				tdef->port2 = realloc(tdef->port2,strlen(tmp)+1);
-				strcpy(tdef->port2, tmp);
+			if ((strcmp ((char *)def->name, "type") == 0) && tmp) {
+				tdef->type = realloc(tdef->type, strlen ((char *)tmp) + 1);
+				strcpy ((char *)tdef->type, (char *)tmp);
+			} else if ((strcmp ((char *)def->name, "port1") == 0) && tmp) {
+				tdef->port1 = realloc (tdef->port1, strlen ((char *)tmp) + 1);
+				strcpy ((char *)tdef->port1, (char *)xmlNodeListGetString(doc, def->xmlChildrenNode, 1));
+			} else if ((strcmp ((char *)def->name, "host") == 0) && tmp) {
+				tdef->host = realloc (tdef->host, strlen ((char *)tmp) + 1);
+				strcpy ((char *)tdef->host, (char *)tmp);
+			} else if ((strcmp ((char *)def->name, "port2") == 0) && tmp) {
+				tdef->port2 = realloc (tdef->port2, strlen ((char *)tmp) + 1);
+				strcpy ((char *)tdef->port2, (char *)tmp);
 			} else {
 				// ??
 			}

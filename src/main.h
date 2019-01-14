@@ -1,7 +1,9 @@
+/* -*- Mode: C; indent-tabs-mode: t; c-basic-offset: 4; tab-width: 4 -*-  */
 /*
- * main.h
+ * callbacks.c
  *
- * Copyright (C) 2019 - Dallen Wilson <dwjwilson@lavabit.com>
+ * Copyright (c) 2005-2019	Mark Smulders <msmulders@elsar.nl>
+ * Copyright (C) 2019		Dallen Wilson <dwjwilson@lavabit.com>
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -17,16 +19,11 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-#ifndef _MAIN_H
-#define _MAIN_H
-
 #include "conffile.h"
+#include "gstm.h"
 
-void signalexit(int sig_num);
-int gstm_init(void);
-void gstm_init_treeview(GtkTreeView *view);
-void gstm_populate_treeview(GtkWidget *dialog, const char *objname, struct sshtunnel **STMtunnels, int tcnt);
-int gstm_process_autostart(struct sshtunnel **STMtunnels, int tcnt);
-void gstm_quit();
+Gstm *app;
+char *gstmdir;
+char *gstmpixmaps;
 
-#endif
+void signalexit (int sig_num);

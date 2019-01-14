@@ -1,25 +1,50 @@
 ## Process this file with automake to produce Makefile.in
 
-AM_CPPFLAGS = \
-	-DPACKAGE_DATA_DIR=\""$(datadir)"\" \
-	-DPACKAGE_LOCALE_DIR=\""$(prefix)/$(DATADIRNAME)/locale"\" \
-	-DPACKAGE_BINDIR=\""$(prefix)/bin"\" \
-	@PACKAGE_CFLAGS@
-	$(XML_CFLAGS)
-	$(X11_CFLAGS)
+## Created by Anjuta
+
+
+uidir = $(pkgdatadir)/ui
+ui_DATA = gstm.ui
+
+
+AM_CFLAGS = \
+	-Wall -g -Og -ggdb \
+	-DPACKAGE_LOCALE_DIR=\""$(localedir)"\" \
+	-DPACKAGE_SRC_DIR=\""$(abs_srcdir)"\" \
+	-DPACKAGE_DATA_DIR=\""$(pkgdatadir)"\" \
+	$(GTK3_CFLAGS) $(XML_CFLAGS)
 
 bin_PROGRAMS = gstm
 
 gstm_SOURCES = \
-	main.c main.h common.h \
-	support.c support.h \
-	interface.c interface.h \
-	callbacks.c callbacks.h \
-	conffile.c conffile.h \
-	fniface.c fniface.h \
-	fnssht.c fnssht.h \
-	notarea.c notarea.h \
-	eggtrayicon.c eggtrayicon.h
+	main.c \
+	gstm.h \
+	gstm.c \
+	callbacks.c \
+	callbacks.h \
+	main.h \
+	interface.c \
+	interface.h \
+	common.h \
+	conffile.h \
+	conffile.c \
+	fniface.h \
+	fniface.c \
+	fnssht.c \
+	fnssht.h \
+	support.c \
+	support.h \
+	systray.c \
+	systray.h	
 
-gstm_LDADD = @PACKAGE_LIBS@ $(XML_LIBS) $(X11_LIBS) $(INTLLIBS)
+
+gstm_LDFLAGS = -Wl,--export-dynamic
+
+gstm_LDADD = $(GTK3_LIBS) $(XML_LIBS)
+EXTRA_DIST = $(ui_DATA)
+
+# Remove ui directory on uninstall
+uninstall-local:
+	-rm -r $(uidir)
+	-rm -r $(pkgdatadir)
 
