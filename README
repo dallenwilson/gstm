@@ -1,0 +1,19 @@
+
+gSTM, short for Gnome SSH Tunnel Manager, is simply a Gnome2 front-end to the 
+cumbersome ssh commandline to open ssh tunnels (port redirects). It also 
+includes gAskpass which is a Gnome2 askpass dialog.
+
+To install, use the usual "./configure; make; make install" routine (the latter 
+as root obviously). For documentation and information, please see the website at 
+http://gstm.sourceforge.net
+
+!***!
+Please report bugs at: 
+http://sourceforge.net/tracker/?func=browse&group_id=145040&atid=760623
+!***!
+
+Don't hesitate to drop me a line in case of questions, problems or bugs. I'd like to hear from you!
+Also, if you are able to create packages for your distribution, drop me a line!
+
+Cheers
+- Mark (msmulders@elsar.nl)
