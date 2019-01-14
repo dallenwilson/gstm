@@ -52,3 +52,5 @@ src/gstm
 po/POTFILES
 *.swp
 *~
+.anjuta
+.anjuta_sym_db.db
