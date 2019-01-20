@@ -75,7 +75,7 @@ char *gstm_name2filename (char *n)
 int gstm_tunnel_add(const char *tname)
 {
 	char *xname, *fname;
-	int i,ret = -1; //TODO del rc
+	int i,ret = -1;
 	struct sshtunnel *tun;
 	GtkTreeIter iter;
 	GdkPixbuf *pixbuf_red;
@@ -167,8 +167,6 @@ int gstm_tunnel_add(const char *tname)
 }
 
 void gstm_tunnel_del(int id) {
-	//TODO del char *fname;
-	extern GtkListStore *tunnellist_store;
 	GtkTreeIter i;
 	int v_id;
 	gboolean ret;

@@ -214,7 +214,6 @@ void gstm_interface_rowaction()
 
 /* error dialog */
 void gstm_interface_error(const char *msg) {
-	//TODO del GtkWidget *lbl;
 	GtkWidget *errordialog = gtk_message_dialog_new (
 		GTK_WINDOW (maindialog),
 		0,
@@ -222,7 +221,6 @@ void gstm_interface_error(const char *msg) {
 		GTK_BUTTONS_OK,
 		NULL);
 
-	//set_urgency hint is too new (gtk 2.8)
 	gtk_window_set_urgency_hint (GTK_WINDOW (errordialog), TRUE);
 
 	gtk_message_dialog_set_markup (GTK_MESSAGE_DIALOG (errordialog), msg);
@@ -469,8 +467,6 @@ void gstm_interface_properties(int tid) {
 
 		gtk_window_set_focus (GTK_WINDOW (maindialog), tunlist);
 		gstm_interface_rowactivity(); //since login or host may have been changed ;)
-
-		//TODO free?
 	}
 }
 

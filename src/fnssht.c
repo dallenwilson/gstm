@@ -48,7 +48,6 @@ gpointer *gstm_ssht_helperthread(gpointer *args)
 	
 	switch ( (ret=fork()) ) {
 		case -1: //error
-			//TODO: Del
 			errFork1 = "fork() error !";
 			gdk_threads_add_idle ((GSourceFunc)gstm_interface_error, errFork1);
 			break;
