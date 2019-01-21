@@ -142,15 +142,6 @@ gstm_activate (GApplication *application)
 	gstm_interface_showinfo("gSTM ready for action.");
 }
 
-static void
-gstm_open (GApplication  *application,
-                     GFile        **files,
-                     gint           n_files,
-                     const gchar   *hint)
-{
-		gstm_new_window (application);
-}
-
 //	Find .gSTM from user's home directory if available
 static void init_config ()
 {
@@ -256,7 +247,6 @@ static void
 gstm_class_init (GstmClass *klass)
 {
 	G_APPLICATION_CLASS (klass)->activate = gstm_activate;
-	G_APPLICATION_CLASS (klass)->open = gstm_open;
 
 	//g_type_class_add_private (klass, sizeof (GstmPrivate));
 
@@ -267,7 +257,7 @@ Gstm *
 gstm_new (void)
 {
 	return g_object_new (gstm_get_type (),
-	                     "application-id", "org.gnome.gstm",
+	                     "application-id", "org.gtk.gstm",
 	                     "flags", G_APPLICATION_HANDLES_OPEN,
 	                     NULL);
 }
