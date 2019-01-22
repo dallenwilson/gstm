@@ -1,3 +1,6 @@
 # List of source files containing translatable strings.
 
+gAskpass/main.c
+src/gstm.ui
+src/support.c
 src/main.c
