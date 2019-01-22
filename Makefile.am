@@ -11,16 +11,12 @@ dist_doc_DATA = \
 	INSTALL \
 	NEWS
 
-EXTRA_DIST = gstm.desktop
-
-desktopdir = $(datadir)/applications
-desktop_DATA = gstm.desktop
-
 INTLTOOL_FILES = intltool-extract.in \
 	intltool-merge.in \
 	intltool-update.in
 
 EXTRA_DIST = \
+	gstm.desktop
 	$(INTLTOOL_FILES)
 
 DISTCLEANFILES = intltool-extract \
@@ -28,6 +24,8 @@ DISTCLEANFILES = intltool-extract \
 	intltool-update \
 	po/.intltool-merge-cache
 
+desktopdir = $(datadir)/applications
+desktop_DATA = gstm.desktop
 
 # Remove doc directory on uninstall
 uninstall-local:
