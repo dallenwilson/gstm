@@ -29,7 +29,6 @@
 #include "main.h"
 #include "support.h"
 
-//AppIndicator *ci = NULL;
 GtkStatusIcon *ci = NULL;
 
 void gstm_docklet_create ()

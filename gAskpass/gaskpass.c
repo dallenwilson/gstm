@@ -29,7 +29,6 @@ GtkWidget *entry = NULL;
 
 G_DEFINE_TYPE(gAskpass, gaskpass, GTK_TYPE_APPLICATION);
 
-
 static void
 gaskpass_init (gAskpass *obj)
 {

@@ -38,7 +38,7 @@ typedef struct _gAskpass gAskpass;
 
 struct _gAskpass
 {
-  GtkApplication parent;
+	GtkApplication parent;
 };
 
 struct _gAskpassClass

@@ -25,19 +25,15 @@
 
 #include <gtk/gtk.h>
 
-/*
 #undef Q_
 #ifdef ENABLE_NLS
 #  define Q_(String) g_strip_context ((String), gettext (String))
 #else
 #  define Q_(String) g_strip_context ((String), (String))
 #endif
-*/
 
 /* This is used to create the pixmaps used in the interface. */
 GtkWidget* create_pixmap (GtkWidget *widget, const gchar *filename);
 
 /* This is used to create the pixbufs used in the interface. */
 GdkPixbuf* create_pixbuf (const gchar *filename);
-
-
