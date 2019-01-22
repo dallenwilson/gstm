@@ -11,6 +11,10 @@ dist_doc_DATA = \
 	INSTALL \
 	NEWS
 
+EXTRA_DIST = gstm.desktop
+
+desktopdir = $(datadir)/applications
+desktop_DATA = gstm.desktop
 
 INTLTOOL_FILES = intltool-extract.in \
 	intltool-merge.in \
