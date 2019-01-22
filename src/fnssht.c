@@ -53,9 +53,9 @@ gpointer *gstm_ssht_helperthread(gpointer *args)
 			break;
 		
 		case 0: //child
-			//set the ASKPASS env var
-			//TODO: update to something... current
-			setenv("SSH_ASKPASS", "gaskpass", 1);
+			//set the ASKPASS env var, if it is unset
+			setenv ("SSH_ASKPASS", "gaskpass", 0);
+		
 			//dup stderr so our parent can read it
 			dup2(fd[1], fileno(stderr));
 			close(fd[0]);
