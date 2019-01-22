@@ -32,14 +32,19 @@
 #include "fnssht.h"
 
 Gstm *app;
+
 char *gstmdir = NULL;
 char *gstmpixmaps = NULL;
+char *gstmui = NULL;
 
 int main (int argc, char *argv[])
 {
 	int status;
 
     LIBXML_TEST_VERSION
+
+	init_config();
+	init_paths();
 
 #ifdef ENABLE_NLS
 	bindtextdomain (GETTEXT_PACKAGE, PACKAGE_LOCALE_DIR);
@@ -67,4 +72,93 @@ int main (int argc, char *argv[])
 void signalexit(int sig_num)
 {
         gstm_quit();
+}
+
+//	Find .gSTM from user's home directory if available
+void init_config ()
+{
+	struct stat sb;
+
+	// get HOME variable and construct gSTM dir
+	gstmdir = malloc (strlen (getenv ("HOME")) + 6 + 1);
+	
+	if (!gstmdir)
+	{
+		fprintf (stderr, "** out of memory\n");
+		exit (EXIT_FAILURE);
+	}
+	
+	strcpy (gstmdir, getenv ("HOME"));
+	strcat (gstmdir, "/.gSTM");
+
+	// check if gSTM dir exists or create it
+	if (access (gstmdir, W_OK))
+	{
+		
+		// can't access it, although it might exist try to create it
+		mkdir (gstmdir, 0755);
+
+		if (access (gstmdir, W_OK))
+		{
+			//still can't access it :(
+			fprintf(stderr, "** .gSTM directory in your HOME directory is not accessible\n");
+			exit (EXIT_FAILURE);
+		}
+		else
+		{
+			// check if it is really a directory ;)
+			stat (gstmdir, &sb);
+			if (!S_ISDIR (sb.st_mode))
+			{
+				fprintf (stderr, "** a file called .gSTM exists in your HOME directory, please delete it.\n");
+				exit (EXIT_FAILURE);
+			}
+		}
+	}
+}
+
+//	Find location of pixmaps and glade ui file
+void init_paths ()
+{
+	//	Check if local data exists
+	char *tempdir = NULL;
+	tempdir  = malloc (strlen (PACKAGE_SRC_DIR) + strlen ("/../pixmaps/") + 1);
+	strcpy (tempdir, PACKAGE_SRC_DIR);
+	strcat (tempdir, "/../pixmaps/");
+
+	DIR* dir = opendir (tempdir);
+	
+	if (dir)
+	{
+		closedir (dir);
+		gstmpixmaps = malloc (strlen (tempdir));
+		strcpy (gstmpixmaps, tempdir);
+
+		gstmui = malloc (strlen (PACKAGE_SRC_DIR) + strlen ("/gstm.ui") + 1);
+		strcpy (gstmui, PACKAGE_SRC_DIR);
+		strcat (gstmui, "/gstm.ui");
+	}
+
+	//	If not, check if system data exists
+	if (!gstmpixmaps)
+	{
+		dir = opendir(PACKAGE_DATA_DIR);
+
+		if (dir)
+		{
+			closedir (dir);
+			gstmpixmaps = malloc (strlen (PACKAGE_DATA_DIR) + strlen ("/pixmaps/") + 1);
+			strcpy (gstmpixmaps, PACKAGE_DATA_DIR);
+			strcat (gstmpixmaps, "/pixmaps/");
+
+			gstmui = malloc (strlen (PACKAGE_DATA_DIR) + strlen ("/ui/gstm.ui") + 1);
+			strcpy (gstmui, PACKAGE_DATA_DIR);
+			strcat (gstmui, "/ui/gstm.ui");
+		}
+	}
+
+	if (!gstmpixmaps)
+	{
+		exit (EXIT_FAILURE);
+	}
 }

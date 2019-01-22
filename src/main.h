@@ -25,5 +25,8 @@
 Gstm *app;
 char *gstmdir;
 char *gstmpixmaps;
+char *gstmui;
 
 void signalexit (int sig_num);
+void init_paths();
+void init_config ();

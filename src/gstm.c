@@ -33,11 +33,7 @@
 #include "fniface.h"
 #include "fnssht.h"
 
-/* For testing propose use the local (not installed) ui file */
-/* #define UI_FILE PACKAGE_DATA_DIR"/ui/gstm.ui" */
-#define UI_FILE "src/gstm.ui"
 #define TOP_WINDOW "maindialog"
-
 G_DEFINE_TYPE (Gstm, gstm, GTK_TYPE_APPLICATION);
 
 /* ANJUTA: Macro GSTM_APPLICATION gets Gstm - DO NOT REMOVE */
@@ -65,12 +61,11 @@ static void
 gstm_new_window (GApplication *app)
 {
 	GError* error = NULL;
-	//GstmPrivate *priv = GSTM_APPLICATION(app)->priv;
 
 	/*	Load UI from file	*/
 	builder = gtk_builder_new ();
 	
-	if (!gtk_builder_add_from_file (builder, UI_FILE, &error))
+	if (!gtk_builder_add_from_file (builder, gstmui, &error))
 	{
 		g_critical ("Couldn't load builder file: %s", error->message);
 		g_error_free (error);
@@ -98,10 +93,10 @@ static void
 gstm_activate (GApplication *application)
 {
 	int a_cnt = 0;
-	
-	gstm_new_window (application);
 
 	gstm_init ((Gstm *)app);
+	
+	gstm_new_window (application);
 
 	//read tunnelfiles into memory
 	tunnelCount = gstm_readfiles (gstmdir, &gSTMtunnels);
@@ -142,95 +137,9 @@ gstm_activate (GApplication *application)
 	gstm_interface_showinfo("gSTM ready for action.");
 }
 
-//	Find .gSTM from user's home directory if available
-static void init_config ()
-{
-	struct stat sb;
-
-	// get HOME variable and construct gSTM dir
-	gstmdir = malloc (strlen (getenv ("HOME")) + 6 + 1);
-	
-	if (!gstmdir)
-	{
-		fprintf (stderr, "** out of memory\n");
-		exit (EXIT_FAILURE);
-	}
-	
-	strcpy (gstmdir, getenv ("HOME"));
-	strcat (gstmdir, "/.gSTM");
-
-	// check if gSTM dir exists or create it
-	if (access (gstmdir, W_OK))
-	{
-		
-		// can't access it, although it might exist try to create it
-		mkdir (gstmdir, 0755);
-
-		if (access (gstmdir, W_OK))
-		{
-			//still can't access it :(
-			fprintf(stderr, "** .gSTM directory in your HOME directory is not accessible\n");
-			exit (EXIT_FAILURE);
-		}
-		else
-		{
-			// check if it is really a directory ;)
-			stat (gstmdir, &sb);
-			if (!S_ISDIR (sb.st_mode))
-			{
-				fprintf (stderr, "** a file called .gSTM exists in your HOME directory, please delete it.\n");
-				exit (EXIT_FAILURE);
-			}
-		}
-	}
-}
-
-//	Find location of pixmaps
-static void init_pixmaps ()
-{
-	//	Check if local data exists
-	char *tempdir = NULL;
-	tempdir  = malloc (strlen (PACKAGE_SRC_DIR) + strlen ("/../pixmaps/") + 1);
-	strcpy (tempdir, PACKAGE_SRC_DIR);
-	strcat (tempdir, "/../pixmaps/");
-
-	DIR* dir = opendir (tempdir);
-	
-	if (dir)
-	{
-		closedir (dir);
-		gstmpixmaps = malloc (strlen (tempdir));
-		strcpy (gstmpixmaps, tempdir);
-	}
-
-	//	If not, check if system data exists
-	if (!gstmpixmaps)
-	{
-		dir = opendir(PACKAGE_DATA_DIR);
-
-		if (dir)
-		{
-			closedir (dir);
-			gstmpixmaps = malloc (strlen (PACKAGE_DATA_DIR) + strlen ("/pixmaps/") + 1);
-			strcpy (gstmpixmaps, PACKAGE_DATA_DIR);
-			strcat (gstmpixmaps, "/pixmaps/");
-		}
-	}
-
-	if (!gstmpixmaps)
-	{
-		exit (EXIT_FAILURE);
-	}
-}
-
 static void gstm_init (Gstm *object)
 {
 	object->priv = G_TYPE_INSTANCE_GET_PRIVATE (object, GSTM_TYPE_APPLICATION, GstmPrivate);
-
-	init_config();
-	init_pixmaps();
-
-	//	Set up 
 
 	gSTMtunnels = NULL;
 	tunnelCount = 0;
