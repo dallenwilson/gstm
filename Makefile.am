@@ -1,7 +1,7 @@
 ## Process this file with automake to produce Makefile.in
 ## Created by Anjuta
 
-SUBDIRS = src pixmaps po
+SUBDIRS = src pixmaps po gAskpass
 
 dist_doc_DATA = \
 	README \

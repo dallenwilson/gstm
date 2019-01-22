@@ -32,6 +32,7 @@ AC_CONFIG_FILES([
   src/Makefile
   pixmaps/Makefile
   po/Makefile.in
+  gAskpass/Makefile
 ])
 
 AC_OUTPUT
