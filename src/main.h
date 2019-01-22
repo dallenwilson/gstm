@@ -1,6 +1,6 @@
 /* -*- Mode: C; indent-tabs-mode: t; c-basic-offset: 4; tab-width: 4 -*-  */
 /*
- * callbacks.c
+ * src/main.h
  *
  * Copyright (c) 2005-2019	Mark Smulders <msmulders@elsar.nl>
  * Copyright (C) 2019		Dallen Wilson <dwjwilson@lavabit.com>
