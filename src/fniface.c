@@ -31,18 +31,6 @@
 
 static GtkListStore *redirstore;
 
-/* enables or disables the maindialog - only used for the about dialog */
-/*
- void gstm_interface_enable_maindialog(gboolean sensitive) {
-	extern GtkWidget *maindialog;
-	gtk_widget_set_sensitive(maindialog, sensitive);
-	gtk_window_present(GTK_WINDOW(maindialog));
-	if (sensitive) {
-		gtk_window_set_focus(GTK_WINDOW(maindialog),lookup_widget(maindialog,"tunnellist"));
-	}
-}
-*/
-
 /*	shows informational text in our main dialog	*/
 void gstm_interface_showinfo(char *text)
 {

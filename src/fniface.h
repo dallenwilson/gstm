@@ -22,27 +22,19 @@
 #ifndef _FNIFACE_H
 #define _FNIFACE_H
 
-//#ifdef __cplusplus
-//extern "C"
-//{
-//#endif
-
-//#include <gnome.h>
 #include <gtk/gtk.h>
 
 #include "conffile.h"
 
-	enum {
-		COL_TYPE,
-	 	COL_PORT1,
-	 	COL_HOST,
-		COL_PORT2,
-		COL_RID,
-		N_RCOLS
-	};
+enum {
+	COL_TYPE,
+ 	COL_PORT1,
+ 	COL_HOST,
+	COL_PORT2,
+	COL_RID,
+	N_RCOLS
+};
 
-
-	
 void gstm_interface_enable_maindialog(gboolean sensitive);
 void gstm_interface_showinfo(char *text);
 gint gstm_interface_selection2id(GtkTreeSelection *s, int column);
@@ -62,9 +54,5 @@ void gstm_interface_error(const char *msg);
 void gstm_interface_properties(int id);
 void gstm_interface_selectrow_id(int id);
 void gstm_dockletmenu_tunnelitem_new(GtkWidget *menu, const gchar *t_name, intptr_t t_id, gboolean t_active);
-
-//#ifdef __cplusplus
-//}
-//#endif
 
 #endif /* _FNIFACE_H */

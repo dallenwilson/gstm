@@ -31,7 +31,6 @@
 #include "fniface.h"
 #include "fnssht.h"
 
-//GnomeProgram *gapp;
 Gstm *app;
 char *gstmdir = NULL;
 char *gstmpixmaps = NULL;

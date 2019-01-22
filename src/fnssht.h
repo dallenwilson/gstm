@@ -22,11 +22,6 @@
 #ifndef _FNSSHT_H
 #define _FNSSHT_H
 
-#ifdef __cplusplus
-extern "C"
-{
-#endif
-
 #include <gtk/gtk.h>
 
 struct Shelperargs {
@@ -40,9 +35,5 @@ gboolean gstm_ssht_helperthread_refresh_gui (gpointer *data);
 char **gstm_ssht_addssharg(char **args, const char *str);
 void gstm_ssht_starttunnel(int id);
 void gstm_ssht_stoptunnel(int id);
-
-#ifdef __cplusplus
-}
-#endif
 
 #endif /* _FNSSHT_H */
