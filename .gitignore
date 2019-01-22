@@ -55,3 +55,5 @@ po/POTFILES
 *~
 .anjuta
 .anjuta_sym_db.db
+gAskpass/gaskpass
+
