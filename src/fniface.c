@@ -111,7 +111,6 @@ void gstm_interface_paint_row(GtkTreeSelection *s, gboolean active)
 /* put the proper 'active' pixmap in the row by ID */
 void gstm_interface_paint_row_id (int id, gboolean active)
 {
-	return;
 	gboolean ret;
 	GtkTreeIter i;
 	int v_id;
