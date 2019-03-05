@@ -147,13 +147,13 @@ void init_paths ()
 		if (dir)
 		{
 			closedir (dir);
-			gstmpixmaps = malloc (strlen (PACKAGE_DATA_DIR) + strlen ("/pixmaps/") + 1);
+			gstmpixmaps = malloc (strlen (PACKAGE_DATA_DIR) + strlen ("/pixmaps/gstm/") + 1);
 			strcpy (gstmpixmaps, PACKAGE_DATA_DIR);
-			strcat (gstmpixmaps, "/pixmaps/");
+			strcat (gstmpixmaps, "/pixmaps/gstm/");
 
-			gstmui = malloc (strlen (PACKAGE_DATA_DIR) + strlen ("/ui/gstm.ui") + 1);
+			gstmui = malloc (strlen (PACKAGE_DATA_DIR) + strlen ("/gstm/ui/gstm.ui") + 1);
 			strcpy (gstmui, PACKAGE_DATA_DIR);
-			strcat (gstmui, "/ui/gstm.ui");
+			strcat (gstmui, "/gstm/ui/gstm.ui");
 		}
 	}
 
