@@ -2,7 +2,7 @@ dnl Process this file with autoconf to produce a configure script.
 dnl Created by Anjuta application wizard.
 
 AC_PREREQ([2.69])
-AC_INIT(gSTM, [1.3.0], [dwjwilson@lavabit.com])
+AC_INIT(gSTM, [1.3.1], [dwjwilson@lavabit.com])
 AC_CONFIG_SRCDIR([src/main.c])
 AC_CONFIG_AUX_DIR([build-aux])
 AC_CONFIG_HEADERS([config.h])
