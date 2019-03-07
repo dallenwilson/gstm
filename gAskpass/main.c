@@ -78,9 +78,9 @@ void init_pixmaps ()
 		if (dir)
 		{
 			closedir (dir);
-			gstmpixmaps = malloc (strlen (PACKAGE_DATA_DIR) + strlen ("/pixmaps/gstm/") + 1);
+			gstmpixmaps = malloc (strlen (PACKAGE_DATA_DIR) + strlen ("/pixmaps/") + 1);
 			strcpy (gstmpixmaps, PACKAGE_DATA_DIR);
-			strcat (gstmpixmaps, "/pixmaps/gstm/");
+			strcat (gstmpixmaps, "/pixmaps/");
 		}
 	}
 
