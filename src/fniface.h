@@ -50,7 +50,7 @@ void gstm_interface_rowactivity();
 void gstm_interface_rowaction();
 void gstm_interface_paint_row(GtkTreeSelection *s, gboolean active);
 void gstm_interface_paint_row_id(int id, gboolean active);
-void gstm_interface_error(const char *msg);
+gboolean gstm_interface_error(const char *msg);
 void gstm_interface_properties(int id);
 void gstm_interface_selectrow_id(int id);
 void gstm_dockletmenu_tunnelitem_new(GtkWidget *menu, const gchar *t_name, intptr_t t_id, gboolean t_active);

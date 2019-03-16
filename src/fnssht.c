@@ -154,15 +154,6 @@ gpointer *gstm_ssht_helperthread(gpointer *args)
 	return NULL;
 }
 
-gboolean gstm_ssht_helperthread_refresh_error (gpointer *data)
-{
-	gchar *str = (gchar *)data;
-	gstm_interface_error (str);
-	free (str);
-
-	return FALSE;
-}
-
 gboolean gstm_ssht_helperthread_refresh_gui (gpointer *data)
 {
 	GtkTreeSelection *s = NULL;

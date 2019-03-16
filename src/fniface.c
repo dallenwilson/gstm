@@ -200,7 +200,7 @@ void gstm_interface_rowaction()
 }
 
 /* error dialog */
-void gstm_interface_error(const char *msg) {
+gboolean gstm_interface_error(const char *msg) {
 	GtkWidget *errordialog = gtk_message_dialog_new (
 		GTK_WINDOW (maindialog),
 		0,
@@ -220,6 +220,8 @@ void gstm_interface_error(const char *msg) {
 		GtkWidget *w = GTK_WIDGET (gtk_builder_get_object (builder, "tunnellist"));
 		gtk_window_set_focus(GTK_WINDOW(maindialog), w);
 	}
+
+	return FALSE;
 }
 
 void gstm_interface_redirlist_init(GtkTreeView *v) {
