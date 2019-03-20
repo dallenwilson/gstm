@@ -30,7 +30,6 @@ struct Shelperargs {
 	//char **errmsgs;
 };
 
-gboolean gstm_ssht_helperthread_refresh_error (gpointer *data);
 gboolean gstm_ssht_helperthread_refresh_gui (gpointer *data);
 char **gstm_ssht_addssharg(char **args, const char *str);
 void gstm_ssht_starttunnel(int id);
