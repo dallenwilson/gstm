@@ -24,6 +24,8 @@
 #include "main.h"
 #include "gaskpass.h"
 
+char *curpass = NULL;
+
 GtkWidget *dialog = NULL;
 GtkWidget *entry = NULL;
 
@@ -84,18 +86,45 @@ gaskpass_activate (GApplication *app)
 	}
 	
 	gtk_widget_destroy (dialog);
+
+	g_application_quit (app);
+}
+
+static int
+commandLine (GApplication            *app,
+             GApplicationCommandLine *cmdline)
+{
+	gchar **argv;
+	gint argc;
+	
+	argv = g_application_command_line_get_arguments (cmdline, &argc);
+
+	if ( argc > 1 )
+	{
+		curpass = malloc (strlen(argv[1]) + 1);
+		strcpy (curpass, argv[1]);
+	}
+
+	g_strfreev (argv);
+
+	g_application_activate (app);
+	
+	return 0;
 }
 
 static void
 gaskpass_class_init (gAskpassClass *class)
 {
-  G_APPLICATION_CLASS (class)->activate = gaskpass_activate;
+	G_APPLICATION_CLASS (class)->activate = gaskpass_activate;
 }
 
 gAskpass * gaskpass_new (void)
 {
-  return g_object_new (gaskpass_get_type(),
-                       "application-id", "org.gtk.gaskpass",
-                       "flags", G_APPLICATION_HANDLES_OPEN,
-                       NULL);
+	gAskpass *app = g_object_new (gaskpass_get_type(),
+	                              "application-id", "org.gtk.gaskpass",
+	                              "flags", G_APPLICATION_HANDLES_COMMAND_LINE,
+	                              NULL);
+	g_signal_connect (app, "command-line", G_CALLBACK (commandLine), NULL);
+
+	return app;
 }

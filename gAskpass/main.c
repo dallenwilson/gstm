@@ -30,7 +30,6 @@
 #include "gaskpass.h"
 
 char *gstmpixmaps = NULL;
-char *curpass = NULL;
 
 int main (int argc, char **argv)
 {
@@ -42,12 +41,6 @@ int main (int argc, char **argv)
 #endif
 
 	init_pixmaps ();
-
-	if ( argc > 1 )
-	{
-		curpass = malloc (strlen(argv[1]) + 1);
-		strcpy (curpass, argv[1]);
-	}
 
 	return g_application_run (G_APPLICATION (gaskpass_new ()), argc, argv);
 }
