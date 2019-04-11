@@ -65,7 +65,7 @@ gaskpass_activate (GApplication *app)
 	                                   "dialog-password");
 
 	if (curpass)
-		gtk_entry_set_text (GTK_ENTRY (entry), curpass);
+		gtk_label_set_text (GTK_LABEL (label), curpass);
 
 	gtk_container_add (GTK_CONTAINER (content), entry);
 	gtk_widget_show_all (dialog);
