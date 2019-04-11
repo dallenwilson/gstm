@@ -20,7 +20,6 @@
  */
 
 char *gstmpixmaps;
-char *curpass;
 
 void init_pixmaps ();
 GdkPixbuf* create_pixbuf (const gchar *filename);
