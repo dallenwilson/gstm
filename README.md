@@ -11,6 +11,8 @@ Dependencies on deprecated libgnome libraries have also been removed.
 
 - Ubuntu users (and Mint, Debian and other related distros) can find deb packages in my launchpad ppa: https://launchpad.net/~dallen.wilson/+archive/ubuntu/ppa
 
+- ArchLinux users will find gstm in the ArchLinux User Repository: https://aur.archlinux.org/packages/gstm/
+
 - For everyone else, release tarballs are available from Github.
 
 ##### Building from Source
