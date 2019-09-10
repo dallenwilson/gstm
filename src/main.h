@@ -27,6 +27,8 @@ char *gstmdir;
 char *gstmpixmaps;
 char *gstmui;
 
-void signalexit (int sig_num);
-void init_paths();
-void init_config ();
+void signalexit					(int sig_num);
+void init_paths					();
+void init_config				();
+void gstm_store_window_size		();
+void gstm_load_window_size		();

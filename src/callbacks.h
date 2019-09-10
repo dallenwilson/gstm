@@ -19,6 +19,7 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
+void on_maindialog_size_allocate	(GtkWidget *widget, GtkAllocation *allocation);
 void btn_start_clicked_cb			(GtkButton *button, gpointer user_data);
 void btn_stop_clicked_cb			(GtkButton *button, gpointer user_data);
 void btn_add_clicked_cb				(GtkButton *button, gpointer user_data);

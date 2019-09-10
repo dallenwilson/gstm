@@ -162,3 +162,65 @@ void init_paths ()
 		exit (EXIT_FAILURE);
 	}
 }
+
+//	Store maindialog window width and height
+void gstm_store_window_size ()
+{
+	GKeyFile *keyfile = g_key_file_new ();
+
+	g_key_file_set_integer (keyfile, "WindowState", "Width", maindiag_width);
+	g_key_file_set_integer (keyfile, "WindowState", "Height", maindiag_height);
+	
+	const char *appid = g_application_get_application_id (g_application_get_default ());
+	char *path = g_build_filename (g_get_user_cache_dir (), appid, NULL);
+
+	if (g_mkdir_with_parents (path, 0700) < 0)
+	{
+		goto out;
+	}
+
+	char *file = g_build_filename (path, "state.ini", NULL);
+
+	g_key_file_save_to_file (keyfile, file, NULL);
+
+	g_free (file);
+
+	out:
+		g_key_file_unref (keyfile);
+		g_free (path);
+}
+
+//	Load maindialog window width and height
+void gstm_load_window_size ()
+{
+	const char *appid = g_application_get_application_id (g_application_get_default ());
+	char *file = g_build_filename (g_get_user_cache_dir (), appid, "state.ini", NULL);
+	GKeyFile *keyfile = g_key_file_new ();
+
+	if ( !g_key_file_load_from_file (keyfile, file, G_KEY_FILE_NONE, NULL) )
+	{
+		goto out;
+	}
+
+	GError *error;
+	
+	error = NULL;
+	maindiag_width = g_key_file_get_integer (keyfile, "WindowState", "Width", &error);
+	if (error != NULL)
+	{
+		g_clear_error (&error);
+		maindiag_width = -1;
+	}
+
+	error = NULL;
+	maindiag_height = g_key_file_get_integer (keyfile, "WindowState", "Height", &error);
+	if (error != NULL)
+	{
+		g_clear_error (&error);
+		maindiag_height = -1;
+	}
+
+	out:
+		g_key_file_unref (keyfile);
+		g_free (file);
+}

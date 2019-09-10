@@ -56,6 +56,10 @@ void gstm_terminate()
 /*
  * maindialog callbacks
  */
+void on_maindialog_size_allocate (GtkWidget *widget, GtkAllocation *allocation)
+{
+	gtk_window_get_size (GTK_WINDOW (widget), &maindiag_width, &maindiag_height);
+}
 gboolean maindialog_delete_event_cb (GtkWidget *widget, GdkEvent *event, gpointer user_data)
 {
 	gstm_terminate();

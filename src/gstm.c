@@ -36,6 +36,9 @@
 #define TOP_WINDOW "maindialog"
 G_DEFINE_TYPE (Gstm, gstm, GTK_TYPE_APPLICATION);
 
+int maindiag_width;
+int maindiag_height;
+
 /* ANJUTA: Macro GSTM_APPLICATION gets Gstm - DO NOT REMOVE */
 struct _GstmPrivate
 {
@@ -133,6 +136,12 @@ gstm_activate (GApplication *application)
 		gtk_widget_show_all (GTK_WIDGET (maindialog));
 	#pragma GCC diagnostic pop
 
+	//	load saved window size, if any
+	gstm_load_window_size ();
+
+	//	set the window size
+	gtk_window_resize (GTK_WINDOW (maindialog), maindiag_width, maindiag_height);
+
 	//ready for action
 	gstm_interface_showinfo("gSTM ready for action.");
 }
@@ -156,10 +165,12 @@ static void
 gstm_class_init (GstmClass *klass)
 {
 	G_APPLICATION_CLASS (klass)->activate = gstm_activate;
-
-	//g_type_class_add_private (klass, sizeof (GstmPrivate));
-
 	G_OBJECT_CLASS (klass)->finalize = gstm_finalize;
+}
+
+void maindialog_destroy_cb (GtkWidget *widget)
+{
+	gstm_store_window_size ();
 }
 
 Gstm *
