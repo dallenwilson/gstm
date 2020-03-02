@@ -53,7 +53,6 @@ Gtk3 port: Dallen Wilson &lt;dwjwilson@lavabit.com&gt;</property>
     <property name="can_focus">False</property>
     <property name="title" translatable="yes">Gnome SSH Tunnel Manager</property>
     <signal name="delete-event" handler="maindialog_delete_event_cb" swapped="no"/>
-    <signal name="destroy" handler="maindialog_destroy_cb" swapped="no"/>
     <signal name="size-allocate" handler="on_maindialog_size_allocate" swapped="no"/>
     <child type="titlebar">
       <placeholder/>
@@ -255,8 +254,8 @@ Gtk3 port: Dallen Wilson &lt;dwjwilson@lavabit.com&gt;</property>
                     <property name="receives_default">False</property>
                     <property name="use_stock">True</property>
                     <signal name="clicked" handler="btn_close_clicked_cb" swapped="no"/>
-                    <accelerator key="q" signal="clicked" modifiers="GDK_CONTROL_MASK"/>
                     <accelerator key="Escape" signal="clicked"/>
+                    <accelerator key="q" signal="clicked" modifiers="GDK_CONTROL_MASK"/>
                   </object>
                   <packing>
                     <property name="expand">False</property>

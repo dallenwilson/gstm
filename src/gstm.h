@@ -74,7 +74,6 @@ G_END_DECLS
 
 #endif /* _APPLICATION_H_ */
 
-void maindialog_destroy_cb		(GtkWidget *widget);
 void gstm_init_treeview			(GtkTreeView *view);
 int gstm_process_autostart		(struct sshtunnel **STMtunnels, int tcnt);
 void gstm_populate_treeview		(GtkWidget *dialog, const char *objname,

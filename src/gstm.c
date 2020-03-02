@@ -168,11 +168,6 @@ gstm_class_init (GstmClass *klass)
 	G_OBJECT_CLASS (klass)->finalize = gstm_finalize;
 }
 
-void maindialog_destroy_cb (GtkWidget *widget)
-{
-	gstm_store_window_size ();
-}
-
 Gstm *
 gstm_new (void)
 {
@@ -270,6 +265,8 @@ void gstm_populate_treeview (GtkWidget *dialog, const char *objname,
 
 void gstm_quit()
 {
+	gstm_store_window_size ();
+	
 	int i;
 	
 	//stop all tunnels
