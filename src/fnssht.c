@@ -2,8 +2,8 @@
 /*
  * src/fnssht.c
  *
- * Copyright (c) 2005-2019	Mark Smulders <msmulders@elsar.nl>
- * Copyright (C) 2019		Dallen Wilson <dwjwilson@lavabit.com>
+ * Copyright (c) 2005-2020	Mark Smulders <msmulders@elsar.nl>
+ * Copyright (C) 2019-2020	Dallen Wilson <dwjwilson@lavabit.com>
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -55,7 +55,7 @@ gpointer *gstm_ssht_helperthread(gpointer *args)
 		case 0: //child
 			//set the ASKPASS env var, if it is unset
 			setenv ("SSH_ASKPASS", "gaskpass", 0);
-		
+
 			//dup stderr so our parent can read it
 			dup2(fd[1], fileno(stderr));
 			close(fd[0]);

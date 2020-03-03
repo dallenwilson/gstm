@@ -10,8 +10,8 @@
     <property name="type_hint">dialog</property>
     <property name="program_name">gSTM</property>
     <property name="version">v1.3.4</property>
-    <property name="copyright" translatable="yes">copyright (c) Mark Smulders 2005-2019
-copyright (c) Dallen Wilson 2019</property>
+    <property name="copyright" translatable="yes">copyright (c) Mark Smulders 2005-2020
+copyright (c) Dallen Wilson 2019-2020</property>
     <property name="comments" translatable="yes">Gnome SSH Tunnel Manager - a front-end to ssh tunneling.</property>
     <property name="website">https://github.com/dallenwilson/gstm</property>
     <property name="authors">Original Author: Mark Smulders &lt;msmulders@elsar.nl&gt;

@@ -2,8 +2,8 @@
 /*
  * src/fnssht.h
  *
- * Copyright (c) 2005-2019	Mark Smulders <msmulders@elsar.nl>
- * Copyright (C) 2019		Dallen Wilson <dwjwilson@lavabit.com>
+ * Copyright (c) 2005-2020	Mark Smulders <msmulders@elsar.nl>
+ * Copyright (C) 2019-2020	Dallen Wilson <dwjwilson@lavabit.com>
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
