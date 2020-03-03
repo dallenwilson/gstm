@@ -36,6 +36,8 @@ G_BEGIN_DECLS
 typedef struct _gAskpassClass gAskpassClass;
 typedef struct _gAskpass gAskpass;
 
+GtkBuilder *builder;
+
 struct _gAskpass
 {
 	GtkApplication parent;
@@ -53,3 +55,6 @@ G_END_DECLS
 #endif /* _APPLICATION_H_ */
 
 gAskpass *gaskpass_new (void);
+
+void gaskpass_cb_cancel (GtkButton *button, gpointer user_data);
+void gaskpass_cb_ok (GtkButton *button, gpointer user_data);

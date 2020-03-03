@@ -27,67 +27,72 @@
 char *curpass = NULL;
 
 GtkWidget *dialog = NULL;
+GtkWidget *label = NULL;
 GtkWidget *entry = NULL;
 
 G_DEFINE_TYPE(gAskpass, gaskpass, GTK_TYPE_APPLICATION);
+#define TOP_WINDOW "gaskpass_main"
+GtkBuilder *builder;
 
 static void
 gaskpass_init (gAskpass *obj)
 {
 }
 
+/* Create a new window loading a file */
+static void
+gaskpass_new_window (GApplication *app)
+{
+	GError* error = NULL;
+
+	/*	Load UI from file	*/
+	builder = gtk_builder_new ();
+	
+	if (!gtk_builder_add_from_file (builder, gstmui, &error))
+	{
+		g_critical ("Couldn't load builder file: %s", error->message);
+		g_error_free (error);
+	}
+
+	/*	Auto-connect signal handlers =	*/
+	gtk_builder_connect_signals (builder, app);
+
+	/*	Get handles for various windows	*/
+	dialog = GTK_WIDGET (gtk_builder_get_object (builder, TOP_WINDOW));
+	label = GTK_WIDGET (gtk_builder_get_object (builder, "lbl_ssh_message"));
+	entry = GTK_WIDGET (gtk_builder_get_object (builder, "txt_password"));
+	
+	gtk_window_set_application (GTK_WINDOW (dialog), GTK_APPLICATION (app));
+}
+
 static void
 gaskpass_activate (GApplication *app)
 {
-	GtkWidget *content, *label;
-
-	GdkPixbuf *icon = create_pixbuf ("gSTM.png");
+	gaskpass_init ((gAskpass *)app);
 	
-	GtkDialogFlags flags = GTK_DIALOG_MODAL | GTK_DIALOG_DESTROY_WITH_PARENT;
-	dialog = gtk_dialog_new_with_buttons ("Enter password", NULL, flags,
-	                                      "_Cancel", GTK_RESPONSE_REJECT,
-	                                      "_OK", GTK_RESPONSE_ACCEPT,
-	                                      NULL);
+	gaskpass_new_window (app);
 
 	gtk_window_set_resizable (GTK_WINDOW (dialog), FALSE);
-	gtk_window_set_icon (GTK_WINDOW (dialog), icon);
-
-	content = gtk_dialog_get_content_area (GTK_DIALOG (dialog));
-
-	label = gtk_label_new ("Please enter your SSH password:");
-	gtk_container_add (GTK_CONTAINER (content), label);
-	
-	entry = gtk_entry_new ();
-	gtk_entry_set_visibility (GTK_ENTRY (entry), FALSE);
-	gtk_entry_set_input_purpose (GTK_ENTRY (entry), GTK_INPUT_PURPOSE_PASSWORD);
-	gtk_entry_set_icon_from_icon_name (GTK_ENTRY (entry),
-	                                   GTK_ENTRY_ICON_SECONDARY,
-	                                   "dialog-password");
+	GdkPixbuf *pbicon = create_pixbuf ("gSTM.png");
+	gtk_window_set_icon (GTK_WINDOW (dialog), pbicon);
 
 	if (curpass)
 		gtk_label_set_text (GTK_LABEL (label), curpass);
-
-	gtk_container_add (GTK_CONTAINER (content), entry);
-	gtk_widget_show_all (dialog);
-
-	gtk_window_set_application (GTK_WINDOW (dialog), GTK_APPLICATION (app));
-
-	gaskpass_init ((gAskpass *)app);
-
-	int result = gtk_dialog_run (GTK_DIALOG (dialog));
-
-	switch (result)
-	{
-	case GTK_RESPONSE_ACCEPT:
-		puts (gtk_entry_get_text (GTK_ENTRY (entry)));
-		break;
-	default:
-		break;
-	}
 	
-	gtk_widget_destroy (dialog);
+	gtk_widget_show_all (GTK_WIDGET (dialog));
+}
 
-	g_application_quit (app);
+void gaskpass_cb_cancel (GtkButton *button, gpointer user_data)
+{
+	gtk_widget_destroy (dialog);
+	g_application_quit (G_APPLICATION (app));
+}
+
+void gaskpass_cb_ok (GtkButton *button, gpointer user_data)
+{
+	puts (gtk_entry_get_text ( GTK_ENTRY(entry)));
+	gtk_widget_destroy (dialog);
+	g_application_quit (G_APPLICATION (app));
 }
 
 static int

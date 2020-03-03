@@ -19,7 +19,11 @@
  * with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-char *gstmpixmaps;
+#include "gaskpass.h"
 
-void init_pixmaps ();
+gAskpass *app;
+char *gstmpixmaps;
+char *gstmui;
+
+void init_paths ();
 GdkPixbuf* create_pixbuf (const gchar *filename);

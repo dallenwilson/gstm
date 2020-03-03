@@ -29,10 +29,14 @@
 #include "main.h"
 #include "gaskpass.h"
 
+gAskpass *app = NULL;
+
 char *gstmpixmaps = NULL;
+char *gstmui = NULL;
 
 int main (int argc, char **argv)
 {
+	int status;
 
 #ifdef ENABLE_NLS
 	bindtextdomain (GETTEXT_PACKAGE, PACKAGE_LOCALE_DIR);
@@ -40,13 +44,22 @@ int main (int argc, char **argv)
 	textdomain (GETTEXT_PACKAGE);
 #endif
 
-	init_pixmaps ();
+	init_paths ();
 
-	return g_application_run (G_APPLICATION (gaskpass_new ()), argc, argv);
+	app = gaskpass_new();
+
+	status = g_application_run (G_APPLICATION (app), argc, argv);
+
+	if (builder)
+		g_object_unref (builder);
+	
+	g_object_unref (app);
+
+	return status;
 }
 
-//	Find location of pixmaps
-void init_pixmaps ()
+//	Find location of pixmaps and glade ui file
+void init_paths ()
 {
 	//	Check if local data exists
 	char *tempdir = NULL;
@@ -61,6 +74,10 @@ void init_pixmaps ()
 		closedir (dir);
 		gstmpixmaps = malloc (strlen (tempdir));
 		strcpy (gstmpixmaps, tempdir);
+
+		gstmui = malloc (strlen (PACKAGE_SRC_DIR) + strlen ("/gaskpass.ui") + 1);
+		strcpy (gstmui, PACKAGE_SRC_DIR);
+		strcat (gstmui, "/gaskpass.ui");
 	}
 
 	//	If not, check if system data exists
@@ -74,6 +91,10 @@ void init_pixmaps ()
 			gstmpixmaps = malloc (strlen (PACKAGE_DATA_DIR) + strlen ("/pixmaps/") + 1);
 			strcpy (gstmpixmaps, PACKAGE_DATA_DIR);
 			strcat (gstmpixmaps, "/pixmaps/");
+
+			gstmui = malloc (strlen (PACKAGE_DATA_DIR) + strlen ("/ui/gaskpass.ui") + 1);
+			strcpy (gstmui, PACKAGE_DATA_DIR);
+			strcat (gstmui, "/ui/gaskpass.ui");
 		}
 	}
 
