@@ -227,7 +227,13 @@ gboolean gstm_interface_error(const char *msg) {
 void gstm_interface_redirlist_init(GtkTreeView *v) {
 	GtkCellRenderer *renderer;
 	GtkTreeViewColumn *c;
-	
+
+	// Clear existing to avoid double/triple/more entries
+	GList *existing = gtk_tree_view_get_columns (v);
+	for (GList *cur = existing; cur != NULL; cur = cur->next)
+		gtk_tree_view_remove_column (v, cur->data);
+	g_list_free (existing);
+
 	/* --- Column #1 --- */
 	renderer = gtk_cell_renderer_text_new ();
 	gtk_tree_view_insert_column_with_attributes (v,

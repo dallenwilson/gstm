@@ -74,7 +74,7 @@ gstm_new_window (GApplication *app)
 		g_error_free (error);
 	}
 
-	/*	Auto-connect signal handlers =	*/
+	/*	Auto-connect signal handlers */
 	gtk_builder_connect_signals (builder, app);
 
 	/*	Get handles for various windows	*/
@@ -87,6 +87,11 @@ gstm_new_window (GApplication *app)
 	statusbar = GTK_WIDGET (gtk_builder_get_object (builder, "statusbar"));
 	tunlist = GTK_WIDGET (gtk_builder_get_object (builder, "tunnellist"));
 	banner = GTK_IMAGE (gtk_builder_get_object (builder, "logo"));
+
+	gtk_window_set_transient_for (GTK_WINDOW (aboutdialog), GTK_WINDOW (maindialog));
+	gtk_window_set_transient_for (GTK_WINDOW (newdialog), GTK_WINDOW (maindialog));
+	gtk_window_set_transient_for (GTK_WINDOW (tundialog), GTK_WINDOW (maindialog));
+	gtk_window_set_transient_for (GTK_WINDOW (propertiesdialog), GTK_WINDOW (maindialog));
 
 	gtk_window_set_application (GTK_WINDOW (maindialog), GTK_APPLICATION (app));
 }

@@ -37,8 +37,6 @@ void tundg_btn_cancel_clicked_cb	(GtkButton *button, gpointer user_data);
 void btn_redir_add_clicked_cb		(GtkButton *button, gpointer user_data);
 void btn_redir_delete_clicked_cb	(GtkButton *button, gpointer user_data);
 void btn_redir_edit_clicked_cb		(GtkButton *button, gpointer user_data);
-void propdg_btn_ok_clicked_cb		(GtkButton *button, gpointer user_data);
-void propdg_btn_cancel_clicked_cb	(GtkButton *button, gpointer user_data);
 
 //	Systray
 void on_dockletmenu_toggle_activate (GtkMenuItem *menuitem, gpointer user_data);
