@@ -121,6 +121,9 @@ int gstm_tunnel_add(const char *tname)
 			tun->portredirs = NULL;
 			tun->defcount = 0;
 			tun->autostart = FALSE;
+			tun->restart = FALSE;
+			tun->notify = FALSE;
+			tun->maxrestarts = malloc(3); strcpy ((char *)tun->maxrestarts, "9");
 			tun->active = FALSE;
 			tun->sshpid = 0;
 			tun->fn = malloc (strlen (fname) + 1); strcpy (tun->fn, fname);
@@ -261,7 +264,33 @@ gboolean gstm_tunnel2file(struct sshtunnel *st, const char *fn) {
 			gstm_interface_error("Error at xmlTextWriterWriteElement: autostart");
 			return ret;
 		}
-		
+		/* restart element */
+		if (st->restart) {
+			rc = xmlTextWriterWriteElement(writer, BAD_CAST "restart", BAD_CAST "1");
+		} else {
+			rc = xmlTextWriterWriteElement(writer, BAD_CAST "restart", BAD_CAST "0");
+		}
+		if (rc < 0) {
+			gstm_interface_error("Error at xmlTextWriterWriteElement: restart");
+			return ret;
+		}		
+		/* notify element */
+		if (st->notify) {
+			rc = xmlTextWriterWriteElement(writer, BAD_CAST "notify", BAD_CAST "1");
+		} else {
+			rc = xmlTextWriterWriteElement(writer, BAD_CAST "notify", BAD_CAST "0");
+		}
+		if (rc < 0) {
+			gstm_interface_error("Error at xmlTextWriterWriteElement: notify");
+			return ret;
+		}		
+		/* maxrestarts element */
+		rc = xmlTextWriterWriteElement(writer, BAD_CAST "maxrestarts", BAD_CAST st->maxrestarts);
+		if (rc < 0) {
+			gstm_interface_error("Error at xmlTextWriterWriteElement: maxrestarts");
+			return ret;
+		}
+
 		for(i=0; i<st->defcount;i++) {
 			/* port redirect */
 			rc = xmlTextWriterStartElement(writer, BAD_CAST "tunnel");
@@ -396,8 +425,10 @@ int gstm_file2tunnel(char *file, struct sshtunnel *tunnel) {
 	int retval=0, halt=0;
 	xmlDocPtr doc;
 	xmlNodePtr cur;
-	xmlChar *tmp, *tmpauto;
+	xmlChar *tmp, *tmpauto, *tmprest, *tmpnotify;
 	tmpauto=NULL;
+	tmprest=NULL;
+	tmpnotify=NULL;
 	
 	// build an XML tree from the file;
 	doc = xmlParseFile(file);
@@ -425,9 +456,13 @@ int gstm_file2tunnel(char *file, struct sshtunnel *tunnel) {
 	tunnel->port = malloc(1); tunnel->port[0]='\0';
 	tunnel->login = malloc(1); tunnel->login[0]='\0';
 	tunnel->privkey = malloc(1); tunnel->privkey[0]='\0';
+	tunnel->maxrestarts = malloc(1); tunnel->maxrestarts[0]='\0';
+
 	tunnel->portredirs = NULL;
 	tunnel->active = FALSE;
 	tunnel->autostart = FALSE;
+	tunnel->restart = FALSE;
+	tunnel->notify = TRUE;
 	tunnel->sshpid=0;
 	tunnel->fn = malloc(strlen(file)+1); strcpy(tunnel->fn,file);
 	while (cur && !halt) {
@@ -472,7 +507,34 @@ int gstm_file2tunnel(char *file, struct sshtunnel *tunnel) {
 					}
 					free(tmpauto);
 					tmpauto = NULL;
-				} else {
+				}
+				else if (strcmp ((char *)cur->name, "restart") == 0 && tmp)
+				{
+					tmprest = malloc (strlen ((char *)tmp) + 1);
+					strcpy ((char *)tmprest, (char *)tmp);
+					if (strcmp ((char *)tmprest, "1") == 0) {
+					tunnel->restart = TRUE;
+					}
+					free(tmprest);
+					tmprest = NULL;
+				}
+				else if (strcmp ((char *)cur->name, "notify") == 0 && tmp)
+				{
+					tmpnotify = malloc (strlen ((char *)tmp) + 1);
+					strcpy ((char *)tmpnotify, (char *)tmp);
+					if (strcmp ((char *)tmpnotify, "1") != 0) {
+					tunnel->notify = FALSE;
+					}
+					free(tmpnotify);
+					tmpnotify = NULL;
+				}
+				else if (strcmp ((char *)cur->name, "maxrestarts") == 0 && tmp)
+				{
+					tunnel->maxrestarts = realloc (tunnel->maxrestarts, strlen ((char *)tmp) + 1);
+					strcpy ((char *)tunnel->maxrestarts, (char *)tmp);
+				} 
+				else 
+				{
 					// ??
 					//halt=1;
 					//retval=0;
@@ -487,6 +549,11 @@ int gstm_file2tunnel(char *file, struct sshtunnel *tunnel) {
 		strcpy ((char *)tunnel->port, "22");
 	}
 	
+	if (strlen ((char *)tunnel->maxrestarts) == 0) {
+		tunnel->maxrestarts = realloc(tunnel->maxrestarts,2);
+		strcpy ((char *)tunnel->maxrestarts, "9");
+	}
+
 	retval=1;
 	return(retval);
 }
@@ -515,6 +582,7 @@ int gstm_addtunneldef2tunnel(xmlDocPtr doc, xmlNodePtr def, struct sshtunnel *tu
 	tdef->port1=malloc(1); tdef->port1[0]='\0';
 	tdef->host=malloc(1); tdef->host[0]='\0';
 	tdef->port2=malloc(1); tdef->port2[0]='\0';
+
 	while (def && !halt) {
 		if (!xmlIsBlankNode(def)) {
 			tmp = xmlNodeListGetString(doc, def->xmlChildrenNode, 1);

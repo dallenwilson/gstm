@@ -35,9 +35,12 @@ gpointer *gstm_ssht_helperthread(gpointer *args)
 {
 	struct Shelperargs *harg = (struct Shelperargs *)args;
 	char **a = harg->sshargs;
-	char *buf = NULL, c, *buf2 = NULL, *bufptr = NULL;
+	char *buf = NULL, c, *buf2 = NULL, *buf3 = NULL, *bufptr = NULL;
 	char *errPipe = NULL, *errFork1 = NULL, *errBufPtr = NULL;
-	int i, ret, rv = 0, fd [2];
+	int i, ret, rv = 0, numrestarts = 1, fd [2];
+	buf=malloc(1); buf[0]='\0';
+	buf2=malloc(1); buf2[0]='\0';
+	buf3=malloc(1); buf3[0]='\0';
 	FILE *p;
 
 	//open a pipe to receive stderr - ssh barfs it's errors on it ;)
@@ -45,96 +48,121 @@ gpointer *gstm_ssht_helperthread(gpointer *args)
 		errPipe = "pipe() error !";
 		gdk_threads_add_idle ((GSourceFunc) gstm_interface_error, errPipe);
 	}
-	
-	switch ( (ret=fork()) ) {
-		case -1: //error
-			errFork1 = "fork() error !";
-			gdk_threads_add_idle ((GSourceFunc)gstm_interface_error, errFork1);
-			break;
-		
-		case 0: //child
-			//set the ASKPASS env var, if it is unset
-			setenv ("SSH_ASKPASS", "gaskpass", 0);
 
-			//dup stderr so our parent can read it
-			dup2(fd[1], fileno(stderr));
-			close(fd[0]);
-			close(fd[1]);
-			//fire up the tunnel
-			_exit(execvp(a[0],a));
-			break;
+	do {
+		switch ( (ret=fork()) ) {
+			case -1: //error
+				errFork1 = "fork() error !";
+				gdk_threads_add_idle ((GSourceFunc)gstm_interface_error, errFork1);
+				break;
 		
-		default: //parent
-			//The helperthread waits for the ssh child to return. If the tunnel
-			// is succesfully started, the child won't return until it exits for
-			// whatever reason.
-			close(fd[1]);
-			//save the childs pid
-			gSTMtunnels[harg->tid]->sshpid = ret; //should this be mutexed?
-			//try to read stderr
-			if ( (p = fdopen(fd[0],"r")) ) {
-				i=0;
-				while ((c=getc(p)) != EOF) {
-					buf = realloc(buf,i+1);
-					buf[i] = c;
-					i++;
+			case 0: //child
+				//set the ASKPASS env var, if it is unset
+				setenv ("SSH_ASKPASS", "gaskpass", 0);
+
+				//dup stderr so our parent can read it
+				dup2(fd[1], fileno(stderr));
+				close(fd[0]);
+				close(fd[1]);
+				//fire up the tunnel
+				 _exit(execvp(a[0],a)); 
+				break;
+		
+			default: //parent
+				//The helperthread waits for the ssh child to return. If the tunnel
+				// is succesfully started, the child won't return until it exits for
+				// whatever reason.
+				close(fd[1]);
+				//save the childs pid
+				gSTMtunnels[harg->tid]->sshpid = ret; //should this be mutexed?
+				//try to read stderr
+				if ( (p = fdopen(fd[0],"r")) ) {
+					i=0;
+					while ((c=getc(p)) != EOF) {
+						buf = realloc(buf,i+1);
+						buf[i] = c;
+						i++;
+					}
+					fclose(p);
+					if (i>0) {
+						buf = realloc(buf,i+1);
+						buf[i]='\0';
+					}
 				}
-				fclose(p);
-				if (i>0) {
-					buf = realloc(buf,i+1);
-					buf[i]='\0';
-				}
-			}
-			// and wait ...
-			wait(&rv);
-			break;
+				// and wait ...
+				wait(&rv);
+				break;
+		} 
+		 // sshpid may be not zeroed yet on gSTM exit .. hack to avoid ssh restart ...
+		//if (harg->restart) { sleep(3); }										
+
+
+	if (harg->notify && harg->restart && numrestarts > 0 && numrestarts <= harg->maxrestarts) {
+			i = 20+1+2*11;
+			buf3 = realloc(buf3,i);
+			snprintf (buf3,i,"\nRestarting. (%d of %d)",numrestarts,harg->maxrestarts);
+	} else {
+			buf3 = realloc(buf3,1);
+			buf3[0] = '\0';
 	}
+
 	//take care of errorhandling
 	if (rv!=0) {
 		//printf("%d\n",rv);
 		if (buf!=NULL && rv!=15) {  
-			i = strlen ((char *)gSTMtunnels[harg->tid]->name)+19+strlen(buf)+1;
-			buf2 = malloc(i);
-			snprintf (buf2,i,"Tunnel '%s' stopped.\n%s",gSTMtunnels[harg->tid]->name,buf);
+			i = strlen ((char *)gSTMtunnels[harg->tid]->name)+20+strlen(buf)+1+strlen(buf3);
+			buf2 = realloc(buf2,i);
+			snprintf (buf2,i,"Tunnel '%s' stopped.\n\n%s%s",gSTMtunnels[harg->tid]->name,buf,buf3);
 			bufptr = buf2;
 		} else if (rv==9) { //kill -9 doesnt produce stderr output
-			i = strlen ((char *)gSTMtunnels[harg->tid]->name)+19+19+1;
-			buf = malloc(i);
-			snprintf (buf,i,"Tunnel '%s' stopped.\nssh process killed!",gSTMtunnels[harg->tid]->name);
-			bufptr = buf;
+			i = strlen ((char *)gSTMtunnels[harg->tid]->name)+19+19+1+strlen(buf3);
+			buf2 = realloc(buf2,i);
+			snprintf (buf2,i,"Tunnel '%s' stopped.\nssh process killed!%s",gSTMtunnels[harg->tid]->name,buf3);
+			bufptr = buf2;
 		} else if (rv==15) { //custom message on TERM signal
-			i = strlen ((char *)gSTMtunnels[harg->tid]->name)+20+1;
-			buf2 = malloc(i);
-			snprintf (buf2,i,"Tunnel '%s' terminated",gSTMtunnels[harg->tid]->name);
+			i = strlen ((char *)gSTMtunnels[harg->tid]->name)+20+1+1+strlen(buf)+1+strlen(buf3);
+			buf2 = realloc(buf2,i);
+			snprintf (buf2,i,"Tunnel '%s' terminated\n\n%s%s",gSTMtunnels[harg->tid]->name,buf,buf3);
 			bufptr = buf2;
 		} else {
-			i = strlen ((char *)gSTMtunnels[harg->tid]->name)+19+20+5+1;
-			buf = malloc(i);
-			snprintf (buf,i,"Tunnel '%s' stopped.\nUnknown error code: %d",gSTMtunnels[harg->tid]->name,rv);
-			bufptr = buf;
+			i = strlen ((char *)gSTMtunnels[harg->tid]->name)+19+20+5+1+1+strlen(buf)+1+strlen(buf3);
+			buf2 = realloc(buf2,i);
+			snprintf (buf2,i,"Tunnel '%s' stopped.\nUnknown error code: %d\n\n%s%s",gSTMtunnels[harg->tid]->name,rv,buf,buf3);
+			bufptr = buf2;
 		}
 		
 		// if 'noerrors' flag is true, the main program is probably in a while(){sleep()) loop
 		// waiting for the tunnel to stop. Don't do any interface stuff coz it will lock the program.
 		if (!noerrors)
 		{
-			intptr_t new = harg->tid;
-			gdk_threads_add_idle ((GSourceFunc) gstm_ssht_helperthread_refresh_gui, (gpointer) new);
+			if ((harg->restart && harg->notify) || 
+				!harg->restart ||
+				(harg->restart && numrestarts==harg->maxrestarts)) {
 
-			if (bufptr)
-			{
-				errBufPtr = malloc (strlen (bufptr) + 1);
-				strcpy (errBufPtr, bufptr);
-				gdk_threads_add_idle ((GSourceFunc) gstm_interface_error, errBufPtr);
+				if (bufptr)
+				{
+					errBufPtr = malloc (strlen (bufptr) + 1);
+					strcpy (errBufPtr, bufptr);
+					gdk_threads_add_idle ((GSourceFunc) gstm_interface_error, errBufPtr);
+				}
 			}
 		}
 	}
 	
+	sleep(3); // sshpid may not be zeroed yet on orderly exit 
+	numrestarts++;
+	} while (harg->restart && numrestarts <= harg->maxrestarts + 1 && gSTMtunnels[harg->tid]->sshpid != 0);
+
+	intptr_t new = harg->tid;
+	gdk_threads_add_idle ((GSourceFunc) gstm_ssht_helperthread_refresh_gui, (gpointer) new);
+
 	//we're finished
 	if (buf != NULL)
 		free (buf);
 	if (buf2 != NULL)
 		free (buf2);
+	if (buf3 != NULL)
+		free (buf3);
 
 	//clean up the arg list
 	for (i=0; a[i] != NULL; i++)
@@ -241,7 +269,11 @@ void gstm_ssht_starttunnel(int id) {
 		hargs->sshargs = gstm_ssht_addssharg(hargs->sshargs, "-o");
 		hargs->sshargs = gstm_ssht_addssharg(hargs->sshargs, "NumberOfPasswordPrompts=1");
 		hargs->sshargs = gstm_ssht_addssharg(hargs->sshargs, NULL); //end list
-		
+
+		hargs->restart = gSTMtunnels[id]->restart;
+		hargs->maxrestarts = atoi((char *)gSTMtunnels[id]->maxrestarts); /* well, will be 0 if not int... */
+		hargs->notify = gSTMtunnels[id]->notify;
+
 		// good, now start the helper thread
 		ret = g_thread_new (NULL, (GThreadFunc)gstm_ssht_helperthread, hargs);
 		
@@ -252,6 +284,7 @@ void gstm_ssht_starttunnel(int id) {
 			gSTMtunnels[id]->active=FALSE;
 			gstm_interface_error("g_thread_create error!\n");
 		}
+
 	} else {
 		//hmm, we tried to activate an active tunnel ?
 		//perhaps an error dialog, but for now just ignore this cause it shouldn't happen
