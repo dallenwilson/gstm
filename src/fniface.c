@@ -334,7 +334,7 @@ void gstm_interface_redirlist_del(GtkTreeView *v, int id) {
 
 void gstm_interface_properties(int tid) {
 	GtkTreeSelection *selection;
-	GtkWidget *wname, *wlogin, *whost, *wport, *wprivkey, *wastart, *wlist;
+	GtkWidget *wname, *wlogin, *whost, *wport, *wprivkey, *wastart, *warestart, *wanotify, *wmaxrestarts, *wlist;
 	GtkWidget *wtunlabel, *wpokbutton;
 	int i;
 	gboolean ret;
@@ -362,6 +362,17 @@ void gstm_interface_properties(int tid) {
 		wastart = GTK_WIDGET (gtk_builder_get_object (builder, "check_auto"));
 		if (gSTMtunnels[tid]->autostart)
 			gtk_toggle_button_set_active (GTK_TOGGLE_BUTTON (wastart), TRUE);
+
+		warestart = GTK_WIDGET (gtk_builder_get_object (builder, "check_restart"));
+		if (gSTMtunnels[tid]->restart)
+			gtk_toggle_button_set_active (GTK_TOGGLE_BUTTON (warestart), TRUE);
+
+		wanotify = GTK_WIDGET (gtk_builder_get_object (builder, "check_notify"));
+		if (gSTMtunnels[tid]->notify)
+			gtk_toggle_button_set_active (GTK_TOGGLE_BUTTON (wanotify), TRUE);
+
+		wmaxrestarts = GTK_WIDGET (gtk_builder_get_object (builder, "entry_maxrestarts"));
+		gtk_entry_set_text (GTK_ENTRY (wmaxrestarts), (char *)gSTMtunnels[tid]->maxrestarts);
 
 		//fill redir list
 		wlist = GTK_WIDGET (gtk_builder_get_object (builder, "redirlist"));
@@ -431,6 +442,18 @@ void gstm_interface_properties(int tid) {
 			
 			gSTMtunnels[tid]->autostart = gtk_toggle_button_get_active (GTK_TOGGLE_BUTTON (wastart));
 			
+			gSTMtunnels[tid]->restart = gtk_toggle_button_get_active (GTK_TOGGLE_BUTTON (warestart));
+
+			gSTMtunnels[tid]->notify = gtk_toggle_button_get_active (GTK_TOGGLE_BUTTON (wanotify));
+
+			tmp = gtk_entry_get_text (GTK_ENTRY (wmaxrestarts));
+			if (strcmp (tmp, (char *)gSTMtunnels[tid]->maxrestarts) != 0)
+			{
+				free (gSTMtunnels[tid]->maxrestarts);
+				gSTMtunnels[tid]->maxrestarts = malloc (strlen (tmp) + 1);
+				strcpy ((char *)gSTMtunnels[tid]->maxrestarts, tmp);
+			}
+
 			//the portredirs need to be erased and readded
 			for (i = 0; i < gSTMtunnels[tid]->defcount; i++)
 				free (gSTMtunnels[tid]->portredirs[i]);

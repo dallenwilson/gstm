@@ -883,6 +883,103 @@ Gtk3 port: Dallen Wilson &lt;dwjwilson@lavabit.com&gt;</property>
                     <property name="position">2</property>
                   </packing>
                 </child>
+								<child>
+									<object class="GtkBox">
+										<property name="visible">True</property>
+										<property name="can_focus">False</property>
+										<property name="orientation">vertical</property>           
+										<child>
+											<object class="GtkCheckButton" id="check_restart">
+												<property name="label" translatable="yes">Auto restart</property>
+												<property name="width_request">200</property>
+												<property name="visible">True</property>
+												<property name="can_focus">True</property>
+												<property name="receives_default">False</property>
+												<property name="halign">center</property>
+												<property name="valign">center</property>
+												<property name="use_underline">True</property>
+												<property name="draw_indicator">True</property>
+											</object>
+											<packing>
+												<property name="expand">True</property>
+												<property name="fill">True</property>
+											<property name="position">0</property>
+                          </packing>
+                        </child>
+												<child>
+                          <object class="GtkCheckButton" id="check_notify">
+                            <property name="label" translatable="yes">Notify restart</property>
+                            <property name="width_request">200</property>
+                            <property name="visible">True</property>
+                            <property name="can_focus">True</property>
+                            <property name="receives_default">False</property>
+                            <property name="halign">center</property>
+                            <property name="valign">center</property>
+                            <property name="use_underline">True</property>
+                            <property name="draw_indicator">True</property>
+                          </object>
+                          <packing>
+                            <property name="expand">True</property>
+                            <property name="fill">True</property>
+                            <property name="position">1</property>
+                          </packing>
+                        </child>
+												<child>
+													<object class="GtkBox">
+														<property name="visible">True</property>
+														<property name="can_focus">False</property>
+															<child>
+																<object class="GtkLabel" id="label30">
+																	<property name="height_request">24</property>
+																	<property name="visible">True</property>
+																	<property name="can_focus">False</property>
+																	<property name="halign">end</property>
+																	<property name="valign">center</property>
+																	<property name="margin_right">5</property>
+																	<property name="label" translatable="yes"> Max restarts:</property>
+																	<property name="justify">right</property>
+																	<property name="wrap">True</property>
+																	<property name="single_line_mode">True</property>
+																	<property name="track_visited_links">False</property>
+																	<property name="xalign">0.5</property>
+																	<property name="yalign">0.5</property>
+																</object>
+																<packing>
+																	<property name="expand">True</property>
+																	<property name="fill">True</property>
+																	<property name="position">0</property>
+																</packing>
+															</child>
+															<child>
+																<object class="GtkEntry" id="entry_maxrestarts">
+																	<property name="width_chars">3</property>
+																	<property name="max_width_chars">3</property>
+																	<property name="visible">True</property>
+																	<property name="can_focus">True</property>
+																	<property name="valign">center</property>
+																	<property name="invisible_char">●</property>
+																	<property name="input_purpose">number</property>
+																</object>
+																<packing>
+																	<property name="expand">False</property>
+																	<property name="fill">False</property>
+																	<property name="position">1</property>
+																</packing>
+															</child>
+														</object>
+													<packing>
+														<property name="expand">False</property>
+														<property name="fill">True</property>
+														<property name="position">3</property>
+													</packing>
+												</child>
+											</object>
+											<packing>
+												<property name="expand">False</property>
+												<property name="fill">False</property>
+                    		<property name="position">3</property>
+											</packing>
+										</child>
               </object>
               <packing>
                 <property name="expand">False</property>

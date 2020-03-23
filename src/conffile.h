@@ -46,6 +46,9 @@ struct sshtunnel {
 	xmlChar *login;
 	xmlChar *privkey;
 	gboolean autostart;
+	gboolean restart;
+	gboolean notify;
+	xmlChar *maxrestarts;
 	struct portredir **portredirs;
 	int defcount;
 	gboolean active;

@@ -26,6 +26,9 @@
 
 struct Shelperargs {
 	int tid;
+	gboolean restart;
+	gboolean notify;
+	int maxrestarts;
 	char **sshargs;
 	//char **errmsgs;
 };

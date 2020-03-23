@@ -171,7 +171,12 @@ void btn_copy_clicked_cb (GtkButton *button, gpointer user_data)
 				gSTMtunnels[tunnelCount]->privkey = malloc (strlen ((char *)gSTMtunnels[id]->privkey) + 1);
 				strcpy ((char *)gSTMtunnels[tunnelCount]->privkey, (char *)gSTMtunnels[id]->privkey);
 				
+				gSTMtunnels[tunnelCount]->maxrestarts = malloc (strlen ((char *)gSTMtunnels[id]->maxrestarts) + 1);
+				strcpy ((char *)gSTMtunnels[tunnelCount]->maxrestarts, (char *)gSTMtunnels[id]->maxrestarts);
+
 				gSTMtunnels[tunnelCount]->autostart = gSTMtunnels[id]->autostart;
+				gSTMtunnels[tunnelCount]->notify = gSTMtunnels[id]->notify;
+				gSTMtunnels[tunnelCount]->restart = gSTMtunnels[id]->restart;
 				gSTMtunnels[tunnelCount]->active = FALSE;
 				gSTMtunnels[tunnelCount]->sshpid = 0;
 				gSTMtunnels[tunnelCount]->defcount = gSTMtunnels[id]->defcount;
