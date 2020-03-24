@@ -258,8 +258,8 @@ Gtk3 port: Dallen Wilson &lt;dwjwilson@lavabit.com&gt;</property>
                     <property name="receives_default">False</property>
                     <property name="use_stock">True</property>
                     <signal name="clicked" handler="btn_close_clicked_cb" swapped="no"/>
-                    <accelerator key="Escape" signal="clicked"/>
                     <accelerator key="q" signal="clicked" modifiers="GDK_CONTROL_MASK"/>
+                    <accelerator key="Escape" signal="clicked"/>
                   </object>
                   <packing>
                     <property name="expand">False</property>
@@ -515,6 +515,7 @@ Gtk3 port: Dallen Wilson &lt;dwjwilson@lavabit.com&gt;</property>
                   <object class="GtkBox">
                     <property name="visible">True</property>
                     <property name="can_focus">False</property>
+                    <property name="margin_left">5</property>
                     <property name="orientation">vertical</property>
                     <child>
                       <object class="GtkBox">
@@ -549,6 +550,7 @@ Gtk3 port: Dallen Wilson &lt;dwjwilson@lavabit.com&gt;</property>
                             <property name="can_focus">True</property>
                             <property name="has_focus">True</property>
                             <property name="valign">center</property>
+                            <property name="margin_left">2</property>
                             <property name="invisible_char">●</property>
                             <property name="input_purpose">name</property>
                           </object>
@@ -597,6 +599,7 @@ Gtk3 port: Dallen Wilson &lt;dwjwilson@lavabit.com&gt;</property>
                             <property name="visible">True</property>
                             <property name="can_focus">True</property>
                             <property name="valign">center</property>
+                            <property name="margin_left">2</property>
                             <property name="invisible_char">●</property>
                             <property name="input_purpose">name</property>
                           </object>
@@ -613,50 +616,6 @@ Gtk3 port: Dallen Wilson &lt;dwjwilson@lavabit.com&gt;</property>
                         <property name="position">1</property>
                       </packing>
                     </child>
-                    <child>
-                      <object class="GtkBox">
-                        <property name="visible">True</property>
-                        <property name="can_focus">False</property>
-                        <property name="margin_bottom">5</property>
-                        <child>
-                          <object class="GtkLabel">
-                            <property name="width_request">48</property>
-                            <property name="height_request">24</property>
-                            <property name="visible">True</property>
-                            <property name="can_focus">False</property>
-                            <property name="track_visited_links">False</property>
-                          </object>
-                          <packing>
-                            <property name="expand">True</property>
-                            <property name="fill">True</property>
-                            <property name="position">0</property>
-                          </packing>
-                        </child>
-                        <child>
-                          <object class="GtkCheckButton" id="check_auto">
-                            <property name="label" translatable="yes">Autostart</property>
-                            <property name="width_request">176</property>
-                            <property name="visible">True</property>
-                            <property name="can_focus">True</property>
-                            <property name="receives_default">False</property>
-                            <property name="halign">center</property>
-                            <property name="valign">center</property>
-                            <property name="use_underline">True</property>
-                            <property name="draw_indicator">True</property>
-                          </object>
-                          <packing>
-                            <property name="expand">True</property>
-                            <property name="fill">True</property>
-                            <property name="position">1</property>
-                          </packing>
-                        </child>
-                      </object>
-                      <packing>
-                        <property name="expand">True</property>
-                        <property name="fill">True</property>
-                        <property name="position">2</property>
-                      </packing>
-                    </child>
                   </object>
                   <packing>
                     <property name="expand">True</property>
@@ -668,6 +627,8 @@ Gtk3 port: Dallen Wilson &lt;dwjwilson@lavabit.com&gt;</property>
                   <object class="GtkBox">
                     <property name="visible">True</property>
                     <property name="can_focus">False</property>
+                    <property name="margin_left">5</property>
+                    <property name="margin_right">5</property>
                     <property name="orientation">vertical</property>
                     <child>
                       <object class="GtkBox">
@@ -701,6 +662,7 @@ Gtk3 port: Dallen Wilson &lt;dwjwilson@lavabit.com&gt;</property>
                             <property name="visible">True</property>
                             <property name="can_focus">True</property>
                             <property name="valign">center</property>
+                            <property name="margin_left">2</property>
                             <property name="invisible_char">●</property>
                           </object>
                           <packing>
@@ -749,6 +711,7 @@ Gtk3 port: Dallen Wilson &lt;dwjwilson@lavabit.com&gt;</property>
                             <property name="visible">True</property>
                             <property name="can_focus">True</property>
                             <property name="valign">center</property>
+                            <property name="margin_left">2</property>
                             <property name="max_length">5</property>
                             <property name="invisible_char">●</property>
                             <property name="width_chars">5</property>
@@ -799,6 +762,7 @@ Gtk3 port: Dallen Wilson &lt;dwjwilson@lavabit.com&gt;</property>
                             <property name="visible">True</property>
                             <property name="can_focus">True</property>
                             <property name="valign">center</property>
+                            <property name="margin_left">2</property>
                             <property name="invisible_char">●</property>
                           </object>
                           <packing>
@@ -825,55 +789,112 @@ Gtk3 port: Dallen Wilson &lt;dwjwilson@lavabit.com&gt;</property>
                   <object class="GtkBox">
                     <property name="visible">True</property>
                     <property name="can_focus">False</property>
+                    <property name="margin_right">5</property>
                     <property name="orientation">vertical</property>
-                    <property name="baseline_position">top</property>
                     <child>
-                      <object class="GtkImage" id="image10">
-                        <property name="width_request">48</property>
-                        <property name="height_request">48</property>
+                      <object class="GtkCheckButton" id="check_auto">
+                        <property name="label" translatable="yes">Auto-start on launch</property>
+                        <property name="width_request">176</property>
                         <property name="visible">True</property>
-                        <property name="can_focus">False</property>
+                        <property name="can_focus">True</property>
+                        <property name="receives_default">False</property>
                         <property name="halign">center</property>
                         <property name="valign">center</property>
-                        <property name="stock">gtk-dialog-authentication</property>
-                        <property name="icon_size">6</property>
-                      </object>
-                      <packing>
-                        <property name="expand">False</property>
-                        <property name="fill">False</property>
-                        <property name="position">0</property>
-                      </packing>
-                    </child>
-                    <child>
-                      <object class="GtkLabel" id="label29">
-                        <property name="height_request">24</property>
-                        <property name="visible">True</property>
-                        <property name="can_focus">False</property>
-                        <property name="halign">start</property>
-                        <property name="valign">center</property>
-                        <property name="margin_left">5</property>
-                        <property name="label" translatable="yes">(optional)</property>
-                        <property name="track_visited_links">False</property>
-                        <property name="xalign">0.5</property>
-                        <property name="yalign">0.5</property>
+                        <property name="use_underline">True</property>
+                        <property name="draw_indicator">True</property>
                       </object>
                       <packing>
                         <property name="expand">True</property>
                         <property name="fill">True</property>
-                        <property name="pack_type">end</property>
+                        <property name="position">0</property>
+                      </packing>
+                    </child>
+                    <child>
+                      <object class="GtkCheckButton" id="check_restart">
+                        <property name="label" translatable="yes">Auto-restart on failure</property>
+                        <property name="width_request">176</property>
+                        <property name="visible">True</property>
+                        <property name="can_focus">True</property>
+                        <property name="receives_default">False</property>
+                        <property name="halign">center</property>
+                        <property name="valign">center</property>
+                        <property name="use_underline">True</property>
+                        <property name="draw_indicator">True</property>
+                      </object>
+                      <packing>
+                        <property name="expand">True</property>
+                        <property name="fill">True</property>
                         <property name="position">1</property>
                       </packing>
                     </child>
                     <child>
-                      <object class="GtkLabel">
+                      <object class="GtkCheckButton" id="check_notify">
+                        <property name="label" translatable="yes">Notify when restarted</property>
+                        <property name="width_request">176</property>
                         <property name="visible">True</property>
-                        <property name="can_focus">False</property>
-                        <property name="track_visited_links">False</property>
+                        <property name="can_focus">True</property>
+                        <property name="receives_default">False</property>
+                        <property name="halign">center</property>
+                        <property name="valign">center</property>
+                        <property name="use_underline">True</property>
+                        <property name="draw_indicator">True</property>
                       </object>
                       <packing>
                         <property name="expand">True</property>
                         <property name="fill">True</property>
                         <property name="position">2</property>
+                      </packing>
+                    </child>
+                    <child>
+                      <object class="GtkBox">
+                        <property name="width_request">176</property>
+                        <property name="visible">True</property>
+                        <property name="can_focus">False</property>
+                        <property name="halign">start</property>
+                        <child>
+                          <object class="GtkLabel" id="label30">
+                            <property name="height_request">24</property>
+                            <property name="visible">True</property>
+                            <property name="can_focus">False</property>
+                            <property name="halign">start</property>
+                            <property name="valign">center</property>
+                            <property name="margin_right">5</property>
+                            <property name="label" translatable="yes"> Max restarts:</property>
+                            <property name="justify">right</property>
+                            <property name="wrap">True</property>
+                            <property name="single_line_mode">True</property>
+                            <property name="track_visited_links">False</property>
+                            <property name="xalign">0.5</property>
+                            <property name="yalign">0.5</property>
+                          </object>
+                          <packing>
+                            <property name="expand">True</property>
+                            <property name="fill">True</property>
+                            <property name="position">0</property>
+                          </packing>
+                        </child>
+                        <child>
+                          <object class="GtkEntry" id="entry_maxrestarts">
+                            <property name="visible">True</property>
+                            <property name="can_focus">True</property>
+                            <property name="valign">center</property>
+                            <property name="margin_left">2</property>
+                            <property name="invisible_char">●</property>
+                            <property name="width_chars">3</property>
+                            <property name="max_width_chars">3</property>
+                            <property name="input_purpose">number</property>
+                          </object>
+                          <packing>
+                            <property name="expand">True</property>
+                            <property name="fill">True</property>
+                            <property name="position">1</property>
+                          </packing>
+                        </child>
+                      </object>
+                      <packing>
+                        <property name="expand">False</property>
+                        <property name="fill">True</property>
+                        <property name="position">3</property>
                       </packing>
                     </child>
                   </object>
@@ -883,103 +904,6 @@ Gtk3 port: Dallen Wilson &lt;dwjwilson@lavabit.com&gt;</property>
                     <property name="position">2</property>
                   </packing>
                 </child>
-								<child>
-									<object class="GtkBox">
-										<property name="visible">True</property>
-										<property name="can_focus">False</property>
-										<property name="orientation">vertical</property>           
-										<child>
-											<object class="GtkCheckButton" id="check_restart">
-												<property name="label" translatable="yes">Auto restart</property>
-												<property name="width_request">200</property>
-												<property name="visible">True</property>
-												<property name="can_focus">True</property>
-												<property name="receives_default">False</property>
-												<property name="halign">center</property>
-												<property name="valign">center</property>
-												<property name="use_underline">True</property>
-												<property name="draw_indicator">True</property>
-											</object>
-											<packing>
-												<property name="expand">True</property>
-												<property name="fill">True</property>
-											<property name="position">0</property>
-                          </packing>
-                        </child>
-												<child>
-                          <object class="GtkCheckButton" id="check_notify">
-                            <property name="label" translatable="yes">Notify restart</property>
-                            <property name="width_request">200</property>
-                            <property name="visible">True</property>
-                            <property name="can_focus">True</property>
-                            <property name="receives_default">False</property>
-                            <property name="halign">center</property>
-                            <property name="valign">center</property>
-                            <property name="use_underline">True</property>
-                            <property name="draw_indicator">True</property>
-                          </object>
-                          <packing>
-                            <property name="expand">True</property>
-                            <property name="fill">True</property>
-                            <property name="position">1</property>
-                          </packing>
-                        </child>
-												<child>
-													<object class="GtkBox">
-														<property name="visible">True</property>
-														<property name="can_focus">False</property>
-															<child>
-																<object class="GtkLabel" id="label30">
-																	<property name="height_request">24</property>
-																	<property name="visible">True</property>
-																	<property name="can_focus">False</property>
-																	<property name="halign">end</property>
-																	<property name="valign">center</property>
-																	<property name="margin_right">5</property>
-																	<property name="label" translatable="yes"> Max restarts:</property>
-																	<property name="justify">right</property>
-																	<property name="wrap">True</property>
-																	<property name="single_line_mode">True</property>
-																	<property name="track_visited_links">False</property>
-																	<property name="xalign">0.5</property>
-																	<property name="yalign">0.5</property>
-																</object>
-																<packing>
-																	<property name="expand">True</property>
-																	<property name="fill">True</property>
-																	<property name="position">0</property>
-																</packing>
-															</child>
-															<child>
-																<object class="GtkEntry" id="entry_maxrestarts">
-																	<property name="width_chars">3</property>
-																	<property name="max_width_chars">3</property>
-																	<property name="visible">True</property>
-																	<property name="can_focus">True</property>
-																	<property name="valign">center</property>
-																	<property name="invisible_char">●</property>
-																	<property name="input_purpose">number</property>
-																</object>
-																<packing>
-																	<property name="expand">False</property>
-																	<property name="fill">False</property>
-																	<property name="position">1</property>
-																</packing>
-															</child>
-														</object>
-													<packing>
-														<property name="expand">False</property>
-														<property name="fill">True</property>
-														<property name="position">3</property>
-													</packing>
-												</child>
-											</object>
-											<packing>
-												<property name="expand">False</property>
-												<property name="fill">False</property>
-                    		<property name="position">3</property>
-											</packing>
-										</child>
               </object>
               <packing>
                 <property name="expand">False</property>
@@ -997,6 +921,10 @@ Gtk3 port: Dallen Wilson &lt;dwjwilson@lavabit.com&gt;</property>
                     <property name="height_request">256</property>
                     <property name="visible">True</property>
                     <property name="can_focus">False</property>
+                    <property name="margin_left">2</property>
+                    <property name="margin_right">2</property>
+                    <property name="margin_top">2</property>
+                    <property name="margin_bottom">2</property>
                     <property name="shadow_type">none</property>
                     <child>
                       <object class="GtkScrolledWindow" id="scrolledwindow1">
@@ -1028,6 +956,7 @@ Gtk3 port: Dallen Wilson &lt;dwjwilson@lavabit.com&gt;</property>
                     <property name="visible">True</property>
                     <property name="can_focus">False</property>
                     <property name="margin_left">5</property>
+                    <property name="margin_right">5</property>
                     <property name="margin_top">5</property>
                     <property name="orientation">vertical</property>
                     <child>
@@ -1038,6 +967,7 @@ Gtk3 port: Dallen Wilson &lt;dwjwilson@lavabit.com&gt;</property>
                         <property name="visible">True</property>
                         <property name="can_focus">True</property>
                         <property name="receives_default">False</property>
+                        <property name="margin_bottom">2</property>
                         <property name="use_stock">True</property>
                         <signal name="clicked" handler="btn_redir_add_clicked_cb" swapped="no"/>
                       </object>
@@ -1055,6 +985,7 @@ Gtk3 port: Dallen Wilson &lt;dwjwilson@lavabit.com&gt;</property>
                         <property name="visible">True</property>
                         <property name="can_focus">True</property>
                         <property name="receives_default">False</property>
+                        <property name="margin_bottom">2</property>
                         <property name="use_stock">True</property>
                         <signal name="clicked" handler="btn_redir_edit_clicked_cb" swapped="no"/>
                       </object>
@@ -1072,6 +1003,7 @@ Gtk3 port: Dallen Wilson &lt;dwjwilson@lavabit.com&gt;</property>
                         <property name="visible">True</property>
                         <property name="can_focus">True</property>
                         <property name="receives_default">False</property>
+                        <property name="margin_bottom">2</property>
                         <property name="use_stock">True</property>
                         <signal name="clicked" handler="btn_redir_delete_clicked_cb" swapped="no"/>
                       </object>
@@ -1082,21 +1014,18 @@ Gtk3 port: Dallen Wilson &lt;dwjwilson@lavabit.com&gt;</property>
                       </packing>
                     </child>
                     <child>
-                      <object class="GtkLabel" id="lbl_pubkey_warning">
+                      <object class="GtkLabel" id="lbl_pubkey">
                         <property name="visible">True</property>
                         <property name="can_focus">False</property>
-                        <property name="halign">start</property>
-                        <property name="valign">start</property>
-                        <property name="label" translatable="yes">Note: For pubkey authentication, server key must be in ~/.ssh/authorized_keys. Connect from a terminal using ssh to accomplish this.</property>
+                        <property name="label" translatable="yes">Privkey is optional; Only used for pubkey authentication.
+
+Note: For pubkey authentication, server key must be in ~/.ssh/authorized_keys. Connect from a terminal using ssh to accomplish this.</property>
                         <property name="wrap">True</property>
-                        <property name="width_chars">0</property>
-                        <property name="max_width_chars">17</property>
-                        <property name="track_visited_links">False</property>
+                        <property name="max_width_chars">32</property>
                       </object>
                       <packing>
                         <property name="expand">False</property>
                         <property name="fill">False</property>
-                        <property name="pack_type">end</property>
                         <property name="position">3</property>
                       </packing>
                     </child>
@@ -1112,6 +1041,22 @@ Gtk3 port: Dallen Wilson &lt;dwjwilson@lavabit.com&gt;</property>
                 <property name="expand">False</property>
                 <property name="fill">False</property>
                 <property name="position">1</property>
+              </packing>
+            </child>
+            <child>
+              <object class="GtkLabel" id="wtunlabel">
+                <property name="visible">True</property>
+                <property name="can_focus">False</property>
+                <property name="halign">end</property>
+                <property name="valign">end</property>
+                <property name="wrap">True</property>
+                <property name="track_visited_links">False</property>
+              </object>
+              <packing>
+                <property name="expand">False</property>
+                <property name="fill">False</property>
+                <property name="pack_type">end</property>
+                <property name="position">2</property>
               </packing>
             </child>
           </object>

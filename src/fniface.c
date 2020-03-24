@@ -384,17 +384,25 @@ void gstm_interface_properties(int tid) {
 			gstm_interface_redirlist_add (gSTMtunnels[tid]->portredirs[i], i, GTK_TREE_VIEW (wlist));
 		
 		//disable OK if tunnel is active
+		wtunlabel = GTK_WIDGET (gtk_builder_get_object (builder, "wtunlabel"));
+		wpokbutton = GTK_WIDGET (gtk_builder_get_object (builder, "propdg_btn_ok"));
 		if (gSTMtunnels[tid]->active)
 		{
-			wtunlabel = GTK_WIDGET (gtk_builder_get_object (builder, "wtunlabel"));
-			markup = g_markup_printf_escaped ("<b>Tunnel configuration | <span foreground=\"#FF0000\">Tunnel is currently running</span></b>");
+			markup = g_markup_printf_escaped ("<b>Cannot edit properties | <span foreground=\"#FF0000\">Tunnel is currently running</span></b>");
 			gtk_label_set_markup (GTK_LABEL (wtunlabel), markup);
 			g_free (markup);
 
-			wpokbutton = GTK_WIDGET (gtk_builder_get_object (builder, "pokbutton"));
 			gtk_widget_set_sensitive (wpokbutton, FALSE);
 		}
-		
+		else
+		{
+			markup = g_markup_printf_escaped (" ");
+			gtk_label_set_markup (GTK_LABEL (wtunlabel), markup);
+			g_free (markup);
+
+			gtk_widget_set_sensitive (wpokbutton, TRUE);
+		}
+
 		//show the dialog
 		if (gtk_dialog_run (GTK_DIALOG (propertiesdialog)) == GTK_RESPONSE_OK)
 		{
