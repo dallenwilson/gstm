@@ -1,0 +1,67 @@
+Name:    gstm
+Version: @PACKAGE_VERSION@
+Release: 1%{?dist}
+Summary: A front-end to ssh tunneling
+Group:   Applications/System
+License: GPLv2
+URL:     https://github.com/dallenwilson/gstm/releases
+Source:  %{name}-%{version}.tar.gz
+
+BuildRoot: %{_tmppath}/%{name}-%{version}-%{release}-root
+
+Requires:      openssh-clients
+Requires:      util-linux
+
+BuildRequires: gtk3-devel
+BuildRequires: intltool >= 0.35.0
+BuildRequires: libxml2-devel
+BuildRequires: pkgconfig
+
+%description
+gSTM, short for Gnome SSH Tunnel Manager, is a graphical front-end for 
+managing ssh tunneled port redirects.
+
+%package -n gaskpass
+Group:    Applications/System
+Summary:  A Gnome X11 passphrase dialog for OpenSSH
+Requires: openssh-clients
+
+%description -n gaskpass
+A Gnome X11 passphrase dialog for OpenSSH used by gSTM.
+
+%prep
+%setup -q
+
+%build
+# avoid compile error wiht older gcc (RHEL7/CentOS7):
+# fniface.c:233:2: error: 'for' loop initial declarations are only allowed in C99 mode
+CFLAGS=-std=gnu99
+
+%configure
+make
+
+%install
+make install DESTDIR=$RPM_BUILD_ROOT
+# docs are installed in files section
+rm -rf $RPM_BUILD_ROOT/%{_docdir}/%{name}
+
+%clean
+rm -rf $RPM_BUILD_ROOT
+
+%files 
+%defattr(-,root,root,-)
+%doc AUTHORS ChangeLog COPYING NEWS README
+%{_bindir}/%{name}
+%{_datadir}/applications/%{name}.desktop
+%{_datadir}/%{name}/pixmaps/*
+%{_datadir}/pixmaps/gSTM.png
+%{_datadir}/%{name}/ui/%{name}.ui
+
+%files -n gaskpass
+%{_bindir}/gaskpass
+%{_datadir}/%{name}/ui/gaskpass.ui
+
+%changelog
+* Mon Mar 23 2020  jaroslawp / github - 1.3.4-1
+- Adapted specfile from an old Mageia Linux one
+
