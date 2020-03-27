@@ -27,5 +27,7 @@ If you're building from a release tarball, you'll need pkg-config, gtk3, libxml2
 
 Building direct from the git repo, you'll need the above as well as autoconf (>=2.69) and automake. There is a bash script (autogen.sh) to handle the autoconf/automake work and generate the configure script and various makefiles. Run it, then the usual ./configure && make.
 
+Building an rpm package from a release tarball or git repo:  after above steps run make dist && rpmbuild -ta gstm-VERSION.tar.gz.
+
 ##### Bugs and Issues
 Bugs can be reported using GitHub's Issues tab. Before opening a new issue, try reproducing the problem after building the lastest source from the master branch. Also, take a look through the closed issues to see if it's been reported before. This is doubly important if you're using packages from the ppa; Those tend to lag a bit behind.

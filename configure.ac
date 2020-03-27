@@ -33,6 +33,7 @@ AC_CONFIG_FILES([
   pixmaps/Makefile
   po/Makefile.in
   gAskpass/Makefile
+  gstm.spec
 ])
 
 AC_OUTPUT
