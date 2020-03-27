@@ -1,0 +1,16 @@
+Source: gstm
+Section: gnome
+Priority: optional
+Maintainer: Dallen Wilson <dwjwilson@lavabit.com>
+XSBC-Original-Maintainer: Ryan Niebur <ryan@debian.org>
+Build-Depends: debhelper (>= 10), gettext, pkg-config, libxml2-dev, libgtk-3-dev, intltool
+Homepage: https://github.com/dallenwilson/gstm
+Standards-Version: 4.1.4
+
+Package: gstm
+Architecture: any
+Depends: ssh-client, ${shlibs:Depends}, ${misc:Depends}
+Description: SSH tunnel manager for GNOME
+ GNOME Secure shell Tunnel Manager is a front-end to manage secure shell
+ tunneled port redirects. A port redirect is when you use secure shell to
+ tunnel from your machine through another machine.

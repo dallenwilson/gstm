@@ -1,0 +1,149 @@
+gstm (1.3.4-1warped1) bionic; urgency=low
+  * gSTM v1.3.4: Window resize bugfixes.
+
+ -- Dallen Wilson <dwjwilson@lavabit.com>  Tue, 05 Nov 2019 00:53:14 -0700
+
+gstm (1.3.3-1warped1) bionic; urgency=low
+  * gSTM v1.3.3: gAskpass bugfixes.
+
+ -- Dallen Wilson <dwjwilson@lavabit.com>  Sat, 27 Apr 2019 21:34:27 -0700
+
+gstm (1.3.2-1warped1) bionic; urgency=low
+  * gSTM v1.3.2: Bugfix release.
+
+ -- Dallen Wilson <dwjwilson@lavabit.com>  Tue, 02 Apr 2019 10:41:58 -0700
+
+gstm (1.3.1-1warped1) bionic; urgency=low
+  * gSTM v1.3: Updated to gtk3.
+
+ -- Dallen Wilson <dwjwilson@lavabit.com>  Wed, 06 Mar 2019 18:15:07 -0700
+
+gstm (1.2-8.1warped1) trusty; urgency=low
+
+  * patch to fix white background of tray status icon (LP: 729499)
+    - debian/patches/eggtrayicon-to-gtkstatusicon: Remove eggtrayicon lib
+      and replace with GtkStatusIcon.
+
+ -- Dallen Wilson <dallen.wilson@gmail.com>  Sat, 13 Jun 2015 09:21:39 -0700
+
+gstm (1.2-8.1ubuntu1) utopic; urgency=medium
+
+  * Merge from Debian unstable. Remaining changes:
+    - debian/patches/always-show-icons: Always show the status icons.
+
+ -- Logan Rosen <logan@ubuntu.com>  Mon, 28 Apr 2014 21:29:41 -0400
+
+gstm (1.2-8.1) unstable; urgency=medium
+
+  * Non-maintainer upload.
+
+  [ Daniel T Chen ]
+  * Added missing X11 lib to link, fixing FTBFS. (Closes: #713658)
+
+ -- Sebastian Ramacher <sramacher@debian.org>  Sat, 26 Apr 2014 15:14:15 +0200
+
+gstm (1.2-8ubuntu2) raring; urgency=low
+
+  * Added missing X11 lib to link, fixing FTBFS.
+
+ -- Daniel T Chen <crimsun@ubuntu.com>  Tue, 02 Apr 2013 13:56:55 -0400
+
+gstm (1.2-8) unstable; urgency=low
+
+  * update format to 3.0 (quilt)
+    - remove quilt build dependency
+  * patch by Mahyuddin Susanto to fix for --no-add-needed linkers
+    (Closes: #554747)
+  * update email address in Maintainer field
+  * convert copyright file to DEP5 format
+    - update paths in copyright file to include version rather than
+      pointing to symlinks
+  * moved git repository to collab-maint and rewrote history to move
+    files under debian directory and include upstream source
+  * convert all patches to DEP3
+  * fix spelling of writable in binary
+  * simplify debian/rules for debhelper 7
+  * remove deprecated Encoding field from gstm.desktop
+  * update Standards-Version to 3.9.2
+
+ -- Ryan Niebur <ryan@debian.org>  Mon, 12 Sep 2011 23:11:08 -0700
+
+gstm (1.2-7ubuntu2) oneiric; urgency=low
+
+  * debian/patches/ftbfs-as-needed.patch: Fix FTBFS with ld no-add-needed 
+    by adding xml2 library linker to src/Makefile.{am|in}. (LP: #749207)
+
+ -- Mahyuddin Susanto <udienz@ubuntu.com>  Thu, 30 Jun 2011 12:31:17 +0700
+
+gstm (1.2-7ubuntu1) lucid; urgency=low
+
+  * Always show the status icons (LP: #541467)
+
+ -- Mike Rushton <leftyfb@ubuntu.com>  Sun, 21 Mar 2010 22:12:54 -0400
+
+gstm (1.2-7) unstable; urgency=low
+
+  * Remove gaskpass. gaskpass is just another ssh askpass program, and
+    doesn't do anything special. It does not grab focus, which means
+    that key loggers can listen in on what you type, aiui. Seeing as how
+    it is just reinventing the wheel, I see no reason to keep it around.
+    (Fixes LP: #276530, #276517, #276525, #276529, #276534)
+  * Do not explicitly set the ssh timeout, as that causes problems on
+    slow networks. (Fixes LP: #293240)
+
+ -- Ryan Niebur <ryanryan52@gmail.com>  Sun, 23 Nov 2008 01:21:25 -0800
+
+gstm (1.2-6) unstable; urgency=low
+
+  * fix implicit pointer conversions (Closes: #504657)
+    - use quilt
+  * use dh_clean to remove the generated man pages
+
+ -- Ryan Niebur <ryanryan52@gmail.com>  Thu, 06 Nov 2008 21:18:44 -0800
+
+gstm (1.2-5) unstable; urgency=low
+
+  * New maintainer (Closes: #501940)
+    - Added Vcs-{Git,Browser} fields
+  * Changed menu section
+  * Fix capitalization of GNOME in descriptions
+  * Don't ignore make errors
+  * Upgraded to debian policy version 3.8.0
+    - parallel support in DEB_BUILD_OPTIONS
+    - Use homepage field
+  * use help2man to make man pages
+  * fix short description
+
+ -- Ryan Niebur <ryanryan52@gmail.com>  Tue, 04 Nov 2008 23:16:49 -0800
+
+gstm (1.2-4) unstable; urgency=low
+
+  * debian/control: changed openssh-server to ssh-server
+    and openssh-client to ssh-client (Closes: #391249).
+
+ -- Thierry Randrianiriana <randrianiriana@gmail.com>  Thu, 05 Oct 2006 21:26:38 +0300
+
+gstm (1.2-3) unstable; urgency=low
+
+  * Added debian/watch (Thanks to Bart Martens).
+  * debian/control:
+    - Removed build-depends on help2man.
+    - Added openssh-server to suggests.
+  * debian/rules:
+    - turn off verbose mode
+    - Removed help2man (Closes: #386935).
+    - clean
+
+ -- Thierry Randrianiriana <randrianiriana@gmail.com>  Tue, 12 Sep 2006 15:29:43 +0300
+
+gstm (1.2-2) unstable; urgency=low
+
+  * debian/copyright: Added copyright LGPL of eggtrayicon.
+
+ -- Thierry Randrianiriana <randrianiriana@gmail.com>  Tue, 05 Sep 2006 21:32:30 +0300
+
+gstm (1.2-1) unstable; urgency=low
+
+  * Initial Release (Closes: #373590).
+
+ -- Thierry Randrianiriana <randrianiriana@gmail.com>  Wed, 30 Aug 2006 00:15:21 +0300
