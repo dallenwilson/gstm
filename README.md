@@ -20,6 +20,8 @@ Note: The first connection to a new, previously-unseen ssh server that is config
 
 - ArchLinux users will find gstm in the ArchLinux User Repository: https://aur.archlinux.org/packages/gstm/
 
+- No rpm package is provided at this time, however users of RPM-based distributions (Red Hat, Fedora, CentOS, etc) can manually build an rpm package using the supplied spec file, see below for details.
+
 - For everyone else, release tarballs are available from Github.
 
 ##### Building from Source
@@ -27,7 +29,11 @@ If you're building from a release tarball, you'll need pkg-config, gtk3, libxml2
 
 Building direct from the git repo, you'll need the above as well as autoconf (>=2.69) and automake. There is a bash script (autogen.sh) to handle the autoconf/automake work and generate the configure script and various makefiles. Run it, then the usual ./configure && make.
 
+Launching gstm from a desktop environment's menu system using the included gstm.desktop file will also require the util-linux package to be installed, as the setsid program is used to ensure gstm launches without any form of tty attached.
+
 Building an rpm package from a release tarball or git repo:  after above steps run make dist && rpmbuild -ta gstm-VERSION.tar.gz.
+
+Building a deb package from a release tarball or git repo: after above steps run make dist && debuild -S.
 
 ##### Bugs and Issues
 Bugs can be reported using GitHub's Issues tab. Before opening a new issue, try reproducing the problem after building the lastest source from the master branch. Also, take a look through the closed issues to see if it's been reported before. This is doubly important if you're using packages from the ppa; Those tend to lag a bit behind.

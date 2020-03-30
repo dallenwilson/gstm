@@ -1,3 +1,14 @@
+gstm (1.3.5-1warped1) bionic; urgency=low
+  * gSTM v1.3.5:
+    - gstm.desktop launches using setsid from util-linux, forces ssh to use
+      SSH_ASKPASS enviornment variable.
+    - Tunnel properties dialog now refuses to accept changes if tunnel is
+      active.
+    - Tunnels can be set to auto-reconnect on failure, up to a configurable
+      number of attempts.
+
+ -- Dallen Wilson <dwjwilson@lavabit.com>  Mon, 30 Mar 2020 09:58:25 -0700
+
 gstm (1.3.4-1warped1) bionic; urgency=low
   * gSTM v1.3.4: Window resize bugfixes.
 
