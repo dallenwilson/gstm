@@ -31,9 +31,7 @@ Building direct from the git repo, you'll need the above as well as autoconf (>=
 
 Launching gstm from a desktop environment's menu system using the included gstm.desktop file will also require the util-linux package to be installed, as the setsid program is used to ensure gstm launches without any form of tty attached.
 
-Building an rpm package from a release tarball or git repo:  after above steps run make dist && rpmbuild -ta gstm-VERSION.tar.gz.
-
-Building a deb package from a release tarball or git repo: after above steps run make dist && debuild -S.
+Building an rpm package from a release tarball or git repo:  after above steps run `make dist && rpmbuild -ta gstm-VERSION.tar.gz`.
 
 ##### Bugs and Issues
 Bugs can be reported using GitHub's Issues tab. Before opening a new issue, try reproducing the problem after building the lastest source from the master branch. Also, take a look through the closed issues to see if it's been reported before. This is doubly important if you're using packages from the ppa; Those tend to lag a bit behind.
