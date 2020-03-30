@@ -8,3 +8,6 @@ John Spray - <jcs116@york.ac.uk>
 
 Dallen Wilson - <dwjwilson@lavabit.com>
 Gtk3 port, maintained on github
+
+Jarek Polok - <null>
+Code for auto-reconnect on tunnel failure.
