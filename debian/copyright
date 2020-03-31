@@ -3,7 +3,9 @@ Upstream-Name: Gnome SSH Tunnel Manager
 
 Files: *
 Copyright: Copyright (C) 2005-2019 Mark Smulders
-Copyright: Copyright (C) 2019 Dallen Wilson
+Copyright: Copyright (C) 2006 John Spray
+Copyright: Copyright (C) 2019-2020 Dallen Wilson
+Copyright: Copyright (C) 2020 Jarek Polok
 License: GPL-2+
 
 Files: debian/*

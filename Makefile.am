@@ -21,6 +21,7 @@ EXTRA_DIST = \
 	README.md \
 	autogen.sh \
 	gstm.anjuta \
+	debian/ \
 	$(INTLTOOL_FILES)
 
 DISTCLEANFILES = intltool-extract \
