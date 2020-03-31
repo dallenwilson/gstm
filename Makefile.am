@@ -17,7 +17,10 @@ INTLTOOL_FILES = intltool-extract.in \
 
 EXTRA_DIST = \
 	gstm.spec \
-	gstm.desktop
+	gstm.desktop \
+	README.md \
+	autogen.sh \
+	gstm.anjuta \
 	$(INTLTOOL_FILES)
 
 DISTCLEANFILES = intltool-extract \
