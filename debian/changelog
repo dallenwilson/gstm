@@ -1,3 +1,9 @@
+gstm (1.3.6-1warped1) bionic; urgency=low
+  * gSTM v1.3.6:
+    - Corrected install bug in gAskpass's Makefile.
+
+ -- Dallen Wilson <dwjwilson@lavabit.com>  Sat, 04 Apr 2020 11:08:04 -0700
+
 gstm (1.3.5.1-1warped1) bionic; urgency=low
   * gSTM v1.3.5.1:
     - Functionally equal to v1.3.5; Version bumped due to packaging issues

@@ -8,7 +8,7 @@ AM_CFLAGS = \
 	-Wall -g -Og -ggdb \
 	-DPACKAGE_LOCALE_DIR=\""$(localedir)"\" \
         -DPACKAGE_SRC_DIR=\""$(abs_srcdir)"\" \
-        -DPACKAGE_DATA_DIR=\""$(datadir)"\" \
+        -DPACKAGE_DATA_DIR=\""$(pkgdatadir)"\" \
         $(GTK3_CFLAGS)
 
 bin_PROGRAMS = gaskpass

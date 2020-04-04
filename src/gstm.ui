@@ -9,7 +9,7 @@
     <property name="icon">../pixmaps/gSTM.png</property>
     <property name="type_hint">dialog</property>
     <property name="program_name">gSTM</property>
-    <property name="version">v1.3.5.1</property>
+    <property name="version">v1.3.6</property>
     <property name="copyright" translatable="yes">copyright (c) Mark Smulders 2005-2020
 copyright (c) John Spray 2006-2020
 copyright (c) Dallen Wilson 2019-2020
