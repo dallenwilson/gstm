@@ -5,7 +5,7 @@ ui_DATA = gaskpass.ui
 
 
 AM_CFLAGS = \
-	-Wall -g -Og -ggdb \
+	-Wall -g -Og -ggdb -fno-common \
 	-DPACKAGE_LOCALE_DIR=\""$(localedir)"\" \
         -DPACKAGE_SRC_DIR=\""$(abs_srcdir)"\" \
         -DPACKAGE_DATA_DIR=\""$(pkgdatadir)"\" \

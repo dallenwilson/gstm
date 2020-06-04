@@ -28,6 +28,13 @@
 #include "fnssht.h"
 #include "support.h"
 
+struct sshtunnel **gSTMtunnels;
+struct portredir *portredirPtr;
+struct sshtunnel stunnel;
+struct sshtunnel *sshtunnelPtr;
+
+int tunnelCount = 0;
+int activeCount = 0;
 gboolean noerrors = FALSE;
 
 void gstm_free1tunnel(struct sshtunnel *tun) {

@@ -22,10 +22,10 @@
 #include "conffile.h"
 #include "gstm.h"
 
-Gstm *app;
-char *gstmdir;
-char *gstmpixmaps;
-char *gstmui;
+extern Gstm *app;
+extern char *gstmdir;
+extern char *gstmpixmaps;
+extern char *gstmui;
 
 void signalexit					(int sig_num);
 void init_paths					();

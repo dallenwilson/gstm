@@ -21,7 +21,7 @@
 
 #include <gtk/gtk.h>
 
-GtkStatusIcon *ci;
+extern GtkStatusIcon *ci;
 
 void gstm_docklet_create ();
 void gstm_toggle_mainwindow ();

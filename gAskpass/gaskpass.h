@@ -36,7 +36,7 @@ G_BEGIN_DECLS
 typedef struct _gAskpassClass gAskpassClass;
 typedef struct _gAskpass gAskpass;
 
-GtkBuilder *builder;
+extern GtkBuilder *builder;
 
 struct _gAskpass
 {
@@ -48,7 +48,7 @@ struct _gAskpassClass
 	GtkApplicationClass parent_class;
 };
 
-GtkWidget *dialog;
+extern GtkWidget *dialog;
 
 G_END_DECLS
 
