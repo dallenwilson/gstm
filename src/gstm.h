@@ -50,20 +50,20 @@ struct _Gstm
 
 };
 
-int maindiag_width;
-int maindiag_height;
+extern int maindiag_width;
+extern int maindiag_height;
 
-GtkBuilder *builder;
-GtkWidget *maindialog;
-GtkWidget *aboutdialog;
-GtkWidget *newdialog;
-GtkWidget *tundialog;
-GtkWidget *propertiesdialog;
+extern GtkBuilder *builder;
+extern GtkWidget *maindialog;
+extern GtkWidget *aboutdialog;
+extern GtkWidget *newdialog;
+extern GtkWidget *tundialog;
+extern GtkWidget *propertiesdialog;
 
-GtkWidget *statusbar;
-GtkWidget *tunlist;
+extern GtkWidget *statusbar;
+extern GtkWidget *tunlist;
 
-GtkListStore *tunnellist_store;
+extern GtkListStore *tunnellist_store;
 
 GType gstm_get_type (void) G_GNUC_CONST;
 Gstm *gstm_new (void);

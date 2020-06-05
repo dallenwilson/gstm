@@ -21,9 +21,9 @@
 
 #include "gaskpass.h"
 
-gAskpass *app;
-char *gstmpixmaps;
-char *gstmui;
+extern gAskpass *app;
+extern char *gstmpixmaps;
+extern char *gstmui;
 
 void init_paths ();
 GdkPixbuf* create_pixbuf (const gchar *filename);

@@ -36,7 +36,7 @@ struct portredir {
 	xmlChar *port1;
 	xmlChar *host;
 	xmlChar *port2;
-} *portredirPtr;
+};
 
 //tunnelobject
 struct sshtunnel {
@@ -54,12 +54,16 @@ struct sshtunnel {
 	gboolean active;
 	int sshpid;
 	char *fn;
-} stunnel, *sshtunnelPtr;
+};
 
-struct sshtunnel **gSTMtunnels;
-int tunnelCount;
-int activeCount;
-gboolean noerrors;
+extern struct sshtunnel **gSTMtunnels;
+extern struct portredir *portredirPtr;
+extern struct sshtunnel stunnel;
+extern struct sshtunnel *sshtunnelPtr;
+
+extern int tunnelCount;
+extern int activeCount;
+extern gboolean noerrors;
 
 int gstm_readfiles(char *dir, struct sshtunnel ***tptr);
 int gstm_file2tunnel(char *file, struct sshtunnel *tunnel);
