@@ -14,22 +14,22 @@ Ensure your SSH connection is in good working order prior to setting up a new tu
 Note: The first connection to a new, previously-unseen ssh server that is configured for pubkey authentication will cause ssh to display the server key and prompt the user to accept it. This is not detectable by gSTM, and the tunnel will appear to be connected but hang indefinitely. To avoid this, check your ssh connection as described above.
 
 ##### Packaging & Releases
-- For Gentoo users, an ebuild is available in my layman overlay: https://github.com/dallenwilson/trolltoo
+- For Gentoo users, an ebuild is available in my [layman overlay](https://github.com/dallenwilson/trolltoo).
 
-- Ubuntu users (and Mint, Debian and other related distros) can find deb packages in my launchpad ppa: https://launchpad.net/~dallen.wilson/+archive/ubuntu/ppa
+- Ubuntu users (or Mint, Debian, Kali and other Debian-derived distros) can find deb packages in [my launchpad ppa](https://launchpad.net/~dallen.wilson/+archive/ubuntu/ppa). If your series isn't in [the list](https://launchpad.net/~dallen.wilson/+archive/ubuntu/ppa/+packages), open an issue to let me know; I don't keep up to date with Ubuntu releases.
 
-- ArchLinux users will find gstm in the ArchLinux User Repository: https://aur.archlinux.org/packages/gstm/
+- ArchLinux users will find gstm in the [ArchLinux User Repository](https://aur.archlinux.org/packages/gstm/)
 
 - No rpm package is provided at this time, however users of RPM-based distributions (Red Hat, Fedora, CentOS, etc) can manually build an rpm package using the supplied spec file, see below for details.
 
 - For everyone else, release tarballs are available from Github.
 
 ##### Building from Source
-If you're building from a release tarball, you'll need pkg-config, gtk3, libxml2, and intltool along with their associated dev packages. The configure script and makefiles are included in the tarball, so just run `./configure && make`.
+If you're building from a release tarball, you'll need automake, pkg-config, gtk3, libxml2, and intltool along with their associated dev packages. The configure script and makefiles are included in the tarball, so just run `./configure && make`.
 
-Building direct from the git repo, you'll need the above packages as well as autoconf (>=2.69) and automake. There is a bash script (autogen.sh) to handle the autoconf/automake work and generate the configure script and various makefiles. Run it, then the usual stuff: `./autogen.sh && ./configure && make`.
+Building direct from the git repo, you'll need the above packages as well as autoconf (>=2.69). There is a bash script (autogen.sh) to handle the autoconf/automake work and generate the configure script and various makefiles. Run it, then the usual stuff: `./autogen.sh && ./configure && make`.
 
-Launching gstm from a desktop environment's menu system using the included gstm.desktop file will also require the util-linux package to be installed, as the setsid program is used to ensure gstm launches without any form of tty attached. A check for util-linux is handled at the packaging level, not via autoconf/automake; When building from source, it is up to you to ensure util-linux and setsid are available.
+Launching gstm from a desktop environment's menu system using the included gstm.desktop file will also require the util-linux package to be installed, as the setsid program is used to ensure gstm launches without any form of tty attached. A check for util-linux is handled at the packaging level, not via autoconf/automake; When building from source, it is up to you to ensure setsid is available.
 
 Building an rpm package from a release tarball or git repo:  after above steps run `make dist && rpmbuild -ta gstm-VERSION.tar.gz`.
 
