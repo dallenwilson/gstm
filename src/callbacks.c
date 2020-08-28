@@ -435,6 +435,11 @@ tundg_choice_type_changed_cb (GtkComboBox *combobox, gpointer user_data)
 			
 	if (port1 && host && port2 && (cbtext != NULL))
 	{
+		if (strcmp (cbtext, "local") == 0)
+			gtk_entry_set_text (GTK_ENTRY (port1), "127.0.0.1:");
+		else
+			gtk_entry_set_text (GTK_ENTRY (port1), "");
+
 		if (strcmp (cbtext, "dynamic") == 0)
 		{
 			gtk_entry_set_text (GTK_ENTRY (host), "n/a");
