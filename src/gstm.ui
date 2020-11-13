@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<!-- Generated with glade 3.22.2 -->
+<!-- Generated with glade 3.36.0 -->
 <interface>
   <requires lib="gtk+" version="3.20"/>
   <!-- interface-local-resource-path /home/warped/Code/gstm/pixmaps -->
@@ -9,7 +9,7 @@
     <property name="icon">../pixmaps/gSTM.png</property>
     <property name="type_hint">dialog</property>
     <property name="program_name">gSTM</property>
-    <property name="version">v1.3.6</property>
+    <property name="version">v1.3.7</property>
     <property name="copyright" translatable="yes">copyright (c) Mark Smulders 2005-2020
 copyright (c) John Spray 2006-2020
 copyright (c) Dallen Wilson 2019-2020
@@ -22,9 +22,6 @@ Gtk3 port: Dallen Wilson &lt;dwjwilson@lavabit.com&gt;
 Auto-reconnect code: Jarek Polok</property>
     <property name="logo">../pixmaps/gSTM.png</property>
     <property name="license_type">gpl-2-0</property>
-    <child type="titlebar">
-      <placeholder/>
-    </child>
     <child internal-child="vbox">
       <object class="GtkBox">
         <property name="can_focus">False</property>
@@ -46,6 +43,9 @@ Auto-reconnect code: Jarek Polok</property>
         </child>
       </object>
     </child>
+    <child type="titlebar">
+      <placeholder/>
+    </child>
   </object>
   <object class="GtkImage" id="image1">
     <property name="visible">True</property>
@@ -58,9 +58,6 @@ Auto-reconnect code: Jarek Polok</property>
     <property name="title" translatable="yes">Gnome SSH Tunnel Manager</property>
     <signal name="delete-event" handler="maindialog_delete_event_cb" swapped="no"/>
     <signal name="size-allocate" handler="on_maindialog_size_allocate" swapped="no"/>
-    <child type="titlebar">
-      <placeholder/>
-    </child>
     <child>
       <object class="GtkBox">
         <property name="visible">True</property>
@@ -300,15 +297,15 @@ Auto-reconnect code: Jarek Polok</property>
         </child>
       </object>
     </child>
+    <child type="titlebar">
+      <placeholder/>
+    </child>
   </object>
   <object class="GtkDialog" id="newdialog">
     <property name="can_focus">False</property>
     <property name="title" translatable="yes">gSTM: Name the new tunnel</property>
     <property name="modal">True</property>
     <property name="type_hint">dialog</property>
-    <child type="titlebar">
-      <placeholder/>
-    </child>
     <child internal-child="vbox">
       <object class="GtkBox">
         <property name="can_focus">False</property>
@@ -435,6 +432,9 @@ Auto-reconnect code: Jarek Polok</property>
       <action-widget response="-6">newdg_btn_cancel</action-widget>
       <action-widget response="-5">newdg_btn_ok</action-widget>
     </action-widgets>
+    <child type="titlebar">
+      <placeholder/>
+    </child>
   </object>
   <object class="GtkDialog" id="propertiesdialog">
     <property name="width_request">0</property>
@@ -444,9 +444,6 @@ Auto-reconnect code: Jarek Polok</property>
     <property name="resizable">False</property>
     <property name="modal">True</property>
     <property name="type_hint">dialog</property>
-    <child type="titlebar">
-      <placeholder/>
-    </child>
     <child internal-child="vbox">
       <object class="GtkBox">
         <property name="can_focus">False</property>
@@ -524,6 +521,7 @@ Auto-reconnect code: Jarek Polok</property>
                       <object class="GtkBox">
                         <property name="visible">True</property>
                         <property name="can_focus">False</property>
+                        <property name="tooltip_text" translatable="yes">The name gSTM will use to track this tunnel configuration.</property>
                         <child>
                           <object class="GtkLabel" id="label14">
                             <property name="height_request">24</property>
@@ -574,6 +572,7 @@ Auto-reconnect code: Jarek Polok</property>
                       <object class="GtkBox">
                         <property name="visible">True</property>
                         <property name="can_focus">False</property>
+                        <property name="tooltip_markup" translatable="yes">Specifies the user to log in as on the remote machine. Passed to SSH with the host as "&lt;b&gt;$login@$host&lt;/b&gt;".</property>
                         <child>
                           <object class="GtkLabel" id="label17">
                             <property name="height_request">24</property>
@@ -637,6 +636,7 @@ Auto-reconnect code: Jarek Polok</property>
                       <object class="GtkBox">
                         <property name="visible">True</property>
                         <property name="can_focus">False</property>
+                        <property name="tooltip_markup" translatable="yes">The IP or hostname of the remote server. Passed to SSH with the login as "&lt;b&gt;$login@$host&lt;/b&gt;".</property>
                         <child>
                           <object class="GtkLabel" id="label15">
                             <property name="height_request">24</property>
@@ -685,6 +685,7 @@ Auto-reconnect code: Jarek Polok</property>
                       <object class="GtkBox">
                         <property name="visible">True</property>
                         <property name="can_focus">False</property>
+                        <property name="tooltip_markup" translatable="yes">Port to connect to on the remote host. Passed to SSH as "&lt;b&gt;-p $port&lt;/b&gt;".</property>
                         <property name="margin_top">5</property>
                         <child>
                           <object class="GtkLabel" id="label16">
@@ -738,6 +739,9 @@ Auto-reconnect code: Jarek Polok</property>
                       <object class="GtkBox">
                         <property name="visible">True</property>
                         <property name="can_focus">False</property>
+                        <property name="tooltip_markup" translatable="yes">Path to the file from which the identity (private key) for public key authentication is read. Passed to SSH as "&lt;b&gt;-i $file&lt;/b&gt;".
+
+gSTM does not launch ssh from a shell; Therefore, shell expansions such as &lt;b&gt;~/&lt;/b&gt; or &lt;b&gt;../&lt;/b&gt; and so on, &lt;b&gt;will not work&lt;/b&gt;. Use an absolute path.</property>
                         <property name="margin_top">5</property>
                         <property name="margin_bottom">5</property>
                         <child>
@@ -801,6 +805,7 @@ Auto-reconnect code: Jarek Polok</property>
                         <property name="visible">True</property>
                         <property name="can_focus">True</property>
                         <property name="receives_default">False</property>
+                        <property name="tooltip_text" translatable="yes">If this is checked, gSTM will automatically start this tunnel when the program is first started.</property>
                         <property name="halign">center</property>
                         <property name="valign">center</property>
                         <property name="use_underline">True</property>
@@ -819,6 +824,7 @@ Auto-reconnect code: Jarek Polok</property>
                         <property name="visible">True</property>
                         <property name="can_focus">True</property>
                         <property name="receives_default">False</property>
+                        <property name="tooltip_text" translatable="yes">If this is checked, gSTM will automatically re-start this tunnel if SSH notifies it of a connection failure.</property>
                         <property name="halign">center</property>
                         <property name="valign">center</property>
                         <property name="use_underline">True</property>
@@ -837,6 +843,7 @@ Auto-reconnect code: Jarek Polok</property>
                         <property name="visible">True</property>
                         <property name="can_focus">True</property>
                         <property name="receives_default">False</property>
+                        <property name="tooltip_text" translatable="yes">If this is checked, gSTM will notify you, the user, when the tunnel is automatically re-started after a failure.</property>
                         <property name="halign">center</property>
                         <property name="valign">center</property>
                         <property name="use_underline">True</property>
@@ -853,6 +860,7 @@ Auto-reconnect code: Jarek Polok</property>
                         <property name="width_request">176</property>
                         <property name="visible">True</property>
                         <property name="can_focus">False</property>
+                        <property name="tooltip_text" translatable="yes">This option specifies the maximum number of times gSTM will attempt to automatically re-start a failed tunnel, if "Auto-restart on failure" is enabled.</property>
                         <property name="halign">start</property>
                         <child>
                           <object class="GtkLabel" id="label30">
@@ -938,6 +946,7 @@ Auto-reconnect code: Jarek Polok</property>
                           <object class="GtkTreeView" id="redirlist">
                             <property name="visible">True</property>
                             <property name="can_focus">True</property>
+                            <property name="tooltip_text" translatable="yes">Displays a list of configured port forwards for this tunnel.</property>
                             <property name="headers_clickable">False</property>
                             <property name="enable_search">False</property>
                             <child internal-child="selection">
@@ -970,6 +979,7 @@ Auto-reconnect code: Jarek Polok</property>
                         <property name="visible">True</property>
                         <property name="can_focus">True</property>
                         <property name="receives_default">False</property>
+                        <property name="tooltip_text" translatable="yes">Adds a new port-forward to the tunnel.</property>
                         <property name="margin_bottom">2</property>
                         <property name="use_stock">True</property>
                         <signal name="clicked" handler="btn_redir_add_clicked_cb" swapped="no"/>
@@ -988,6 +998,7 @@ Auto-reconnect code: Jarek Polok</property>
                         <property name="visible">True</property>
                         <property name="can_focus">True</property>
                         <property name="receives_default">False</property>
+                        <property name="tooltip_text" translatable="yes">Edits the selected port forward.</property>
                         <property name="margin_bottom">2</property>
                         <property name="use_stock">True</property>
                         <signal name="clicked" handler="btn_redir_edit_clicked_cb" swapped="no"/>
@@ -1006,6 +1017,7 @@ Auto-reconnect code: Jarek Polok</property>
                         <property name="visible">True</property>
                         <property name="can_focus">True</property>
                         <property name="receives_default">False</property>
+                        <property name="tooltip_text" translatable="yes">Deletes the selected port forward.</property>
                         <property name="margin_bottom">2</property>
                         <property name="use_stock">True</property>
                         <signal name="clicked" handler="btn_redir_delete_clicked_cb" swapped="no"/>
@@ -1024,7 +1036,10 @@ Auto-reconnect code: Jarek Polok</property>
 
 Note: For pubkey authentication, server key must be in
  ~/.ssh/authorized_keys.
-Connect from a terminal using ssh to accomplish this.</property>
+Connect from a terminal using ssh to accomplish this.
+
+&lt;b&gt;Tooltips are avaliable for everything in this window. Hold the mouse over an option to see more information on what it does.&lt;/b&gt;</property>
+                        <property name="use_markup">True</property>
                         <property name="wrap">True</property>
                         <property name="max_width_chars">32</property>
                       </object>
@@ -1077,15 +1092,15 @@ Connect from a terminal using ssh to accomplish this.</property>
       <action-widget response="-6">propdg_btn_cancel</action-widget>
       <action-widget response="-5">propdg_btn_ok</action-widget>
     </action-widgets>
+    <child type="titlebar">
+      <placeholder/>
+    </child>
   </object>
   <object class="GtkDialog" id="tundialog">
     <property name="can_focus">False</property>
     <property name="title" translatable="yes">gSTM: Enter tunnel details</property>
     <property name="modal">True</property>
     <property name="type_hint">dialog</property>
-    <child type="titlebar">
-      <placeholder/>
-    </child>
     <child internal-child="vbox">
       <object class="GtkBox">
         <property name="can_focus">False</property>
@@ -1152,6 +1167,15 @@ Connect from a terminal using ssh to accomplish this.</property>
               <object class="GtkBox">
                 <property name="visible">True</property>
                 <property name="can_focus">False</property>
+                <property name="tooltip_text" translatable="yes">The type of port forwarding.
+
+[bind_address]: is optional and defaults to the loopback address if omitted.
+
+Dynamic: Passed to SSH as "-D [bind_address:]port
+Local: Passed to SSH as "-L [bind_address:]port:host:port"
+Remote: Passed to SSH as "-R [bind_address:]port:host:port"
+
+As always, consult the SSH man page for more details on these options. gSTM is only a front-end; SSH handles the real work.</property>
                 <property name="orientation">vertical</property>
                 <property name="baseline_position">bottom</property>
                 <child>
@@ -1197,6 +1221,7 @@ Connect from a terminal using ssh to accomplish this.</property>
               <object class="GtkBox">
                 <property name="visible">True</property>
                 <property name="can_focus">False</property>
+                <property name="tooltip_text" translatable="yes">The local IP address (bind_address) and local port to use for the tunnel.</property>
                 <property name="margin_left">5</property>
                 <property name="orientation">vertical</property>
                 <child>
@@ -1204,7 +1229,7 @@ Connect from a terminal using ssh to accomplish this.</property>
                     <property name="visible">True</property>
                     <property name="can_focus">False</property>
                     <property name="halign">start</property>
-                    <property name="label" translatable="yes">Port:</property>
+                    <property name="label" translatable="yes">[bind_address]:Port</property>
                   </object>
                   <packing>
                     <property name="expand">False</property>
@@ -1239,6 +1264,7 @@ Connect from a terminal using ssh to accomplish this.</property>
               <object class="GtkBox">
                 <property name="visible">True</property>
                 <property name="can_focus">False</property>
+                <property name="tooltip_text" translatable="yes">The hostname or IP address of the tunnel destination.</property>
                 <property name="margin_left">5</property>
                 <property name="orientation">vertical</property>
                 <child>
@@ -1276,6 +1302,7 @@ Connect from a terminal using ssh to accomplish this.</property>
               <object class="GtkBox">
                 <property name="visible">True</property>
                 <property name="can_focus">False</property>
+                <property name="tooltip_text" translatable="yes">The port to use for the tunnel destination.</property>
                 <property name="margin_left">5</property>
                 <property name="orientation">vertical</property>
                 <child>
@@ -1326,5 +1353,8 @@ Connect from a terminal using ssh to accomplish this.</property>
       <action-widget response="-6">tundg_btn_cancel</action-widget>
       <action-widget response="-5">tundg_btn_ok</action-widget>
     </action-widgets>
+    <child type="titlebar">
+      <placeholder/>
+    </child>
   </object>
 </interface>
