@@ -21,6 +21,7 @@
 
 #include <gtk/gtk.h>
 #include <glib/gi18n.h>
+#include <libappindicator/app-indicator.h>
 
 #include "systray.h"
 #include "conffile.h"
@@ -29,34 +30,18 @@
 #include "main.h"
 #include "support.h"
 
-GtkStatusIcon *ci = NULL;
+//GtkStatusIcon *ci = NULL;
+AppIndicator *ci = NULL;
 
 void gstm_docklet_create ()
 {
-	/* TODO: Transition away from depreceated GtkStatusIcon.
-	 * AppIndicator is one option if left/right mouseclick events can be done.
-	 * Disabling warnings for this section in the meantime.	*/
-	#pragma GCC diagnostic push
-	#pragma GCC diagnostic ignored "-Wdeprecated-declarations"
 	//	Create systray icon
-
-	GdkPixbuf *pb = create_pixbuf ("gSTM.png");
-	ci = gtk_status_icon_new_from_pixbuf (pb);
-
-	gtk_status_icon_set_title (ci, "gSTM");
-	gtk_status_icon_set_name (ci, "gSTM");
-
-	//	Connect handlers
-    g_signal_connect ((gpointer) ci, "activate", G_CALLBACK (gstm_docklet_activated_cb), NULL);
-    g_signal_connect ((gpointer) ci, "popup-menu", G_CALLBACK (gstm_docklet_popupmenu_cb), NULL);
-
 	//	AppIndicator alternative
-	//ci = app_indicator_new ("gSTM", DEFAULT_ICON, APP_INDICATOR_CATEGORY_APPLICATION_STATUS);
-	//g_assert (IS_APP_INDICATOR (ci));
-	//g_assert (G_IS_OBJECT (ci));
-	//app_indicator_set_status (ci, APP_INDICATOR_STATUS_ACTIVE);
-
-	#pragma GCC diagnostic pop
+	ci = app_indicator_new ("gSTM", "gSTM", APP_INDICATOR_CATEGORY_APPLICATION_STATUS);
+	g_assert (IS_APP_INDICATOR (ci));
+	g_assert (G_IS_OBJECT (ci));
+	gstm_docklet_menu_refresh();
+	app_indicator_set_status (ci, APP_INDICATOR_STATUS_ACTIVE);
 }
 
 void gstm_toggle_mainwindow ()
@@ -65,6 +50,8 @@ void gstm_toggle_mainwindow ()
 		gtk_widget_hide (maindialog);
 	else
 		gtk_widget_show (maindialog);
+
+	gstm_docklet_menu_refresh ();
 }
 
 void gstm_docklet_activated_cb (GtkWidget *widget, gpointer user_data)
@@ -72,65 +59,65 @@ void gstm_docklet_activated_cb (GtkWidget *widget, gpointer user_data)
 	gstm_toggle_mainwindow();
 }
 
-void gstm_docklet_popupmenu_cb (GtkWidget *widget, gpointer user_data)
+void gstm_docklet_menu_refresh ()
 {
 	GtkMenu *newmenu = gstm_docklet_menu_regen ();
-	gtk_menu_popup_at_pointer (newmenu, NULL);
+	app_indicator_set_menu (ci, GTK_MENU (newmenu));
 }
 
 void gstm_dockletmenu_tunnelitem_new (GtkMenu *menu, const gchar *t_name,
                                       intptr_t t_id, gboolean t_active)
 {
-	/* TODO: Transition away from depreceated gtk_image_menu* functions.
-	 * Disabling warnings for this section in the meantime.	*/
-	#pragma GCC diagnostic push
-	#pragma GCC diagnostic ignored "-Wdeprecated-declarations"
-	GtkWidget *item_tunnel;
-	GtkWidget *img_yesno;
 	GdkPixbuf *pb;
 
 	if (t_active)
 		pb = create_pixbuf("green.xpm");
 	else
 		pb = create_pixbuf("red.xpm");
+
+	GtkWidget *box = gtk_box_new (GTK_ORIENTATION_HORIZONTAL, 6);
+	GtkWidget *icon = gtk_image_new_from_pixbuf(pb);
+	GtkWidget *label = gtk_label_new (t_name);
+	GtkWidget *menu_item = gtk_menu_item_new ();
+
+	gtk_container_add (GTK_CONTAINER (box), icon);
+	gtk_container_add (GTK_CONTAINER (box), label);
+	gtk_container_add (GTK_CONTAINER (menu_item), box);
+
+	gtk_widget_show_all (menu_item);
+	gtk_container_add (GTK_CONTAINER (menu), menu_item);
 	
-	img_yesno = gtk_image_new_from_pixbuf(pb);
-
-	gtk_widget_show (img_yesno);
-
-	item_tunnel = gtk_image_menu_item_new_with_mnemonic (t_name);
-	gtk_widget_show (item_tunnel);
-	gtk_container_add (GTK_CONTAINER (menu), item_tunnel);
-	gtk_image_menu_item_set_image (GTK_IMAGE_MENU_ITEM (item_tunnel), img_yesno);
-
-	g_signal_connect ((gpointer) item_tunnel, "activate",
+	g_signal_connect ((gpointer) menu_item, "activate",
 	                  G_CALLBACK (on_dockletmenu_tunnel_activate),
 	                  (gpointer)t_id);
 
-	#pragma GCC diagnostic pop
+	g_object_unref(pb);
 }
 
 GtkMenu* gstm_docklet_menu_regen ()
 {
 	GtkMenu *menu = GTK_MENU (gtk_menu_new ());
+	GtkWidget *box = NULL;
+	GtkWidget *icon = NULL;
+	GtkWidget *label = NULL;
+	GtkWidget *menu_item = NULL;
 	
-	/* TODO: Transition away from depreceated gtk_image_menu* functions.
-	 * See comment block at bottom for one possible path in Gtk3.
-	 * Disabling warnings for this section in the meantime.	*/
-	#pragma GCC diagnostic push
-	#pragma GCC diagnostic ignored "-Wdeprecated-declarations"
-
 	// Show/Hide
-	GtkWidget *image_toggle = gtk_image_new_from_icon_name ("dialog-password", GTK_ICON_SIZE_MENU);
-	GtkWidget *item_toggle = NULL;
+	box = gtk_box_new (GTK_ORIENTATION_HORIZONTAL, 6);
+	icon = gtk_image_new_from_icon_name ("dialog-password", GTK_ICON_SIZE_MENU);
 	if (gtk_widget_is_visible (maindialog))
-		item_toggle = gtk_image_menu_item_new_with_mnemonic ("Hide gSTM");
+		label = gtk_label_new ("Hide gSTM");
 	else
-		item_toggle = gtk_image_menu_item_new_with_mnemonic ("Show gSTM");
-	gtk_image_menu_item_set_image (GTK_IMAGE_MENU_ITEM (item_toggle), image_toggle);
-	gtk_widget_show_all (item_toggle);
-	gtk_container_add (GTK_CONTAINER (menu), item_toggle);
-	g_signal_connect ((gpointer) item_toggle, "activate", G_CALLBACK (gstm_docklet_activated_cb), NULL);
+		label = gtk_label_new ("Show gSTM");
+	menu_item = gtk_menu_item_new ();
+
+	gtk_container_add (GTK_CONTAINER (box), icon);
+	gtk_container_add (GTK_CONTAINER (box), label);
+	gtk_container_add (GTK_CONTAINER (menu_item), box);
+	gtk_widget_show_all (menu_item);
+	gtk_container_add (GTK_CONTAINER (menu), menu_item);
+
+	g_signal_connect ((gpointer) menu_item, "activate", G_CALLBACK (gstm_docklet_activated_cb), NULL);
 
 	//	Separator 1
 	GtkWidget *separator1 = gtk_separator_menu_item_new ();
@@ -160,34 +147,10 @@ GtkMenu* gstm_docklet_menu_regen ()
 	gtk_widget_set_sensitive (separator2, FALSE);
 
 	//	About
-	GtkWidget *image_about = gtk_image_new_from_icon_name ("help-about", GTK_ICON_SIZE_MENU);
-	GtkWidget *item_about = gtk_image_menu_item_new_with_mnemonic ("About");
-	gtk_image_menu_item_set_image (GTK_IMAGE_MENU_ITEM (item_about), image_about);
-	gtk_widget_show_all (item_about);
-	gtk_container_add (GTK_CONTAINER (menu), item_about);
-	g_signal_connect ((gpointer) item_about, "activate", G_CALLBACK (on_dockletmenu_about_activate), NULL);
-
-	//	Quit
-	GtkWidget *image_quit = gtk_image_new_from_icon_name ("application-exit", GTK_ICON_SIZE_MENU);
-	GtkWidget *item_quit = gtk_image_menu_item_new_with_mnemonic ("Quit");
-	gtk_image_menu_item_set_image (GTK_IMAGE_MENU_ITEM (item_quit), image_quit);
-	gtk_widget_show_all (item_quit);
-	gtk_container_add (GTK_CONTAINER (menu), item_quit);
-	g_signal_connect ((gpointer) item_quit, "activate", G_CALLBACK (on_dockletmenu_quit_activate), NULL);
-
-	#pragma GCC diagnostic pop
-
-	return menu;
-
-	///app_indicator_set_menu (ci, GTK_MENU (menu));
-
-	/*
-	//	Work-around for gtk_image_menu* being depreceated in gtk3
-	//	Saving here for gtk4 use one day
-	GtkWidget *box = gtk_box_new (GTK_ORIENTATION_HORIZONTAL, 6);
-	GtkWidget *icon = gtk_image_new_from_icon_name ("folder-music-symbolic", GTK_ICON_SIZE_MENU);
-	GtkWidget *label = gtk_label_new ("Music");
-	GtkWidget *menu_item = gtk_menu_item_new ();
+	box = gtk_box_new (GTK_ORIENTATION_HORIZONTAL, 6);
+	icon = gtk_image_new_from_icon_name ("help-about", GTK_ICON_SIZE_MENU);
+	label = gtk_label_new ("About");
+	menu_item = gtk_menu_item_new ();
 
 	gtk_container_add (GTK_CONTAINER (box), icon);
 	gtk_container_add (GTK_CONTAINER (box), label);
@@ -195,5 +158,22 @@ GtkMenu* gstm_docklet_menu_regen ()
 
 	gtk_widget_show_all (menu_item);
 	gtk_container_add (GTK_CONTAINER (menu), menu_item);
-	*/
+	
+	g_signal_connect ((gpointer) menu_item, "activate", G_CALLBACK (on_dockletmenu_about_activate), NULL);
+
+	//	Quit
+	box = gtk_box_new (GTK_ORIENTATION_HORIZONTAL, 6);
+	icon = gtk_image_new_from_icon_name ("application-exit", GTK_ICON_SIZE_MENU);
+	label = gtk_label_new ("Quit");
+	menu_item = gtk_menu_item_new ();
+
+	gtk_container_add (GTK_CONTAINER (box), icon);
+	gtk_container_add (GTK_CONTAINER (box), label);
+	gtk_container_add (GTK_CONTAINER (menu_item), box);
+
+	gtk_widget_show_all (menu_item);
+	gtk_container_add (GTK_CONTAINER (menu), menu_item);
+	g_signal_connect ((gpointer) menu_item, "activate", G_CALLBACK (on_dockletmenu_quit_activate), NULL);
+
+	return menu;
 }

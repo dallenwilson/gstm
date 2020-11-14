@@ -20,11 +20,12 @@
  */
 
 #include <gtk/gtk.h>
+#include <libappindicator/app-indicator.h>
 
-extern GtkStatusIcon *ci;
+extern AppIndicator *ci;
 
 void gstm_docklet_create ();
 void gstm_toggle_mainwindow ();
 void gstm_docklet_activated_cb (GtkWidget *widget, gpointer user_data);
-void gstm_docklet_popupmenu_cb (GtkWidget *widget, gpointer user_data);
+void gstm_docklet_menu_refresh ();
 GtkMenu* gstm_docklet_menu_regen ();

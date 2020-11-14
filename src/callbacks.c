@@ -28,6 +28,7 @@
 #include "conffile.h"
 #include "fniface.h"
 #include "fnssht.h"
+#include "systray.h"
 
 void gstm_terminate()
 {
@@ -501,6 +502,7 @@ void on_dockletmenu_tunnel_activate (GtkMenuItem *menuitem, gpointer user_data)
 		if (selid == id)
 			gstm_interface_enablebuttons (!active);
 	}
+	gstm_docklet_menu_refresh ();
 }
 void on_dockletmenu_about_activate (GtkMenuItem *menuitem, gpointer user_data)
 {

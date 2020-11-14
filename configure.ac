@@ -27,6 +27,8 @@ LT_INIT
 PKG_CHECK_MODULES(GTK3, [gtk+-3.0 >= 3.22])
 PKG_CHECK_MODULES(XML, [libxml-2.0])
 
+PKG_CHECK_MODULES(APPINDICATOR, [appindicator3-0.1])
+
 AC_CONFIG_FILES([
   Makefile
   src/Makefile

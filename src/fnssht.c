@@ -29,6 +29,7 @@
 #include "fnssht.h"
 #include "fniface.h"
 #include "conffile.h"
+#include "systray.h"
 
 // the helperthread: it forks off an ssh child and wait()s for it's return
 gpointer *gstm_ssht_helperthread(gpointer *args)
@@ -196,6 +197,8 @@ gboolean gstm_ssht_helperthread_refresh_gui (gpointer *data)
 			gstm_interface_enablebuttons(FALSE); 
 		}
 	}
+
+	gstm_docklet_menu_refresh ();
 
 	return FALSE;
 }

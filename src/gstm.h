@@ -45,9 +45,7 @@ struct _GstmClass
 struct _Gstm
 {
 	GtkApplication parent_instance;
-
 	GstmPrivate *priv;
-
 };
 
 extern int maindiag_width;
