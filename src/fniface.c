@@ -34,7 +34,7 @@ static GtkListStore *redirstore;
 /*	shows informational text in our main dialog	*/
 void gstm_interface_showinfo(char *text)
 {
-	gtk_label_set_text (GTK_LABEL (statusbar), text);
+	gtk_entry_set_text (GTK_ENTRY (statusbar), text);
 }
 
 /* returns the ID column value of the selection */

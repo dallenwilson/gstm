@@ -258,8 +258,8 @@ Auto-reconnect code: Jarek Polok</property>
                     <property name="receives_default">False</property>
                     <property name="use_stock">True</property>
                     <signal name="clicked" handler="btn_close_clicked_cb" swapped="no"/>
-                    <accelerator key="Escape" signal="clicked"/>
                     <accelerator key="q" signal="clicked" modifiers="GDK_CONTROL_MASK"/>
+                    <accelerator key="Escape" signal="clicked"/>
                   </object>
                   <packing>
                     <property name="expand">False</property>
@@ -283,11 +283,11 @@ Auto-reconnect code: Jarek Polok</property>
           </packing>
         </child>
         <child>
-          <object class="GtkLabel" id="statusbar">
+          <object class="GtkEntry" id="statusbar">
             <property name="visible">True</property>
-            <property name="can_focus">False</property>
-            <property name="label" translatable="yes">GtkLabel pretending to be GtkStatusBar</property>
-            <property name="wrap">True</property>
+            <property name="can_focus">True</property>
+            <property name="editable">False</property>
+            <property name="caps_lock_warning">False</property>
           </object>
           <packing>
             <property name="expand">False</property>
