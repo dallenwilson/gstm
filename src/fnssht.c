@@ -224,60 +224,87 @@ char **gstm_ssht_addssharg(char **args, const char *str) {
 	return ret;
 }
 
-// starttunnel() creates the proper ssh command and fires the helper thread
-void gstm_ssht_starttunnel(int id) {
+char *gstm_ssht_command2string (int id) {
+	struct Shelperargs *hargs = gstm_ssht_craft_command (id);
+
+	int i = 0;
+	long msgsize = 0;
+	for (i=0; hargs->sshargs[i] != NULL; i++)
+		msgsize += strlen (hargs->sshargs[i]) + sizeof (char);
+
+	char *command = malloc (msgsize + sizeof (char));
+
+	strcpy (command, hargs->sshargs[0]);
+	strcat (command, " ");
+
+	for (i=1; hargs->sshargs[i] != NULL; i++) {
+		strcat (command, hargs->sshargs[i]);
+		strcat (command, " ");
+	}
+
+	return command;
+}
+
+// Generate the command to start the tunnel
+struct Shelperargs *gstm_ssht_craft_command (int id) {
 	struct Shelperargs *hargs;
 	char type, *tmp;
 	int i;
+
+	hargs = malloc (sizeof (struct Shelperargs));
+	hargs->tid = id;
+	hargs->sshargs=NULL;
+
+	//ok, now create the argument list to ssh
+	hargs->sshargs = gstm_ssht_addssharg (hargs->sshargs, "ssh");
+	hargs->sshargs = gstm_ssht_addssharg (hargs->sshargs, (char *)gSTMtunnels[id]->host);
+	hargs->sshargs = gstm_ssht_addssharg (hargs->sshargs, "-p");
+	hargs->sshargs = gstm_ssht_addssharg (hargs->sshargs, (char *)gSTMtunnels[id]->port);
+
+	if (strlen ((char *)gSTMtunnels[id]->privkey)>1) {
+		hargs->sshargs = gstm_ssht_addssharg (hargs->sshargs, "-i");
+		hargs->sshargs = gstm_ssht_addssharg (hargs->sshargs, (char *)gSTMtunnels[id]->privkey);
+	}
+
+	hargs->sshargs = gstm_ssht_addssharg (hargs->sshargs, "-l");
+	hargs->sshargs = gstm_ssht_addssharg (hargs->sshargs, (char *)gSTMtunnels[id]->login);
+	hargs->sshargs = gstm_ssht_addssharg (hargs->sshargs, "-nN");
+
+	// port redirect args
+	for (i=0; i<gSTMtunnels[id]->defcount; i++) {
+		tmp = malloc(4 + strlen ((char *)gSTMtunnels[id]->portredirs[i]->port1) + strlen ((char *)gSTMtunnels[id]->portredirs[i]->host) + strlen ((char *)gSTMtunnels[id]->portredirs[i]->port2) +1);
+		if (strcmp ((char *)gSTMtunnels[id]->portredirs[i]->type,"local") == 0) {
+			type = 'L';
+			sprintf(tmp,"-%c%s:%s:%s",type,gSTMtunnels[id]->portredirs[i]->port1,gSTMtunnels[id]->portredirs[i]->host,gSTMtunnels[id]->portredirs[i]->port2);
+		} else if (strcmp ((char *)gSTMtunnels[id]->portredirs[i]->type,"remote") == 0) {
+			type = 'R';
+			sprintf(tmp,"-%c%s:%s:%s",type,gSTMtunnels[id]->portredirs[i]->port1,gSTMtunnels[id]->portredirs[i]->host,gSTMtunnels[id]->portredirs[i]->port2);
+		} else {
+			type = 'D';
+			sprintf(tmp,"-%c%s",type,gSTMtunnels[id]->portredirs[i]->port1);
+		}
+		hargs->sshargs = gstm_ssht_addssharg(hargs->sshargs, tmp);
+		free(tmp);
+	}
+	hargs->sshargs = gstm_ssht_addssharg(hargs->sshargs, "-o");
+	hargs->sshargs = gstm_ssht_addssharg(hargs->sshargs, "ConnectTimeout=5");
+	hargs->sshargs = gstm_ssht_addssharg(hargs->sshargs, "-o");
+	hargs->sshargs = gstm_ssht_addssharg(hargs->sshargs, "NumberOfPasswordPrompts=1");
+	hargs->sshargs = gstm_ssht_addssharg(hargs->sshargs, NULL); //end list
+
+	hargs->restart = gSTMtunnels[id]->restart;
+	hargs->maxrestarts = atoi((char *)gSTMtunnels[id]->maxrestarts); /* well, will be 0 if not int... */
+	hargs->notify = gSTMtunnels[id]->notify;
+
+	return hargs;
+}
+
+// starttunnel() creates the proper ssh command and fires the helper thread
+void gstm_ssht_starttunnel(int id) {
+	struct Shelperargs *hargs = gstm_ssht_craft_command (id);
 	GThread *ret;
-	
+
 	if (!gSTMtunnels[id]->active) {
-		hargs = malloc (sizeof (struct Shelperargs));
-		hargs->tid = id;
-		hargs->sshargs=NULL;
-		
-		//ok, now create the argument list to ssh
-		hargs->sshargs = gstm_ssht_addssharg (hargs->sshargs, "ssh");
-		hargs->sshargs = gstm_ssht_addssharg (hargs->sshargs, (char *)gSTMtunnels[id]->host);
-		hargs->sshargs = gstm_ssht_addssharg (hargs->sshargs, "-p");
-		hargs->sshargs = gstm_ssht_addssharg (hargs->sshargs, (char *)gSTMtunnels[id]->port);
-		
-		if (strlen ((char *)gSTMtunnels[id]->privkey)>1) {
-			hargs->sshargs = gstm_ssht_addssharg (hargs->sshargs, "-i");
-			hargs->sshargs = gstm_ssht_addssharg (hargs->sshargs, (char *)gSTMtunnels[id]->privkey);
-		}
-		
-		hargs->sshargs = gstm_ssht_addssharg (hargs->sshargs, "-l");
-		hargs->sshargs = gstm_ssht_addssharg (hargs->sshargs, (char *)gSTMtunnels[id]->login);
-		hargs->sshargs = gstm_ssht_addssharg (hargs->sshargs, "-nN");
-		
-		// port redirect args
-		for (i=0; i<gSTMtunnels[id]->defcount; i++) {
-			tmp = malloc(4 + strlen ((char *)gSTMtunnels[id]->portredirs[i]->port1) + strlen ((char *)gSTMtunnels[id]->portredirs[i]->host) + strlen ((char *)gSTMtunnels[id]->portredirs[i]->port2) +1);
-			if (strcmp ((char *)gSTMtunnels[id]->portredirs[i]->type,"local") == 0) {
-				type = 'L';
-				sprintf(tmp,"-%c%s:%s:%s",type,gSTMtunnels[id]->portredirs[i]->port1,gSTMtunnels[id]->portredirs[i]->host,gSTMtunnels[id]->portredirs[i]->port2);
-			} else if (strcmp ((char *)gSTMtunnels[id]->portredirs[i]->type,"remote") == 0) {
-				type = 'R';
-				sprintf(tmp,"-%c%s:%s:%s",type,gSTMtunnels[id]->portredirs[i]->port1,gSTMtunnels[id]->portredirs[i]->host,gSTMtunnels[id]->portredirs[i]->port2);
-			} else {
-				type = 'D';
-				sprintf(tmp,"-%c%s",type,gSTMtunnels[id]->portredirs[i]->port1);
-			}
-			hargs->sshargs = gstm_ssht_addssharg(hargs->sshargs, tmp);
-			free(tmp);
-		}
-		hargs->sshargs = gstm_ssht_addssharg(hargs->sshargs, "-o");
-		hargs->sshargs = gstm_ssht_addssharg(hargs->sshargs, "ConnectTimeout=5");
-		hargs->sshargs = gstm_ssht_addssharg(hargs->sshargs, "-o");
-		hargs->sshargs = gstm_ssht_addssharg(hargs->sshargs, "NumberOfPasswordPrompts=1");
-		hargs->sshargs = gstm_ssht_addssharg(hargs->sshargs, NULL); //end list
-
-		hargs->restart = gSTMtunnels[id]->restart;
-		hargs->maxrestarts = atoi((char *)gSTMtunnels[id]->maxrestarts); /* well, will be 0 if not int... */
-		hargs->notify = gSTMtunnels[id]->notify;
-
-		// good, now start the helper thread
 		ret = g_thread_new (NULL, (GThreadFunc)gstm_ssht_helperthread, hargs);
 		
 		if (ret!=NULL) {

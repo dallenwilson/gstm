@@ -37,5 +37,7 @@ gboolean gstm_ssht_helperthread_refresh_gui (gpointer *data);
 char **gstm_ssht_addssharg(char **args, const char *str);
 void gstm_ssht_starttunnel(int id);
 void gstm_ssht_stoptunnel(int id);
+struct Shelperargs *gstm_ssht_craft_command (int id);
+char *gstm_ssht_command2string (int id);
 
 #endif /* _FNSSHT_H */

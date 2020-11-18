@@ -34,7 +34,7 @@ static GtkListStore *redirstore;
 /*	shows informational text in our main dialog	*/
 void gstm_interface_showinfo(char *text)
 {
-	gtk_statusbar_push (GTK_STATUSBAR (statusbar), 0, text);
+	gtk_label_set_text (GTK_LABEL (statusbar), text);
 }
 
 /* returns the ID column value of the selection */
@@ -162,7 +162,7 @@ void gstm_interface_rowactivity() {
 	{
 		id = gstm_interface_selection2id (s,COL_ID);
 		gchar *msg;
-		msg = g_strdup_printf ("%s@%s", gSTMtunnels[id]->login, gSTMtunnels[id]->host);
+		msg = gstm_ssht_command2string (id);
 		gstm_interface_showinfo (msg);
 		free (msg);
 		gstm_interface_enablebuttons (gSTMtunnels[id]->active);
