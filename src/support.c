@@ -84,3 +84,31 @@ GdkPixbuf* create_pixbuf (const gchar *filename)
 
 	return pixbuf;
 }
+
+GdkPixbuf* create_pixbuf_scaled (const gchar *filename, GtkIconSize size)
+{
+        GdkPixbuf *pixbuf, *origbuf;
+	int width, height;
+
+	origbuf = create_pixbuf(filename);
+	if (!origbuf)
+		return NULL;
+
+	if (!gtk_icon_size_lookup(size, &width, &height))
+	{
+		g_warning(_("create_pixbuf_scaled: Invalid size: %d"), size);
+		g_object_unref(origbuf);
+		return NULL;
+	}
+
+	pixbuf = gdk_pixbuf_scale_simple(origbuf, width, height, GDK_INTERP_BILINEAR);
+	if (!pixbuf)
+	{
+		g_warning(_("create_pixbuf_scaled: Failed to scale %s to %dx%d"), filename, width, height);
+		g_object_unref(origbuf);
+		return NULL;
+	}
+
+	g_object_unref(origbuf);
+	return pixbuf;
+}

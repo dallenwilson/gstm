@@ -208,7 +208,7 @@ void btn_copy_clicked_cb (GtkButton *button, gpointer user_data)
 				gstm_tunnel2file (gSTMtunnels[tunnelCount], gSTMtunnels[tunnelCount]->fn);
 
 				//put in interface
-				pixbuf_red = create_pixbuf("red.xpm");
+				pixbuf_red = create_pixbuf_scaled("red.svg", GTK_ICON_SIZE_MENU);
 				gtk_list_store_append (tunnellist_store, &iter);
 				gtk_list_store_set (tunnellist_store, &iter, COL_ACTIVE,
 				                    pixbuf_red, COL_NAME, newname, COL_ID,
