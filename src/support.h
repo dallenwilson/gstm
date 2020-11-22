@@ -37,3 +37,6 @@ GtkWidget* create_pixmap (GtkWidget *widget, const gchar *filename);
 
 /* This is used to create the pixbufs used in the interface. */
 GdkPixbuf* create_pixbuf (const gchar *filename);
+
+/* This is used to create the pixbufs used in the interface. Scales it to a given size. */
+GdkPixbuf* create_pixbuf_scaled (const gchar *filename, GtkIconSize size);

@@ -229,12 +229,11 @@ void gstm_populate_treeview (GtkWidget *dialog, const char *objname,
                              struct sshtunnel **STMtunnels, int tcnt)
 {
 	GtkTreeIter iter;
-	GdkPixbuf *pixbuf_red, *pixbuf_green; //*pixbuf_yellow, 
+	GdkPixbuf *pixbuf_red, *pixbuf_green;
 	int i;
 
-	pixbuf_red = create_pixbuf ("red.xpm");
-	//pixbuf_yellow = create_pixbuf ("yellow.xpm");
-	pixbuf_green = create_pixbuf ("green.xpm");
+	pixbuf_red = create_pixbuf_scaled ("red.svg", GTK_ICON_SIZE_MENU);
+	pixbuf_green = create_pixbuf_scaled ("green.svg", GTK_ICON_SIZE_MENU);
 
 	for (i = 0; i < tcnt; i++)
 	{

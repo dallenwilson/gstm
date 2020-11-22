@@ -100,9 +100,9 @@ void gstm_interface_paint_row(GtkTreeSelection *s, gboolean active)
 	if (gtk_tree_selection_get_selected(s,&m,&i))
 	{
 		if (active)
-			pb = create_pixbuf("green.xpm");
+			pb = create_pixbuf_scaled("green.svg", GTK_ICON_SIZE_MENU);
 		else
-			pb = create_pixbuf("red.xpm");
+			pb = create_pixbuf_scaled("red.svg", GTK_ICON_SIZE_MENU);
 		
 		gtk_list_store_set(tunnellist_store, &i, COL_ACTIVE, pb, -1);
 	}
@@ -124,9 +124,9 @@ void gstm_interface_paint_row_id (int id, gboolean active)
 		if (id == v_id)
 		{
 			if (active)
-				pb = create_pixbuf ("green.xpm");
+				pb = create_pixbuf_scaled ("green.svg", GTK_ICON_SIZE_MENU);
 			else
-				pb = create_pixbuf ("red.xpm");
+				pb = create_pixbuf_scaled ("red.svg", GTK_ICON_SIZE_MENU);
 			
 			gtk_list_store_set (tunnellist_store, &i, COL_ACTIVE, pb, -1);
 			break;

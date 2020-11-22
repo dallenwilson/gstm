@@ -71,9 +71,9 @@ void gstm_dockletmenu_tunnelitem_new (GtkMenu *menu, const gchar *t_name,
 	GdkPixbuf *pb;
 
 	if (t_active)
-		pb = create_pixbuf("green.xpm");
+		pb = create_pixbuf_scaled("green.svg", GTK_ICON_SIZE_MENU);
 	else
-		pb = create_pixbuf("red.xpm");
+		pb = create_pixbuf_scaled("red.svg", GTK_ICON_SIZE_MENU);
 
 	GtkWidget *box = gtk_box_new (GTK_ORIENTATION_HORIZONTAL, 6);
 	GtkWidget *icon = gtk_image_new_from_pixbuf(pb);
