@@ -13,13 +13,15 @@
     <property name="copyright" translatable="yes">copyright (c) Mark Smulders 2005-2020
 copyright (c) John Spray 2006-2020
 copyright (c) Dallen Wilson 2019-2020
-copyright (c) Jarek Polok 2020</property>
+copyright (c) Jarek Polok 2020
+copyright (c) Alex Guzman 2020</property>
     <property name="comments" translatable="yes">Gnome SSH Tunnel Manager - a front-end to ssh tunneling.</property>
     <property name="website">https://github.com/dallenwilson/gstm</property>
     <property name="authors">Original Author: Mark Smulders &lt;msmulders@elsar.nl&gt;
 "The GNOME guy", patches, bugfixes: John Spray &lt;jcs116@york.ac.uk&gt;
 Gtk3 port: Dallen Wilson &lt;dwjwilson@lavabit.com&gt;
-Auto-reconnect code: Jarek Polok</property>
+Auto-reconnect code: Jarek Polok
+AppIndicator support: Alex Guzman &lt;alex@guzman.io&gt;</property>
     <property name="logo">../pixmaps/gSTM.png</property>
     <property name="license_type">gpl-2-0</property>
     <child internal-child="vbox">
@@ -258,8 +260,8 @@ Auto-reconnect code: Jarek Polok</property>
                     <property name="receives_default">False</property>
                     <property name="use_stock">True</property>
                     <signal name="clicked" handler="btn_close_clicked_cb" swapped="no"/>
-                    <accelerator key="q" signal="clicked" modifiers="GDK_CONTROL_MASK"/>
                     <accelerator key="Escape" signal="clicked"/>
+                    <accelerator key="q" signal="clicked" modifiers="GDK_CONTROL_MASK"/>
                   </object>
                   <packing>
                     <property name="expand">False</property>

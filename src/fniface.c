@@ -27,6 +27,7 @@
 #include "callbacks.h"
 #include "gstm.h"
 #include "support.h"
+#include "systray.h"
 
 
 static GtkListStore *redirstore;
@@ -196,6 +197,8 @@ void gstm_interface_rowaction()
 			gstm_interface_paint_row (s, !active);
 			gstm_interface_enablebuttons (!active);
 		}
+
+		gstm_docklet_menu_refresh ();
 	}
 }
 

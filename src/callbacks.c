@@ -82,6 +82,8 @@ void btn_add_clicked_cb (GtkButton *button, gpointer user_data)
 	if (gstm_interface_asknewname (&newname) == GTK_RESPONSE_OK)
 	{
 		id = gstm_tunnel_add (newname);
+		gstm_docklet_menu_refresh ();
+
 		if (id > -1)
 			gstm_interface_properties(id);
 	}
@@ -107,8 +109,10 @@ void btn_delete_clicked_cb (GtkButton *button, gpointer user_data)
 		
 		gtk_message_dialog_set_markup (GTK_MESSAGE_DIALOG (del), messagemarkup);
 
-		if (gtk_dialog_run (GTK_DIALOG (del)) == GTK_RESPONSE_YES)
+		if (gtk_dialog_run (GTK_DIALOG (del)) == GTK_RESPONSE_YES) {
 			gstm_tunnel_del (gstm_interface_selection2id (s, COL_ID));
+			gstm_docklet_menu_refresh ();
+		}
 		
 		g_free (messagemarkup);
 	}

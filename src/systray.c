@@ -77,7 +77,13 @@ void gstm_dockletmenu_tunnelitem_new (GtkMenu *menu, const gchar *t_name,
 
 	GtkWidget *box = gtk_box_new (GTK_ORIENTATION_HORIZONTAL, 6);
 	GtkWidget *icon = gtk_image_new_from_pixbuf(pb);
-	GtkWidget *label = gtk_label_new (t_name);
+	GtkWidget *label;
+
+	if (t_active)
+		label = gtk_label_new (g_strconcat ("Disconnect: ", t_name, NULL));
+	else
+		label = gtk_label_new (g_strconcat ("Connect: ", t_name, NULL));
+
 	GtkWidget *menu_item = gtk_menu_item_new ();
 
 	gtk_container_add (GTK_CONTAINER (box), icon);
