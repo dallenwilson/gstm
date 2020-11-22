@@ -35,7 +35,7 @@ A Gnome X11 passphrase dialog for OpenSSH used by gSTM.
 %build
 # avoid compile error wiht older gcc (RHEL7/CentOS7):
 # fniface.c:233:2: error: 'for' loop initial declarations are only allowed in C99 mode
-CFLAGS=-std=gnu99
+CFLAGS="%{build_cflags} -std=gnu99"
 
 %configure
 make
