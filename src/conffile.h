@@ -49,6 +49,7 @@ struct sshtunnel {
 	gboolean restart;
 	gboolean notify;
 	xmlChar *maxrestarts;
+	gboolean preset;
 	struct portredir **portredirs;
 	int defcount;
 	gboolean active;
@@ -74,5 +75,6 @@ void gstm_freetunnels(struct sshtunnel ***tptr, int cnt);
 gboolean gstm_tunnel_name_exists(const char *name);
 int gstm_tunnel_add(const char *name);
 void gstm_tunnel_del(int id);
+void parseSSHconfig (GtkWidget *widget, gchar *host);
 
 #endif /* _CONFFILE_H */

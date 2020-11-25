@@ -49,11 +49,6 @@ AppIndicator support: Alex Guzman &lt;alex@guzman.io&gt;</property>
       <placeholder/>
     </child>
   </object>
-  <object class="GtkImage" id="image1">
-    <property name="visible">True</property>
-    <property name="can_focus">False</property>
-    <property name="stock">gtk-media-play</property>
-  </object>
   <object class="GtkWindow" id="maindialog">
     <property name="visible">True</property>
     <property name="can_focus">False</property>
@@ -260,8 +255,8 @@ AppIndicator support: Alex Guzman &lt;alex@guzman.io&gt;</property>
                     <property name="receives_default">False</property>
                     <property name="use_stock">True</property>
                     <signal name="clicked" handler="btn_close_clicked_cb" swapped="no"/>
-                    <accelerator key="Escape" signal="clicked"/>
                     <accelerator key="q" signal="clicked" modifiers="GDK_CONTROL_MASK"/>
+                    <accelerator key="Escape" signal="clicked"/>
                   </object>
                   <packing>
                     <property name="expand">False</property>
@@ -514,18 +509,21 @@ AppIndicator support: Alex Guzman &lt;alex@guzman.io&gt;</property>
                 <property name="visible">True</property>
                 <property name="can_focus">False</property>
                 <child>
-                  <object class="GtkBox">
+                  <object class="GtkBox" id="box_namepreset">
                     <property name="visible">True</property>
                     <property name="can_focus">False</property>
                     <property name="margin_left">5</property>
+                    <property name="margin_right">5</property>
                     <property name="orientation">vertical</property>
                     <child>
-                      <object class="GtkBox">
+                      <object class="GtkBox" id="box_name">
                         <property name="visible">True</property>
                         <property name="can_focus">False</property>
                         <property name="tooltip_text" translatable="yes">The name gSTM will use to track this tunnel configuration.</property>
+                        <property name="halign">start</property>
                         <child>
                           <object class="GtkLabel" id="label14">
+                            <property name="width_request">50</property>
                             <property name="height_request">24</property>
                             <property name="visible">True</property>
                             <property name="can_focus">False</property>
@@ -548,13 +546,14 @@ AppIndicator support: Alex Guzman &lt;alex@guzman.io&gt;</property>
                         </child>
                         <child>
                           <object class="GtkEntry" id="entry_name">
-                            <property name="width_request">176</property>
+                            <property name="width_request">200</property>
                             <property name="visible">True</property>
                             <property name="can_focus">True</property>
                             <property name="has_focus">True</property>
                             <property name="valign">center</property>
                             <property name="margin_left">2</property>
                             <property name="invisible_char">●</property>
+                            <property name="truncate_multiline">True</property>
                             <property name="input_purpose">name</property>
                           </object>
                           <packing>
@@ -571,10 +570,97 @@ AppIndicator support: Alex Guzman &lt;alex@guzman.io&gt;</property>
                       </packing>
                     </child>
                     <child>
-                      <object class="GtkBox">
+                      <object class="GtkBox" id="box_preset">
                         <property name="visible">True</property>
                         <property name="can_focus">False</property>
-                        <property name="tooltip_markup" translatable="yes">Specifies the user to log in as on the remote machine. Passed to SSH with the host as "&lt;b&gt;$login@$host&lt;/b&gt;".</property>
+                        <property name="tooltip_markup" translatable="yes">gSTM considers any "Host" defined in &lt;b&gt;~/.ssh/config&lt;/b&gt; to be a preset. When a preset is selected, no User, Host, Port, or Private Key need to be specified in gSTM; It is assumed that all configuration, other than the port forwarding, is handled in &lt;b&gt;~/.ssh/config&lt;/b&gt;.
+
+Run &lt;b&gt;man ssh_config&lt;/b&gt; for more information.</property>
+                        <property name="halign">start</property>
+                        <child>
+                          <object class="GtkLabel">
+                            <property name="width_request">50</property>
+                            <property name="height_request">24</property>
+                            <property name="visible">True</property>
+                            <property name="can_focus">False</property>
+                            <property name="halign">end</property>
+                            <property name="valign">center</property>
+                            <property name="margin_right">5</property>
+                            <property name="label" translatable="yes">Preset: </property>
+                          </object>
+                          <packing>
+                            <property name="expand">False</property>
+                            <property name="fill">True</property>
+                            <property name="position">0</property>
+                          </packing>
+                        </child>
+                        <child>
+                          <object class="GtkComboBoxText" id="combo_preset">
+                            <property name="width_request">200</property>
+                            <property name="visible">True</property>
+                            <property name="can_focus">False</property>
+                            <property name="has_entry">True</property>
+                            <items>
+                              <item translatable="yes">If you can read this, something went wrong!</item>
+                            </items>
+                            <signal name="changed" handler="cb_preset_changed" swapped="no"/>
+                            <child internal-child="entry">
+                              <object class="GtkEntry">
+                                <property name="can_focus">False</property>
+                              </object>
+                            </child>
+                          </object>
+                          <packing>
+                            <property name="expand">False</property>
+                            <property name="fill">True</property>
+                            <property name="position">1</property>
+                          </packing>
+                        </child>
+                      </object>
+                      <packing>
+                        <property name="expand">False</property>
+                        <property name="fill">True</property>
+                        <property name="position">1</property>
+                      </packing>
+                    </child>
+                    <child>
+                      <object class="GtkLabel">
+                        <property name="visible">True</property>
+                        <property name="can_focus">False</property>
+                        <property name="tooltip_markup" translatable="yes">gSTM considers any "Host" defined in &lt;b&gt;~/.ssh/config&lt;/b&gt; to be a preset. When a preset is selected, no User, Host, Port, or Private Key need to be specified in gSTM; It is assumed that all configuration, other than the port forwarding, is handled in &lt;b&gt;~/.ssh/config&lt;/b&gt;.
+
+Run &lt;b&gt;man ssh_config&lt;/b&gt; for more information.</property>
+                        <property name="halign">start</property>
+                        <property name="margin_left">5</property>
+                        <property name="margin_top">5</property>
+                        <property name="label" translatable="yes">Presets are read from &lt;b&gt;~/.ssh/config&lt;/b&gt;.</property>
+                        <property name="use_markup">True</property>
+                      </object>
+                      <packing>
+                        <property name="expand">True</property>
+                        <property name="fill">True</property>
+                        <property name="position">2</property>
+                      </packing>
+                    </child>
+                  </object>
+                  <packing>
+                    <property name="expand">True</property>
+                    <property name="fill">True</property>
+                    <property name="position">0</property>
+                  </packing>
+                </child>
+                <child>
+                  <object class="GtkBox" id="box_userhostportkey">
+                    <property name="visible">True</property>
+                    <property name="can_focus">False</property>
+                    <property name="margin_left">5</property>
+                    <property name="margin_right">5</property>
+                    <property name="orientation">vertical</property>
+                    <child>
+                      <object class="GtkBox" id="box_user">
+                        <property name="visible">True</property>
+                        <property name="can_focus">False</property>
+                        <property name="tooltip_markup" translatable="yes">Specifies the user to log in as on the remote machine. Passed to SSH as "&lt;b&gt;-l $user&lt;/b&gt;".</property>
                         <child>
                           <object class="GtkLabel" id="label17">
                             <property name="height_request">24</property>
@@ -583,7 +669,7 @@ AppIndicator support: Alex Guzman &lt;alex@guzman.io&gt;</property>
                             <property name="halign">end</property>
                             <property name="valign">center</property>
                             <property name="margin_right">5</property>
-                            <property name="label" translatable="yes">Login:</property>
+                            <property name="label" translatable="yes">User:</property>
                             <property name="justify">right</property>
                             <property name="wrap">True</property>
                             <property name="single_line_mode">True</property>
@@ -599,12 +685,14 @@ AppIndicator support: Alex Guzman &lt;alex@guzman.io&gt;</property>
                         </child>
                         <child>
                           <object class="GtkEntry" id="entry_login">
-                            <property name="width_request">176</property>
+                            <property name="width_request">200</property>
                             <property name="visible">True</property>
+                            <property name="sensitive">False</property>
                             <property name="can_focus">True</property>
                             <property name="valign">center</property>
                             <property name="margin_left">2</property>
                             <property name="invisible_char">●</property>
+                            <property name="truncate_multiline">True</property>
                             <property name="input_purpose">name</property>
                           </object>
                           <packing>
@@ -617,28 +705,15 @@ AppIndicator support: Alex Guzman &lt;alex@guzman.io&gt;</property>
                       <packing>
                         <property name="expand">True</property>
                         <property name="fill">True</property>
-                        <property name="position">1</property>
+                        <property name="position">0</property>
                       </packing>
                     </child>
-                  </object>
-                  <packing>
-                    <property name="expand">True</property>
-                    <property name="fill">True</property>
-                    <property name="position">0</property>
-                  </packing>
-                </child>
-                <child>
-                  <object class="GtkBox">
-                    <property name="visible">True</property>
-                    <property name="can_focus">False</property>
-                    <property name="margin_left">5</property>
-                    <property name="margin_right">5</property>
-                    <property name="orientation">vertical</property>
                     <child>
-                      <object class="GtkBox">
+                      <object class="GtkBox" id="box_host">
                         <property name="visible">True</property>
                         <property name="can_focus">False</property>
                         <property name="tooltip_markup" translatable="yes">The IP or hostname of the remote server. Passed to SSH with the login as "&lt;b&gt;$login@$host&lt;/b&gt;".</property>
+                        <property name="margin_top">5</property>
                         <child>
                           <object class="GtkLabel" id="label15">
                             <property name="height_request">24</property>
@@ -669,6 +744,7 @@ AppIndicator support: Alex Guzman &lt;alex@guzman.io&gt;</property>
                             <property name="valign">center</property>
                             <property name="margin_left">2</property>
                             <property name="invisible_char">●</property>
+                            <property name="truncate_multiline">True</property>
                           </object>
                           <packing>
                             <property name="expand">False</property>
@@ -680,11 +756,11 @@ AppIndicator support: Alex Guzman &lt;alex@guzman.io&gt;</property>
                       <packing>
                         <property name="expand">True</property>
                         <property name="fill">True</property>
-                        <property name="position">0</property>
+                        <property name="position">1</property>
                       </packing>
                     </child>
                     <child>
-                      <object class="GtkBox">
+                      <object class="GtkBox" id="box_port">
                         <property name="visible">True</property>
                         <property name="can_focus">False</property>
                         <property name="tooltip_markup" translatable="yes">Port to connect to on the remote host. Passed to SSH as "&lt;b&gt;-p $port&lt;/b&gt;".</property>
@@ -722,6 +798,7 @@ AppIndicator support: Alex Guzman &lt;alex@guzman.io&gt;</property>
                             <property name="invisible_char">●</property>
                             <property name="width_chars">5</property>
                             <property name="max_width_chars">5</property>
+                            <property name="truncate_multiline">True</property>
                             <property name="input_purpose">number</property>
                           </object>
                           <packing>
@@ -734,11 +811,11 @@ AppIndicator support: Alex Guzman &lt;alex@guzman.io&gt;</property>
                       <packing>
                         <property name="expand">True</property>
                         <property name="fill">True</property>
-                        <property name="position">1</property>
+                        <property name="position">2</property>
                       </packing>
                     </child>
                     <child>
-                      <object class="GtkBox">
+                      <object class="GtkBox" id="box_privkey">
                         <property name="visible">True</property>
                         <property name="can_focus">False</property>
                         <property name="tooltip_markup" translatable="yes">Path to the file from which the identity (private key) for public key authentication is read. Passed to SSH as "&lt;b&gt;-i $file&lt;/b&gt;".
@@ -773,6 +850,7 @@ gSTM does not launch ssh from a shell; Therefore, shell expansions such as &lt;b
                             <property name="valign">center</property>
                             <property name="margin_left">2</property>
                             <property name="invisible_char">●</property>
+                            <property name="truncate_multiline">True</property>
                           </object>
                           <packing>
                             <property name="expand">False</property>
@@ -784,7 +862,7 @@ gSTM does not launch ssh from a shell; Therefore, shell expansions such as &lt;b
                       <packing>
                         <property name="expand">True</property>
                         <property name="fill">True</property>
-                        <property name="position">2</property>
+                        <property name="position">3</property>
                       </packing>
                     </child>
                   </object>
@@ -798,6 +876,7 @@ gSTM does not launch ssh from a shell; Therefore, shell expansions such as &lt;b
                   <object class="GtkBox">
                     <property name="visible">True</property>
                     <property name="can_focus">False</property>
+                    <property name="margin_left">5</property>
                     <property name="margin_right">5</property>
                     <property name="orientation">vertical</property>
                     <child>
@@ -859,11 +938,13 @@ gSTM does not launch ssh from a shell; Therefore, shell expansions such as &lt;b
                     </child>
                     <child>
                       <object class="GtkBox">
+                        <property name="name">box_restarts</property>
                         <property name="width_request">176</property>
                         <property name="visible">True</property>
                         <property name="can_focus">False</property>
                         <property name="tooltip_text" translatable="yes">This option specifies the maximum number of times gSTM will attempt to automatically re-start a failed tunnel, if "Auto-restart on failure" is enabled.</property>
                         <property name="halign">start</property>
+                        <property name="margin_bottom">5</property>
                         <child>
                           <object class="GtkLabel" id="label30">
                             <property name="height_request">24</property>
@@ -895,6 +976,7 @@ gSTM does not launch ssh from a shell; Therefore, shell expansions such as &lt;b
                             <property name="invisible_char">●</property>
                             <property name="width_chars">3</property>
                             <property name="max_width_chars">3</property>
+                            <property name="truncate_multiline">True</property>
                             <property name="input_purpose">number</property>
                           </object>
                           <packing>
@@ -909,6 +991,9 @@ gSTM does not launch ssh from a shell; Therefore, shell expansions such as &lt;b
                         <property name="fill">True</property>
                         <property name="position">3</property>
                       </packing>
+                    </child>
+                    <child>
+                      <placeholder/>
                     </child>
                   </object>
                   <packing>

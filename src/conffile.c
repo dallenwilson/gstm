@@ -21,6 +21,7 @@
 
 #include <sys/types.h>
 #include <dirent.h>
+#include <glib.h>
 
 #include "main.h"
 #include "conffile.h"
@@ -131,6 +132,7 @@ int gstm_tunnel_add(const char *tname)
 			tun->restart = FALSE;
 			tun->notify = FALSE;
 			tun->maxrestarts = malloc(3); strcpy ((char *)tun->maxrestarts, "9");
+			tun->preset = FALSE;
 			tun->active = FALSE;
 			tun->sshpid = 0;
 			tun->fn = malloc (strlen (fname) + 1); strcpy (tun->fn, fname);
@@ -295,6 +297,16 @@ gboolean gstm_tunnel2file(struct sshtunnel *st, const char *fn) {
 		rc = xmlTextWriterWriteElement(writer, BAD_CAST "maxrestarts", BAD_CAST st->maxrestarts);
 		if (rc < 0) {
 			gstm_interface_error("Error at xmlTextWriterWriteElement: maxrestarts");
+			return ret;
+		}
+		/* preset element */
+		if (st->preset) {
+			rc = xmlTextWriterWriteElement(writer, BAD_CAST "preset", BAD_CAST "1");
+		} else {
+			rc = xmlTextWriterWriteElement(writer, BAD_CAST "preset", BAD_CAST "0");
+		}
+		if (rc < 0) {
+			gstm_interface_error("Error at xmlTextWriterWriteElement: preset");
 			return ret;
 		}
 
@@ -469,6 +481,7 @@ int gstm_file2tunnel(char *file, struct sshtunnel *tunnel) {
 	tunnel->active = FALSE;
 	tunnel->autostart = FALSE;
 	tunnel->restart = FALSE;
+	tunnel->preset = FALSE;
 	tunnel->notify = TRUE;
 	tunnel->sshpid=0;
 	tunnel->fn = malloc(strlen(file)+1); strcpy(tunnel->fn,file);
@@ -521,6 +534,16 @@ int gstm_file2tunnel(char *file, struct sshtunnel *tunnel) {
 					strcpy ((char *)tmprest, (char *)tmp);
 					if (strcmp ((char *)tmprest, "1") == 0) {
 					tunnel->restart = TRUE;
+					}
+					free(tmprest);
+					tmprest = NULL;
+				}
+				else if (strcmp ((char *)cur->name, "preset") == 0 && tmp)
+				{
+					tmprest = malloc (strlen ((char *)tmp) + 1);
+					strcpy ((char *)tmprest, (char *)tmp);
+					if (strcmp ((char *)tmprest, "1") == 0) {
+					tunnel->preset = TRUE;
 					}
 					free(tmprest);
 					tmprest = NULL;
@@ -614,4 +637,47 @@ int gstm_addtunneldef2tunnel(xmlDocPtr doc, xmlNodePtr def, struct sshtunnel *tu
 	}
 	retval = 1;
 	return retval;
+}
+
+// Scan ~/.ssh/config, if it exists, and build a list of preset hosts
+void parseSSHconfig (GtkWidget *widget, gchar *host) {
+	// Clear Preset list
+	gtk_combo_box_text_remove_all (GTK_COMBO_BOX_TEXT (widget));
+
+	FILE* file = fopen(sshconfig, "r");
+
+	int counter = 0;
+	int idx = 0;
+	if (file != NULL) {
+		char line[256];
+		while (fgets(line, sizeof(line), file)) {
+			char checkHost[6];
+			strncpy (checkHost, line, 5);
+			checkHost [5] = 0;
+
+			if (strcmp (checkHost, "Host ") == 0) {
+				char hostName [255];
+				strncpy (hostName, line + 5, strlen(line));
+				hostName [strlen (hostName) - 1] = 0;
+
+				if (strcmp (hostName, "*") != 0) {
+					counter++;
+					gtk_combo_box_text_append_text (GTK_COMBO_BOX_TEXT (widget), hostName);
+
+					if (host != NULL)
+						if (strcmp (host, hostName) == 0)
+							idx = counter;
+				}
+			}
+		}
+
+		fclose(file);
+	}
+
+	if (counter)
+		gtk_combo_box_text_prepend_text (GTK_COMBO_BOX_TEXT (widget), (gchar *)"No preset selected");
+	else
+		gtk_combo_box_text_prepend_text (GTK_COMBO_BOX_TEXT (widget), (gchar *)"No presets available");
+
+	gtk_combo_box_set_active (GTK_COMBO_BOX (widget), idx);
 }

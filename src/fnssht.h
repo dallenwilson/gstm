@@ -30,7 +30,6 @@ struct Shelperargs {
 	gboolean notify;
 	int maxrestarts;
 	char **sshargs;
-	//char **errmsgs;
 };
 
 gboolean gstm_ssht_helperthread_refresh_gui (gpointer *data);

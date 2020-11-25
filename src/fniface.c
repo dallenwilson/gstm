@@ -339,6 +339,7 @@ void gstm_interface_properties(int tid) {
 	GtkTreeSelection *selection;
 	GtkWidget *wname, *wlogin, *whost, *wport, *wprivkey, *wastart, *warestart, *wanotify, *wmaxrestarts, *wlist;
 	GtkWidget *wtunlabel, *wpokbutton;
+	GtkWidget *combo_preset;
 	int i;
 	gboolean ret;
 	GtkTreeIter iter;
@@ -376,6 +377,13 @@ void gstm_interface_properties(int tid) {
 
 		wmaxrestarts = GTK_WIDGET (gtk_builder_get_object (builder, "entry_maxrestarts"));
 		gtk_entry_set_text (GTK_ENTRY (wmaxrestarts), (char *)gSTMtunnels[tid]->maxrestarts);
+
+		combo_preset = GTK_WIDGET (gtk_builder_get_object (builder, "combo_preset"));
+		gchar *tempHost = NULL;
+		if (gSTMtunnels[tid]->preset)
+			tempHost = (gchar *)gSTMtunnels[tid]->host;
+
+		parseSSHconfig (combo_preset, tempHost);
 
 		//fill redir list
 		wlist = GTK_WIDGET (gtk_builder_get_object (builder, "redirlist"));
@@ -418,7 +426,7 @@ void gstm_interface_properties(int tid) {
 				strcpy ((char *)gSTMtunnels[tid]->name, tmp);
 				gstm_interface_refresh_row_id (tid, tmp);
 			}
-			
+
 			tmp = gtk_entry_get_text (GTK_ENTRY (wlogin));
 			if (strcmp (tmp, (char *)gSTMtunnels[tid]->login) != 0)
 			{
@@ -442,7 +450,7 @@ void gstm_interface_properties(int tid) {
 				gSTMtunnels[tid]->port = malloc (strlen (tmp) + 1);
 				strcpy ((char *)gSTMtunnels[tid]->port, tmp);
 			}
-			
+
 			tmp = gtk_entry_get_text (GTK_ENTRY (wprivkey));
 			if (strcmp (tmp, (char *)gSTMtunnels[tid]->privkey) != 0)
 			{
@@ -457,6 +465,11 @@ void gstm_interface_properties(int tid) {
 
 			gSTMtunnels[tid]->notify = gtk_toggle_button_get_active (GTK_TOGGLE_BUTTON (wanotify));
 
+			if (gtk_combo_box_get_active (GTK_COMBO_BOX (combo_preset)) <= 0)
+				gSTMtunnels[tid]->preset = FALSE;
+			else
+				gSTMtunnels[tid]->preset = TRUE;
+
 			tmp = gtk_entry_get_text (GTK_ENTRY (wmaxrestarts));
 			if (strcmp (tmp, (char *)gSTMtunnels[tid]->maxrestarts) != 0)
 			{
@@ -468,7 +481,7 @@ void gstm_interface_properties(int tid) {
 			//the portredirs need to be erased and readded
 			for (i = 0; i < gSTMtunnels[tid]->defcount; i++)
 				free (gSTMtunnels[tid]->portredirs[i]);
-			
+
 			free (gSTMtunnels[tid]->portredirs);
 			gSTMtunnels[tid]->portredirs = NULL;
 			gSTMtunnels[tid]->defcount = 0;

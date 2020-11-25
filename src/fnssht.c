@@ -258,17 +258,29 @@ struct Shelperargs *gstm_ssht_craft_command (int id) {
 	//ok, now create the argument list to ssh
 	hargs->sshargs = gstm_ssht_addssharg (hargs->sshargs, "ssh");
 	hargs->sshargs = gstm_ssht_addssharg (hargs->sshargs, (char *)gSTMtunnels[id]->host);
-	hargs->sshargs = gstm_ssht_addssharg (hargs->sshargs, "-p");
-	hargs->sshargs = gstm_ssht_addssharg (hargs->sshargs, (char *)gSTMtunnels[id]->port);
-
-	if (strlen ((char *)gSTMtunnels[id]->privkey)>1) {
-		hargs->sshargs = gstm_ssht_addssharg (hargs->sshargs, "-i");
-		hargs->sshargs = gstm_ssht_addssharg (hargs->sshargs, (char *)gSTMtunnels[id]->privkey);
-	}
-
-	hargs->sshargs = gstm_ssht_addssharg (hargs->sshargs, "-l");
-	hargs->sshargs = gstm_ssht_addssharg (hargs->sshargs, (char *)gSTMtunnels[id]->login);
 	hargs->sshargs = gstm_ssht_addssharg (hargs->sshargs, "-nN");
+
+	if (!gSTMtunnels[id]->preset) {
+		if (strlen ((char *)gSTMtunnels[id]->port) > 1) {
+			hargs->sshargs = gstm_ssht_addssharg (hargs->sshargs, "-p");
+			hargs->sshargs = gstm_ssht_addssharg (hargs->sshargs, (char *)gSTMtunnels[id]->port);
+		}
+
+		if (strlen ((char *)gSTMtunnels[id]->privkey) > 1) {
+			hargs->sshargs = gstm_ssht_addssharg (hargs->sshargs, "-i");
+			hargs->sshargs = gstm_ssht_addssharg (hargs->sshargs, (char *)gSTMtunnels[id]->privkey);
+		}
+
+		if (strlen ((char *)gSTMtunnels[id]->login) > 1) {
+			hargs->sshargs = gstm_ssht_addssharg (hargs->sshargs, "-l");
+			hargs->sshargs = gstm_ssht_addssharg (hargs->sshargs, (char *)gSTMtunnels[id]->login);
+		}
+
+		hargs->sshargs = gstm_ssht_addssharg(hargs->sshargs, "-o");
+		hargs->sshargs = gstm_ssht_addssharg(hargs->sshargs, "ConnectTimeout=5");
+		hargs->sshargs = gstm_ssht_addssharg(hargs->sshargs, "-o");
+		hargs->sshargs = gstm_ssht_addssharg(hargs->sshargs, "NumberOfPasswordPrompts=1");
+	}
 
 	// port redirect args
 	for (i=0; i<gSTMtunnels[id]->defcount; i++) {
@@ -286,10 +298,6 @@ struct Shelperargs *gstm_ssht_craft_command (int id) {
 		hargs->sshargs = gstm_ssht_addssharg(hargs->sshargs, tmp);
 		free(tmp);
 	}
-	hargs->sshargs = gstm_ssht_addssharg(hargs->sshargs, "-o");
-	hargs->sshargs = gstm_ssht_addssharg(hargs->sshargs, "ConnectTimeout=5");
-	hargs->sshargs = gstm_ssht_addssharg(hargs->sshargs, "-o");
-	hargs->sshargs = gstm_ssht_addssharg(hargs->sshargs, "NumberOfPasswordPrompts=1");
 	hargs->sshargs = gstm_ssht_addssharg(hargs->sshargs, NULL); //end list
 
 	hargs->restart = gSTMtunnels[id]->restart;
