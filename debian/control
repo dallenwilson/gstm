@@ -3,7 +3,7 @@ Section: gnome
 Priority: optional
 Maintainer: Dallen Wilson <dwjwilson@lavabit.com>
 XSBC-Original-Maintainer: Ryan Niebur <ryan@debian.org>
-Build-Depends: debhelper (>= 10), gettext, pkg-config, libxml2-dev, libgtk-3-dev, intltool
+Build-Depends: debhelper (>= 10), gettext, pkg-config, libxml2-dev, libgtk-3-dev, libappindicator-dev, intltool
 Homepage: https://github.com/dallenwilson/gstm
 Standards-Version: 4.1.4
 
