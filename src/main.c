@@ -34,6 +34,7 @@
 Gstm *app;
 
 char *gstmdir = NULL;
+char *sshdir = NULL;
 char *sshconfig = NULL;
 char *gstmpixmaps = NULL;
 char *gstmui = NULL;
@@ -119,7 +120,17 @@ void init_config ()
 	}
 
 	// get HOME variable and construct sshconfig file path
+	sshdir = malloc (strlen (getenv ("HOME")) + 6 + 1);
 	sshconfig = malloc (strlen (getenv ("HOME")) + 12 + 1);
+
+	if (!sshdir)
+	{
+		fprintf (stderr, "** out of memory\n");
+		exit (EXIT_FAILURE);
+	}
+
+	strcpy (sshdir, getenv ("HOME"));
+	strcat (sshdir, "/.ssh/");
 
 	if (!sshconfig)
 	{
@@ -127,9 +138,8 @@ void init_config ()
 		exit (EXIT_FAILURE);
 	}
 
-	strcpy (sshconfig, getenv ("HOME"));
-
-	strcat (sshconfig, "/.ssh/config");
+	strcpy (sshconfig, sshdir);
+	strcat (sshconfig, "config");
 }
 
 //	Find location of pixmaps and glade ui file

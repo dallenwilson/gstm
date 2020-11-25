@@ -275,6 +275,7 @@ void cb_preset_changed (GtkComboBox *combobox, gpointer user_data)
 	GtkWidget *host = GTK_WIDGET (gtk_builder_get_object (builder, "entry_host"));
 	GtkWidget *port = GTK_WIDGET (gtk_builder_get_object (builder, "entry_port"));
 	GtkWidget *privkey = GTK_WIDGET (gtk_builder_get_object (builder, "entry_privkey"));
+	GtkWidget *btnfindkey = GTK_WIDGET (gtk_builder_get_object (builder, "btn_findkey"));
 
 	// If 0 or -1, enable entry_login, entry_host, entry_port, entry_privkey
 	// Otherwise, disable above, set entry_host to preset name
@@ -286,6 +287,7 @@ void cb_preset_changed (GtkComboBox *combobox, gpointer user_data)
 		gtk_widget_set_sensitive (GTK_WIDGET (host), TRUE);
 		gtk_widget_set_sensitive (GTK_WIDGET (port), TRUE);
 		gtk_widget_set_sensitive (GTK_WIDGET (privkey), TRUE);
+		gtk_widget_set_sensitive (GTK_WIDGET (btnfindkey), TRUE);
 	}
 	else
 	{
@@ -297,7 +299,36 @@ void cb_preset_changed (GtkComboBox *combobox, gpointer user_data)
 		gtk_widget_set_sensitive (GTK_WIDGET (port), FALSE);
 		gtk_entry_set_text (GTK_ENTRY (privkey), "");
 		gtk_widget_set_sensitive (GTK_WIDGET (privkey), FALSE);
+		gtk_widget_set_sensitive (GTK_WIDGET (btnfindkey), FALSE);
 	}
+}
+
+void cb_btn_findkey_clicked (GtkButton *button, gpointer user_data)
+{
+	GtkWidget *dialog;
+	GtkFileChooserAction action = GTK_FILE_CHOOSER_ACTION_OPEN;
+	gint res;
+
+	dialog = gtk_file_chooser_dialog_new ("Locate Private Key",
+	                                      GTK_WINDOW (maindialog), action,
+	                                      "_Cancel", GTK_RESPONSE_CANCEL,
+	                                      "_Select", GTK_RESPONSE_ACCEPT,
+	                                      NULL);
+
+	gtk_file_chooser_set_current_folder (GTK_FILE_CHOOSER (dialog), sshdir);
+
+	res = gtk_dialog_run (GTK_DIALOG (dialog));
+	if (res == GTK_RESPONSE_ACCEPT)
+	{
+		char *filename;
+		GtkFileChooser *chooser = GTK_FILE_CHOOSER (dialog);
+		filename = gtk_file_chooser_get_filename (chooser);
+		GtkWidget *privkey = GTK_WIDGET (gtk_builder_get_object (builder, "entry_privkey"));
+		gtk_entry_set_text (GTK_ENTRY (privkey), filename);
+		g_free (filename);
+	}
+
+	gtk_widget_destroy (dialog);
 }
 
 void redir_addedit(GtkButton *button, gint editid)
