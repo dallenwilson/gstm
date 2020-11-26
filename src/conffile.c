@@ -45,6 +45,8 @@ void gstm_free1tunnel(struct sshtunnel *tun) {
 		free(tun->host);
 		free(tun->port);
 		free(tun->login);
+		free(tun->privkey);
+		free(tun->maxrestarts);
 		free(tun->fn);
 		if (tun->defcount>0 && tun->portredirs!=NULL) {
 			for (j=0; j<tun->defcount; j++) {
@@ -375,52 +377,65 @@ gboolean gstm_tunnel_name_exists(const char *tname) {
 int gstm_readfiles(char *dir, struct sshtunnel ***tptr) {
 	struct dirent **entrylist=NULL;
 	struct sshtunnel **mptr, *fptr=NULL;
+
 	char *sptr=NULL;
 	int len=0, scnt=0, listlen=0, l=0;
-	
+
 	listlen = scandir(dir, &entrylist, 0, alphasort);
-	
+
 	if (listlen<0) {
 		fprintf(stderr,"** unable to open gSTM directory (%s)",dir);
 		free(dir);
 		exit(EXIT_FAILURE);
+
 	} else {
 		while (l<listlen) {		
 			len = strlen(entrylist[l]->d_name);
+
 			if (len<6) {
+				free(entrylist[l]);
 				l++;
 				continue;
 			}
+
 			sptr = entrylist[l]->d_name + (len-5);
+
 			if (strcmp(sptr,".gstm")==0) {
 				*tptr = realloc(*tptr, (scnt+1)*sizeof(struct sshtunnel *));
+
 				if (*tptr==NULL) {
 					fprintf(stderr,"** out of memory");
 					free(dir);
 					exit(EXIT_FAILURE);
 				}
+
 				mptr = *tptr;
 				mptr[scnt] = malloc(sizeof(struct sshtunnel));
+
 				if (mptr[scnt]==NULL) {
 					fprintf(stderr,"** out of memory");
 					free(tptr);
 					free(dir);
 					exit(EXIT_FAILURE);
 				}
+
 				fptr = mptr[scnt];
 				sptr = malloc(strlen(dir)+1+strlen(entrylist[l]->d_name)+1);
 				sprintf(sptr, "%s/%s", dir, entrylist[l]->d_name);
-				if (gstm_file2tunnel(sptr,fptr)) {
+
+				if (gstm_file2tunnel(sptr,fptr))
 					scnt+=1;
-				}
-				free(sptr);
+
+				free (sptr);
 			}
+
 			free(entrylist[l]);
 			l++;
 		}
+
 		free(entrylist);
 	}
-			
+
 	return scnt;
 }
 

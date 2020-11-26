@@ -67,6 +67,10 @@ int main (int argc, char *argv[])
 		g_object_unref (builder);
 	
 	g_object_unref (app);
+	free (gstmdir);
+	free (gstmpixmaps);
+	free (sshdir);
+	free (sshconfig);
 
 	return status;
 }
@@ -156,13 +160,15 @@ void init_paths ()
 	if (dir)
 	{
 		closedir (dir);
-		gstmpixmaps = malloc (strlen (tempdir));
+		gstmpixmaps = malloc (strlen (tempdir) + 1);
 		strcpy (gstmpixmaps, tempdir);
 
 		gstmui = malloc (strlen (PACKAGE_SRC_DIR) + strlen ("/gstm.ui") + 1);
 		strcpy (gstmui, PACKAGE_SRC_DIR);
 		strcat (gstmui, "/gstm.ui");
 	}
+
+	free (tempdir);
 
 	//	If not, check if system data exists
 	if (!gstmpixmaps)

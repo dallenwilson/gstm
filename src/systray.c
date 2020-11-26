@@ -79,10 +79,14 @@ void gstm_dockletmenu_tunnelitem_new (GtkMenu *menu, const gchar *t_name,
 	GtkWidget *icon = gtk_image_new_from_pixbuf(pb);
 	GtkWidget *label;
 
+	gchar *tmpchar = NULL;
 	if (t_active)
-		label = gtk_label_new (g_strconcat ("Disconnect: ", t_name, NULL));
+		tmpchar = g_strconcat ("Disconnect: ", t_name, NULL);
 	else
-		label = gtk_label_new (g_strconcat ("Connect: ", t_name, NULL));
+		tmpchar = g_strconcat ("Connect: ", t_name, NULL);
+
+	label = gtk_label_new (tmpchar);
+	g_free (tmpchar);
 
 	GtkWidget *menu_item = gtk_menu_item_new ();
 
