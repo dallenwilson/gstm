@@ -39,8 +39,7 @@ int activeCount = 0;
 gboolean noerrors = FALSE;
 
 void gstm_free1tunnel(struct sshtunnel *tun) {
-	int j;
-	if (tun!=NULL) {
+	if (tun != NULL) {
 		free(tun->name);
 		free(tun->host);
 		free(tun->port);
@@ -48,12 +47,14 @@ void gstm_free1tunnel(struct sshtunnel *tun) {
 		free(tun->privkey);
 		free(tun->maxrestarts);
 		free(tun->fn);
-		if (tun->defcount>0 && tun->portredirs!=NULL) {
-			for (j=0; j<tun->defcount; j++) {
+
+		if ((tun->defcount > 0) && (tun->portredirs != NULL)) {
+			for (int j = 0; j < tun->defcount; j++) {
 				free(tun->portredirs[j]->type);
 				free(tun->portredirs[j]->port1);
 				free(tun->portredirs[j]->host);
 				free(tun->portredirs[j]->port2);
+				free(tun->portredirs[j]);
 			}
 			free(tun->portredirs);
 		}
@@ -151,6 +152,7 @@ int gstm_tunnel_add(const char *tname)
 				gtk_list_store_set (tunnellist_store, &iter, COL_ACTIVE,
 				                    pixbuf_red, COL_NAME, tun->name, COL_ID,
 				                    tunnelCount, -1);
+				g_free (pixbuf_red);
 				ret = tunnelCount;
 				tunnelCount += 1;
 				
@@ -466,7 +468,8 @@ int gstm_file2tunnel(char *file, struct sshtunnel *tunnel) {
 	
 	// build an XML tree from the file;
 	doc = xmlParseFile(file);
-	if (doc == NULL) return(retval);
+	if (doc == NULL)
+		return(retval);
 		
 	// check the document is of the right kind
 	cur = xmlDocGetRootElement(doc);
@@ -599,6 +602,11 @@ int gstm_file2tunnel(char *file, struct sshtunnel *tunnel) {
 		strcpy ((char *)tunnel->maxrestarts, "9");
 	}
 
+	xmlFree (tmpauto);
+	xmlFree (tmprest);
+	xmlFree (tmpnotify);
+	xmlFreeDoc(doc);
+
 	retval=1;
 	return(retval);
 }
@@ -607,7 +615,6 @@ int gstm_addtunneldef2tunnel(xmlDocPtr doc, xmlNodePtr def, struct sshtunnel *tu
 	int halt=0;
 	int retval=0;
 	struct portredir *tdef, **temp;
-	xmlChar *tmp;
 	
 	tunnel->portredirs = realloc(tunnel->portredirs, (idx+1)*sizeof(struct tunneldef *));
 	if (tunnel->portredirs==NULL) {
@@ -630,13 +637,15 @@ int gstm_addtunneldef2tunnel(xmlDocPtr doc, xmlNodePtr def, struct sshtunnel *tu
 
 	while (def && !halt) {
 		if (!xmlIsBlankNode(def)) {
-			tmp = xmlNodeListGetString(doc, def->xmlChildrenNode, 1);
+			xmlChar *tmp = xmlNodeListGetString(doc, def->xmlChildrenNode, 1);
 			if ((strcmp ((char *)def->name, "type") == 0) && tmp) {
 				tdef->type = realloc(tdef->type, strlen ((char *)tmp) + 1);
 				strcpy ((char *)tdef->type, (char *)tmp);
 			} else if ((strcmp ((char *)def->name, "port1") == 0) && tmp) {
 				tdef->port1 = realloc (tdef->port1, strlen ((char *)tmp) + 1);
-				strcpy ((char *)tdef->port1, (char *)xmlNodeListGetString(doc, def->xmlChildrenNode, 1));
+				xmlChar *tmp2 = xmlNodeListGetString(doc, def->xmlChildrenNode, 1);
+				strcpy ((char *)tdef->port1, (char *)tmp2);
+				xmlFree (tmp2);
 			} else if ((strcmp ((char *)def->name, "host") == 0) && tmp) {
 				tdef->host = realloc (tdef->host, strlen ((char *)tmp) + 1);
 				strcpy ((char *)tdef->host, (char *)tmp);
@@ -651,6 +660,7 @@ int gstm_addtunneldef2tunnel(xmlDocPtr doc, xmlNodePtr def, struct sshtunnel *tu
 		def = def->next;
 	}
 	retval = 1;
+
 	return retval;
 }
 

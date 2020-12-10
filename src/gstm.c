@@ -122,10 +122,12 @@ gstm_activate (GApplication *application)
 	//	set window icon
 	GdkPixbuf *pbicon = create_pixbuf ("gSTM.png");
 	gtk_window_set_icon (GTK_WINDOW (maindialog), pbicon);
+	g_object_unref (pbicon);
 
 	//	set banner
 	GdkPixbuf *pbbanner = create_pixbuf ("STMbanner.png");
 	gtk_image_set_from_pixbuf (banner, pbbanner);
+	g_object_unref (pbbanner);
 	
 	//	create the notification area icon
 	gstm_docklet_create();
@@ -253,6 +255,9 @@ void gstm_populate_treeview (GtkWidget *dialog, const char *objname,
 			
 		}
 	}
+
+	g_object_unref (pixbuf_red);
+	g_object_unref (pixbuf_green);
 
 	//sort it
 	gtk_tree_sortable_set_sort_column_id (GTK_TREE_SORTABLE(tunnellist_store),

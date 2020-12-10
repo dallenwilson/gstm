@@ -67,10 +67,14 @@ int main (int argc, char *argv[])
 		g_object_unref (builder);
 	
 	g_object_unref (app);
+
+	xmlCleanupParser ();
+
 	free (gstmdir);
 	free (gstmpixmaps);
 	free (sshdir);
 	free (sshconfig);
+	free (gstmui);
 
 	return status;
 }

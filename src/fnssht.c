@@ -205,22 +205,25 @@ gboolean gstm_ssht_helperthread_refresh_gui (gpointer *data)
 
 static int argcnt;
 char **gstm_ssht_addssharg(char **args, const char *str) {
-	char **ret=NULL;
-	if (args==NULL) argcnt=0;
+	char **ret = NULL;
+
+	if (args == NULL)
+		argcnt=0;
 		
 	//enlarge the list
-	ret=realloc(args, (argcnt+1) * sizeof(char *) );
-	if (str!=NULL) {
+	ret = realloc (args, (argcnt + 1) * sizeof (char *) );
+
+	if (str != NULL) {
 		//put the string in
-		ret[argcnt]=malloc(strlen(str)+1);
-		strcpy(ret[argcnt], str);
+		ret [argcnt] = malloc (strlen (str) + 1);
+		strcpy (ret [argcnt], str);
 	} else {
 		//NULL str, assume we have to end the list with a NULL-pointer
-		ret[argcnt]=NULL;
+		ret [argcnt] = NULL;
 	}
+
 	argcnt++;
-	
-	//all done
+
 	return ret;
 }
 
@@ -241,6 +244,8 @@ char *gstm_ssht_command2string (int id) {
 		strcat (command, hargs->sshargs[i]);
 		strcat (command, " ");
 	}
+
+	free (hargs);
 
 	return command;
 }
@@ -284,7 +289,14 @@ struct Shelperargs *gstm_ssht_craft_command (int id) {
 
 	// port redirect args
 	for (i=0; i<gSTMtunnels[id]->defcount; i++) {
-		tmp = malloc(4 + strlen ((char *)gSTMtunnels[id]->portredirs[i]->port1) + strlen ((char *)gSTMtunnels[id]->portredirs[i]->host) + strlen ((char *)gSTMtunnels[id]->portredirs[i]->port2) +1);
+
+		tmp = malloc (4 +
+		              strlen ((char *)gSTMtunnels[id]->portredirs[i]->port1) +
+		              strlen ((char *)gSTMtunnels[id]->portredirs[i]->host) +
+		              strlen ((char *)gSTMtunnels[id]->portredirs[i]->port2) +
+		              1);
+
+
 		if (strcmp ((char *)gSTMtunnels[id]->portredirs[i]->type,"local") == 0) {
 			type = 'L';
 			sprintf(tmp,"-%c%s:%s:%s",type,gSTMtunnels[id]->portredirs[i]->port1,gSTMtunnels[id]->portredirs[i]->host,gSTMtunnels[id]->portredirs[i]->port2);
@@ -298,6 +310,7 @@ struct Shelperargs *gstm_ssht_craft_command (int id) {
 		hargs->sshargs = gstm_ssht_addssharg(hargs->sshargs, tmp);
 		free(tmp);
 	}
+
 	hargs->sshargs = gstm_ssht_addssharg(hargs->sshargs, NULL); //end list
 
 	hargs->restart = gSTMtunnels[id]->restart;

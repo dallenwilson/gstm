@@ -106,6 +106,8 @@ void gstm_interface_paint_row(GtkTreeSelection *s, gboolean active)
 			pb = create_pixbuf_scaled("red.svg", GTK_ICON_SIZE_MENU);
 		
 		gtk_list_store_set(tunnellist_store, &i, COL_ACTIVE, pb, -1);
+
+		g_free (pb);
 	}
 }
 
@@ -130,6 +132,7 @@ void gstm_interface_paint_row_id (int id, gboolean active)
 				pb = create_pixbuf_scaled ("red.svg", GTK_ICON_SIZE_MENU);
 			
 			gtk_list_store_set (tunnellist_store, &i, COL_ACTIVE, pb, -1);
+			g_free (pb);
 			break;
 		}
 		
@@ -162,10 +165,12 @@ void gstm_interface_rowactivity() {
 	if ((s=gstm_interface_get_selected_tunnel()))
 	{
 		id = gstm_interface_selection2id (s,COL_ID);
+
 		gchar *msg;
 		msg = gstm_ssht_command2string (id);
 		gstm_interface_showinfo (msg);
 		free (msg);
+
 		gstm_interface_enablebuttons (gSTMtunnels[id]->active);
 	}
 	else
@@ -270,20 +275,15 @@ void gstm_interface_redirlist_init(GtkTreeView *v) {
 											   "text", COL_PORT2,
 											   NULL);
 	redirstore = gtk_list_store_new (N_RCOLS, G_TYPE_STRING, G_TYPE_STRING, G_TYPE_STRING, G_TYPE_STRING, G_TYPE_INT);
-	
-	//set widths
+
 	c = gtk_tree_view_get_column(v,COL_TYPE);
-	gtk_tree_view_column_set_sizing(c, GTK_TREE_VIEW_COLUMN_FIXED);
-	gtk_tree_view_column_set_fixed_width(c, 60);
+	gtk_tree_view_column_set_sizing(c, GTK_TREE_VIEW_COLUMN_AUTOSIZE);
 	c = gtk_tree_view_get_column(v,COL_PORT1);
-	gtk_tree_view_column_set_sizing(c, GTK_TREE_VIEW_COLUMN_FIXED);
-	gtk_tree_view_column_set_fixed_width(c, 50);
+	gtk_tree_view_column_set_sizing(c, GTK_TREE_VIEW_COLUMN_AUTOSIZE);
 	c = gtk_tree_view_get_column(v,COL_HOST);
-	gtk_tree_view_column_set_sizing(c, GTK_TREE_VIEW_COLUMN_FIXED);
-	gtk_tree_view_column_set_fixed_width(c, 250);
+	gtk_tree_view_column_set_sizing(c, GTK_TREE_VIEW_COLUMN_AUTOSIZE);
 	c = gtk_tree_view_get_column(v,COL_PORT2);
-	gtk_tree_view_column_set_sizing(c, GTK_TREE_VIEW_COLUMN_FIXED);
-	gtk_tree_view_column_set_fixed_width(c, 50);
+	gtk_tree_view_column_set_sizing(c, GTK_TREE_VIEW_COLUMN_AUTOSIZE);
 	
 	gtk_tree_view_set_model (v, GTK_TREE_MODEL(redirstore));
 }
@@ -508,7 +508,8 @@ void gstm_interface_properties(int tid) {
 		gtk_widget_hide (propertiesdialog);
 
 		gtk_window_set_focus (GTK_WINDOW (maindialog), tunlist);
-		gstm_interface_rowactivity(); //since login or host may have been changed ;)
+		gstm_interface_rowactivity();
+
 	}
 }
 
