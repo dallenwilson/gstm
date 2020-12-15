@@ -110,7 +110,7 @@ void gstm_interface_paint_row(GtkTreeSelection *s, gboolean active)
 		
 		gtk_list_store_set(tunnellist_store, &i, COL_ACTIVE, pb, -1);
 
-		g_free (pb);
+		g_object_unref (pb);
 	}
 }
 
@@ -135,7 +135,7 @@ void gstm_interface_paint_row_id (int id, gboolean active)
 				pb = create_pixbuf_scaled ("red.svg", GTK_ICON_SIZE_MENU);
 			
 			gtk_list_store_set (tunnellist_store, &i, COL_ACTIVE, pb, -1);
-			g_free (pb);
+			g_object_unref (pb);
 			break;
 		}
 		

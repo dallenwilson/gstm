@@ -154,7 +154,7 @@ int gstm_tunnel_add(const char *tname)
 				gtk_list_store_set (tunnellist_store, &iter, COL_ACTIVE,
 				                    pixbuf_red, COL_NAME, tun->name, COL_ID,
 				                    tunnelCount, -1);
-				g_free (pixbuf_red);
+				g_object_unref (pixbuf_red);
 				ret = tunnelCount;
 				tunnelCount += 1;
 				
