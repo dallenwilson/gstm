@@ -35,7 +35,10 @@ static GtkListStore *redirstore;
 /*	shows informational text in our main dialog	*/
 void gstm_interface_showinfo(char *text)
 {
-	gtk_entry_set_text (GTK_ENTRY (statusbar), text);
+	GtkTextBuffer *statusbuf = gtk_text_buffer_new(NULL);;
+	gtk_text_buffer_set_text (statusbuf, (gchar *)text, -1);
+	gtk_text_view_set_buffer (GTK_TEXT_VIEW (statusbar), statusbuf);
+	g_object_unref (statusbuf);
 }
 
 /* returns the ID column value of the selection */

@@ -264,6 +264,18 @@ gboolean tunnellist_key_release_event_cb (GtkWidget		*widget,
 	return FALSE;
 }
 
+gboolean cb_statusbar_btn_release (GtkWidget *widget,
+                                      GdkEventButton *event,
+                                      gpointer user_data)
+{
+    GtkTextBuffer *buf = gtk_text_view_get_buffer(GTK_TEXT_VIEW(widget));
+    GtkTextIter start, end;
+    gtk_text_buffer_get_start_iter(buf, &start);
+    gtk_text_buffer_get_end_iter(buf, &end);
+    gtk_text_buffer_select_range(buf, &start, &end);
+    return FALSE;
+}
+
 
 /*
  * propertiesdialog callbacks
