@@ -56,8 +56,10 @@ void gstm_free1tunnel(struct sshtunnel *tun) {
 				free(tun->portredirs[j]->port2);
 				free(tun->portredirs[j]);
 			}
+
 			free(tun->portredirs);
 		}
+
 		free(tun);
 	}
 }
@@ -443,15 +445,16 @@ int gstm_readfiles(char *dir, struct sshtunnel ***tptr) {
 
 void gstm_freetunnels(struct sshtunnel ***tptr, int cnt) {
 	struct sshtunnel **tunnels;
-	int i;
-	if (tptr!=NULL) {
+
+	if (tptr != NULL) {
 		tunnels = *tptr;
-		if (tunnels!=NULL) {
-			for (i=0; i<cnt; i++) {
-				if (tunnels[i]!=NULL) {
+
+		if (tunnels != NULL) {
+			for (int i = 0; i < cnt; i++) {
+				if (tunnels[i] != NULL)
 					gstm_free1tunnel(tunnels[i]);
-				}
 			}
+
 			free(tunnels);
 		}
 	}
@@ -612,53 +615,60 @@ int gstm_file2tunnel(char *file, struct sshtunnel *tunnel) {
 }
 
 int gstm_addtunneldef2tunnel(xmlDocPtr doc, xmlNodePtr def, struct sshtunnel *tunnel, int idx) {
-	int halt=0;
-	int retval=0;
-	struct portredir *tdef, **temp;
-	
+	int halt = 0;
+	int retval = 0;
+	struct portredir *tdef;
+
 	tunnel->portredirs = realloc(tunnel->portredirs, (idx+1)*sizeof(struct tunneldef *));
-	if (tunnel->portredirs==NULL) {
+
+	if (tunnel->portredirs == NULL) {
 		fprintf(stderr,"** out of memory");
-		//clean up?!
 		exit(EXIT_FAILURE);
 	}
-	temp = tunnel->portredirs;
-	temp[idx] = malloc(sizeof(struct portredir));
-	if (temp[idx]==NULL) {
+
+	tunnel->portredirs [idx] = malloc(sizeof(struct portredir));
+
+	if (tunnel->portredirs [idx] == NULL) {
 		fprintf(stderr,"** out of memory");
-		//cleanup?!
 		exit(EXIT_FAILURE);
 	}
-	tdef = temp[idx];
-	tdef->type=malloc(1); tdef->type[0]='\0';
-	tdef->port1=malloc(1); tdef->port1[0]='\0';
-	tdef->host=malloc(1); tdef->host[0]='\0';
-	tdef->port2=malloc(1); tdef->port2[0]='\0';
+
+	tdef = tunnel->portredirs [idx];
+	tdef->type	= malloc(1);	tdef->type[0]	= '\0';
+	tdef->port1	= malloc(1);	tdef->port1[0]	= '\0';
+	tdef->host	= malloc(1);	tdef->host[0]	= '\0';
+	tdef->port2	= malloc(1);	tdef->port2[0]	= '\0';
 
 	while (def && !halt) {
-		if (!xmlIsBlankNode(def)) {
+		if (!xmlIsBlankNode (def)) {
 			xmlChar *tmp = xmlNodeListGetString(doc, def->xmlChildrenNode, 1);
+
 			if ((strcmp ((char *)def->name, "type") == 0) && tmp) {
 				tdef->type = realloc(tdef->type, strlen ((char *)tmp) + 1);
 				strcpy ((char *)tdef->type, (char *)tmp);
+
 			} else if ((strcmp ((char *)def->name, "port1") == 0) && tmp) {
 				tdef->port1 = realloc (tdef->port1, strlen ((char *)tmp) + 1);
 				xmlChar *tmp2 = xmlNodeListGetString(doc, def->xmlChildrenNode, 1);
 				strcpy ((char *)tdef->port1, (char *)tmp2);
 				xmlFree (tmp2);
+
 			} else if ((strcmp ((char *)def->name, "host") == 0) && tmp) {
 				tdef->host = realloc (tdef->host, strlen ((char *)tmp) + 1);
 				strcpy ((char *)tdef->host, (char *)tmp);
+
 			} else if ((strcmp ((char *)def->name, "port2") == 0) && tmp) {
 				tdef->port2 = realloc (tdef->port2, strlen ((char *)tmp) + 1);
 				strcpy ((char *)tdef->port2, (char *)tmp);
-			} else {
-				// ??
+
 			}
 			xmlFree(tmp);
+
 		}
 		def = def->next;
+
 	}
+
 	retval = 1;
 
 	return retval;

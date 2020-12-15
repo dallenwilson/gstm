@@ -230,9 +230,9 @@ char **gstm_ssht_addssharg(char **args, const char *str) {
 char *gstm_ssht_command2string (int id) {
 	struct Shelperargs *hargs = gstm_ssht_craft_command (id);
 
-	int i = 0;
 	long msgsize = 0;
-	for (i=0; hargs->sshargs[i] != NULL; i++)
+
+	for (int i = 0; hargs->sshargs[i] != NULL; i++)
 		msgsize += strlen (hargs->sshargs[i]) + sizeof (char);
 
 	char *command = malloc (msgsize + sizeof (char));
@@ -240,11 +240,15 @@ char *gstm_ssht_command2string (int id) {
 	strcpy (command, hargs->sshargs[0]);
 	strcat (command, " ");
 
-	for (i=1; hargs->sshargs[i] != NULL; i++) {
+	for (int i = 1; hargs->sshargs[i] != NULL; i++) {
 		strcat (command, hargs->sshargs[i]);
 		strcat (command, " ");
 	}
 
+	for (int i = 0; hargs->sshargs[i] != NULL; i++)
+		free (hargs->sshargs[i]);
+
+	free (hargs->sshargs);
 	free (hargs);
 
 	return command;

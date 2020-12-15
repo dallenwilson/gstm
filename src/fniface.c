@@ -482,8 +482,14 @@ void gstm_interface_properties(int tid) {
 			}
 
 			//the portredirs need to be erased and readded
-			for (i = 0; i < gSTMtunnels[tid]->defcount; i++)
+			for (i = 0; i < gSTMtunnels[tid]->defcount; i++) {
+				free (gSTMtunnels[tid]->portredirs[i]->type);
+				free (gSTMtunnels[tid]->portredirs[i]->port1);
+				free (gSTMtunnels[tid]->portredirs[i]->host);
+				free (gSTMtunnels[tid]->portredirs[i]->port2);
 				free (gSTMtunnels[tid]->portredirs[i]);
+			}
+
 
 			free (gSTMtunnels[tid]->portredirs);
 			gSTMtunnels[tid]->portredirs = NULL;
