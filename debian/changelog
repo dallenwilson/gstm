@@ -3,6 +3,8 @@ gstm (1.3.7-1warped1) bionic; urgency=low
     - Fixed compiling with -fno-common / GCC10.
     - bind_address may now be specified in tunnel config.
     - Various UI improvements.
+    - Switched docklet to AppIndicator, from GtkStatusIcon.
+    - Plugged several memory leaks identified by valgrind.
 
  -- Dallen Wilson <dwjwilson@lavabit.com>  Wed, 25 Nov 2020 13:21:40 -0700
 

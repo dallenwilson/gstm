@@ -64,7 +64,7 @@ rm -rf $RPM_BUILD_ROOT
 
 %changelog
 * Wed Nov 25 2020  dallenwilson / github - 1.3.7-1
-- Multiple UI improvements.
+- AppIndicator support added. Multiple UI improvements. Multiple memory leaks plugged.
 * Sat Apr 04 2020  dallenwilson / github - 1.3.6-1
 - Corrected Makefile for gAskpass.
 * Tue Mar 31 2020  dallenwilson / github - 1.3.5.1-1

@@ -6,12 +6,14 @@ Copyright: Copyright (C) 2005-2019 Mark Smulders
 Copyright: Copyright (C) 2006 John Spray
 Copyright: Copyright (C) 2019-2020 Dallen Wilson
 Copyright: Copyright (C) 2020 Jarek Polok
+Copyright: Copyright (C) 2020 Alex Guzman
+
 License: GPL-2+
 
 Files: debian/*
 Copyright: 2006 Thierry Randrianiriana <randrianiriana@gmail.com>
            2008, 2011 Ryan Niebur <ryan@debian.org>
-           2015, 2019 Dallen Wilson <dwjwilson@lavabit.com>
+           2015, 2020 Dallen Wilson <dwjwilson@lavabit.com>
 License: GPL-2+
 
 License: GPL-2+
