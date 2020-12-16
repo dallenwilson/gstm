@@ -38,6 +38,8 @@
 GtkWidget* create_pixmap (GtkWidget *widget, const gchar *filename)
 {
 	GtkWidget *pixmap;
+	GError *error = NULL;
+
 	char *iconfile = malloc (strlen (gstmpixmaps) + strlen (filename) + 1);
 	strcpy (iconfile, gstmpixmaps);
 	strcat (iconfile, filename);
@@ -52,6 +54,16 @@ GtkWidget* create_pixmap (GtkWidget *widget, const gchar *filename)
 	}
 
 	pixmap = gtk_image_new_from_file (iconfile);
+
+	if (!pixmap)
+	{
+		fprintf (stderr, "Failed to load pixmap file: %s: %s\n",
+		iconfile, error->message);
+		g_error_free (error);
+	}
+
+	free (iconfile);
+
 	return pixmap;
 }
 
@@ -75,6 +87,7 @@ GdkPixbuf* create_pixbuf (const gchar *filename)
 	}
 
 	pixbuf = gdk_pixbuf_new_from_file (iconfile, &error);
+
 	if (!pixbuf)
 	{
 		fprintf (stderr, "Failed to load pixbuf file: %s: %s\n",
@@ -82,5 +95,35 @@ GdkPixbuf* create_pixbuf (const gchar *filename)
 		g_error_free (error);
 	}
 
+	free (iconfile);
+
+	return pixbuf;
+}
+
+GdkPixbuf* create_pixbuf_scaled (const gchar *filename, GtkIconSize size)
+{
+	GdkPixbuf *pixbuf, *origbuf;
+	int width, height;
+
+	origbuf = create_pixbuf(filename);
+	if (!origbuf)
+		return NULL;
+
+	if (!gtk_icon_size_lookup(size, &width, &height))
+	{
+		g_warning(_("create_pixbuf_scaled: Invalid size: %d"), size);
+		g_object_unref(origbuf);
+		return NULL;
+	}
+
+	pixbuf = gdk_pixbuf_scale_simple(origbuf, width, height, GDK_INTERP_BILINEAR);
+	if (!pixbuf)
+	{
+		g_warning(_("create_pixbuf_scaled: Failed to scale %s to %dx%d"), filename, width, height);
+		g_object_unref(origbuf);
+		return NULL;
+	}
+
+	g_object_unref(origbuf);
 	return pixbuf;
 }

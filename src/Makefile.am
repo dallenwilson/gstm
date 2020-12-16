@@ -12,7 +12,7 @@ AM_CFLAGS = \
 	-DPACKAGE_LOCALE_DIR=\""$(localedir)"\" \
 	-DPACKAGE_SRC_DIR=\""$(abs_srcdir)"\" \
 	-DPACKAGE_DATA_DIR=\""$(pkgdatadir)"\" \
-	$(GTK3_CFLAGS) $(XML_CFLAGS)
+	$(GTK3_CFLAGS) $(XML_CFLAGS) $(APPINDICATOR_CFLAGS)
 
 bin_PROGRAMS = gstm
 
@@ -40,7 +40,7 @@ gstm_SOURCES = \
 
 gstm_LDFLAGS = -Wl,--export-dynamic
 
-gstm_LDADD = $(GTK3_LIBS) $(XML_LIBS)
+gstm_LDADD = $(GTK3_LIBS) $(XML_LIBS) $(APPINDICATOR_LIBS)
 EXTRA_DIST = $(ui_DATA)
 
 # Remove ui directory on uninstall

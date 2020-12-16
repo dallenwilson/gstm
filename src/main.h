@@ -24,6 +24,8 @@
 
 extern Gstm *app;
 extern char *gstmdir;
+extern char *sshdir;
+extern char *sshconfig;
 extern char *gstmpixmaps;
 extern char *gstmui;
 

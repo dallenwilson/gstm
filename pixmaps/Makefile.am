@@ -1,5 +1,5 @@
 pixmapdir = $(pkgdatadir)/pixmaps
-pixmap_DATA = green.xpm gSTM.png gSTM.xpm red.xpm STMbanner.png yellow.xpm
+pixmap_DATA = green.svg gSTM.png red.svg STMbanner.png
 
 icondir = $(datadir)/pixmaps
 icon_DATA = gSTM.png

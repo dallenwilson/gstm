@@ -27,6 +27,7 @@
 #include "callbacks.h"
 #include "gstm.h"
 #include "support.h"
+#include "systray.h"
 
 
 static GtkListStore *redirstore;
@@ -34,7 +35,10 @@ static GtkListStore *redirstore;
 /*	shows informational text in our main dialog	*/
 void gstm_interface_showinfo(char *text)
 {
-	gtk_statusbar_push (GTK_STATUSBAR (statusbar), 0, text);
+	GtkTextBuffer *statusbuf = gtk_text_buffer_new(NULL);;
+	gtk_text_buffer_set_text (statusbuf, (gchar *)text, -1);
+	gtk_text_view_set_buffer (GTK_TEXT_VIEW (statusbar), statusbuf);
+	g_object_unref (statusbuf);
 }
 
 /* returns the ID column value of the selection */
@@ -100,11 +104,13 @@ void gstm_interface_paint_row(GtkTreeSelection *s, gboolean active)
 	if (gtk_tree_selection_get_selected(s,&m,&i))
 	{
 		if (active)
-			pb = create_pixbuf("green.xpm");
+			pb = create_pixbuf_scaled("green.svg", GTK_ICON_SIZE_MENU);
 		else
-			pb = create_pixbuf("red.xpm");
+			pb = create_pixbuf_scaled("red.svg", GTK_ICON_SIZE_MENU);
 		
 		gtk_list_store_set(tunnellist_store, &i, COL_ACTIVE, pb, -1);
+
+		g_object_unref (pb);
 	}
 }
 
@@ -124,11 +130,12 @@ void gstm_interface_paint_row_id (int id, gboolean active)
 		if (id == v_id)
 		{
 			if (active)
-				pb = create_pixbuf ("green.xpm");
+				pb = create_pixbuf_scaled ("green.svg", GTK_ICON_SIZE_MENU);
 			else
-				pb = create_pixbuf ("red.xpm");
+				pb = create_pixbuf_scaled ("red.svg", GTK_ICON_SIZE_MENU);
 			
 			gtk_list_store_set (tunnellist_store, &i, COL_ACTIVE, pb, -1);
+			g_object_unref (pb);
 			break;
 		}
 		
@@ -161,10 +168,12 @@ void gstm_interface_rowactivity() {
 	if ((s=gstm_interface_get_selected_tunnel()))
 	{
 		id = gstm_interface_selection2id (s,COL_ID);
+
 		gchar *msg;
-		msg = g_strdup_printf ("%s@%s", gSTMtunnels[id]->login, gSTMtunnels[id]->host);
+		msg = gstm_ssht_command2string (id);
 		gstm_interface_showinfo (msg);
 		free (msg);
+
 		gstm_interface_enablebuttons (gSTMtunnels[id]->active);
 	}
 	else
@@ -196,6 +205,8 @@ void gstm_interface_rowaction()
 			gstm_interface_paint_row (s, !active);
 			gstm_interface_enablebuttons (!active);
 		}
+
+		gstm_docklet_menu_refresh ();
 	}
 }
 
@@ -267,20 +278,15 @@ void gstm_interface_redirlist_init(GtkTreeView *v) {
 											   "text", COL_PORT2,
 											   NULL);
 	redirstore = gtk_list_store_new (N_RCOLS, G_TYPE_STRING, G_TYPE_STRING, G_TYPE_STRING, G_TYPE_STRING, G_TYPE_INT);
-	
-	//set widths
+
 	c = gtk_tree_view_get_column(v,COL_TYPE);
-	gtk_tree_view_column_set_sizing(c, GTK_TREE_VIEW_COLUMN_FIXED);
-	gtk_tree_view_column_set_fixed_width(c, 60);
+	gtk_tree_view_column_set_sizing(c, GTK_TREE_VIEW_COLUMN_AUTOSIZE);
 	c = gtk_tree_view_get_column(v,COL_PORT1);
-	gtk_tree_view_column_set_sizing(c, GTK_TREE_VIEW_COLUMN_FIXED);
-	gtk_tree_view_column_set_fixed_width(c, 50);
+	gtk_tree_view_column_set_sizing(c, GTK_TREE_VIEW_COLUMN_AUTOSIZE);
 	c = gtk_tree_view_get_column(v,COL_HOST);
-	gtk_tree_view_column_set_sizing(c, GTK_TREE_VIEW_COLUMN_FIXED);
-	gtk_tree_view_column_set_fixed_width(c, 250);
+	gtk_tree_view_column_set_sizing(c, GTK_TREE_VIEW_COLUMN_AUTOSIZE);
 	c = gtk_tree_view_get_column(v,COL_PORT2);
-	gtk_tree_view_column_set_sizing(c, GTK_TREE_VIEW_COLUMN_FIXED);
-	gtk_tree_view_column_set_fixed_width(c, 50);
+	gtk_tree_view_column_set_sizing(c, GTK_TREE_VIEW_COLUMN_AUTOSIZE);
 	
 	gtk_tree_view_set_model (v, GTK_TREE_MODEL(redirstore));
 }
@@ -336,6 +342,7 @@ void gstm_interface_properties(int tid) {
 	GtkTreeSelection *selection;
 	GtkWidget *wname, *wlogin, *whost, *wport, *wprivkey, *wastart, *warestart, *wanotify, *wmaxrestarts, *wlist;
 	GtkWidget *wtunlabel, *wpokbutton;
+	GtkWidget *combo_preset;
 	int i;
 	gboolean ret;
 	GtkTreeIter iter;
@@ -373,6 +380,13 @@ void gstm_interface_properties(int tid) {
 
 		wmaxrestarts = GTK_WIDGET (gtk_builder_get_object (builder, "entry_maxrestarts"));
 		gtk_entry_set_text (GTK_ENTRY (wmaxrestarts), (char *)gSTMtunnels[tid]->maxrestarts);
+
+		combo_preset = GTK_WIDGET (gtk_builder_get_object (builder, "combo_preset"));
+		gchar *tempHost = NULL;
+		if (gSTMtunnels[tid]->preset)
+			tempHost = (gchar *)gSTMtunnels[tid]->host;
+
+		parseSSHconfig (combo_preset, tempHost);
 
 		//fill redir list
 		wlist = GTK_WIDGET (gtk_builder_get_object (builder, "redirlist"));
@@ -415,7 +429,7 @@ void gstm_interface_properties(int tid) {
 				strcpy ((char *)gSTMtunnels[tid]->name, tmp);
 				gstm_interface_refresh_row_id (tid, tmp);
 			}
-			
+
 			tmp = gtk_entry_get_text (GTK_ENTRY (wlogin));
 			if (strcmp (tmp, (char *)gSTMtunnels[tid]->login) != 0)
 			{
@@ -439,7 +453,7 @@ void gstm_interface_properties(int tid) {
 				gSTMtunnels[tid]->port = malloc (strlen (tmp) + 1);
 				strcpy ((char *)gSTMtunnels[tid]->port, tmp);
 			}
-			
+
 			tmp = gtk_entry_get_text (GTK_ENTRY (wprivkey));
 			if (strcmp (tmp, (char *)gSTMtunnels[tid]->privkey) != 0)
 			{
@@ -454,6 +468,11 @@ void gstm_interface_properties(int tid) {
 
 			gSTMtunnels[tid]->notify = gtk_toggle_button_get_active (GTK_TOGGLE_BUTTON (wanotify));
 
+			if (gtk_combo_box_get_active (GTK_COMBO_BOX (combo_preset)) <= 0)
+				gSTMtunnels[tid]->preset = FALSE;
+			else
+				gSTMtunnels[tid]->preset = TRUE;
+
 			tmp = gtk_entry_get_text (GTK_ENTRY (wmaxrestarts));
 			if (strcmp (tmp, (char *)gSTMtunnels[tid]->maxrestarts) != 0)
 			{
@@ -463,9 +482,15 @@ void gstm_interface_properties(int tid) {
 			}
 
 			//the portredirs need to be erased and readded
-			for (i = 0; i < gSTMtunnels[tid]->defcount; i++)
+			for (i = 0; i < gSTMtunnels[tid]->defcount; i++) {
+				free (gSTMtunnels[tid]->portredirs[i]->type);
+				free (gSTMtunnels[tid]->portredirs[i]->port1);
+				free (gSTMtunnels[tid]->portredirs[i]->host);
+				free (gSTMtunnels[tid]->portredirs[i]->port2);
 				free (gSTMtunnels[tid]->portredirs[i]);
-			
+			}
+
+
 			free (gSTMtunnels[tid]->portredirs);
 			gSTMtunnels[tid]->portredirs = NULL;
 			gSTMtunnels[tid]->defcount = 0;
@@ -492,7 +517,8 @@ void gstm_interface_properties(int tid) {
 		gtk_widget_hide (propertiesdialog);
 
 		gtk_window_set_focus (GTK_WINDOW (maindialog), tunlist);
-		gstm_interface_rowactivity(); //since login or host may have been changed ;)
+		gstm_interface_rowactivity();
+
 	}
 }
 

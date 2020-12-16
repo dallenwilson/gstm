@@ -28,6 +28,7 @@
 #include "conffile.h"
 #include "fniface.h"
 #include "fnssht.h"
+#include "systray.h"
 
 void gstm_terminate()
 {
@@ -81,6 +82,8 @@ void btn_add_clicked_cb (GtkButton *button, gpointer user_data)
 	if (gstm_interface_asknewname (&newname) == GTK_RESPONSE_OK)
 	{
 		id = gstm_tunnel_add (newname);
+		gstm_docklet_menu_refresh ();
+
 		if (id > -1)
 			gstm_interface_properties(id);
 	}
@@ -106,8 +109,10 @@ void btn_delete_clicked_cb (GtkButton *button, gpointer user_data)
 		
 		gtk_message_dialog_set_markup (GTK_MESSAGE_DIALOG (del), messagemarkup);
 
-		if (gtk_dialog_run (GTK_DIALOG (del)) == GTK_RESPONSE_YES)
+		if (gtk_dialog_run (GTK_DIALOG (del)) == GTK_RESPONSE_YES) {
 			gstm_tunnel_del (gstm_interface_selection2id (s, COL_ID));
+			gstm_docklet_menu_refresh ();
+		}
 		
 		g_free (messagemarkup);
 	}
@@ -207,7 +212,7 @@ void btn_copy_clicked_cb (GtkButton *button, gpointer user_data)
 				gstm_tunnel2file (gSTMtunnels[tunnelCount], gSTMtunnels[tunnelCount]->fn);
 
 				//put in interface
-				pixbuf_red = create_pixbuf("red.xpm");
+				pixbuf_red = create_pixbuf_scaled("red.svg", GTK_ICON_SIZE_MENU);
 				gtk_list_store_append (tunnellist_store, &iter);
 				gtk_list_store_set (tunnellist_store, &iter, COL_ACTIVE,
 				                    pixbuf_red, COL_NAME, newname, COL_ID,
@@ -259,10 +264,85 @@ gboolean tunnellist_key_release_event_cb (GtkWidget		*widget,
 	return FALSE;
 }
 
+gboolean cb_statusbar_btn_release (GtkWidget *widget,
+                                      GdkEventButton *event,
+                                      gpointer user_data)
+{
+    GtkTextBuffer *buf = gtk_text_view_get_buffer(GTK_TEXT_VIEW(widget));
+    GtkTextIter start, end;
+    gtk_text_buffer_get_start_iter(buf, &start);
+    gtk_text_buffer_get_end_iter(buf, &end);
+    gtk_text_buffer_select_range(buf, &start, &end);
+    return FALSE;
+}
+
 
 /*
  * propertiesdialog callbacks
  */
+
+void cb_preset_changed (GtkComboBox *combobox, gpointer user_data)
+{
+	GtkWidget *user = GTK_WIDGET (gtk_builder_get_object (builder, "entry_login"));
+	GtkWidget *host = GTK_WIDGET (gtk_builder_get_object (builder, "entry_host"));
+	GtkWidget *port = GTK_WIDGET (gtk_builder_get_object (builder, "entry_port"));
+	GtkWidget *privkey = GTK_WIDGET (gtk_builder_get_object (builder, "entry_privkey"));
+	GtkWidget *btnfindkey = GTK_WIDGET (gtk_builder_get_object (builder, "btn_findkey"));
+
+	// If 0 or -1, enable entry_login, entry_host, entry_port, entry_privkey
+	// Otherwise, disable above, set entry_host to preset name
+	int idx = gtk_combo_box_get_active (combobox);
+
+	if (idx <= 0)
+	{
+		gtk_widget_set_sensitive (GTK_WIDGET (user), TRUE);
+		gtk_widget_set_sensitive (GTK_WIDGET (host), TRUE);
+		gtk_widget_set_sensitive (GTK_WIDGET (port), TRUE);
+		gtk_widget_set_sensitive (GTK_WIDGET (privkey), TRUE);
+		gtk_widget_set_sensitive (GTK_WIDGET (btnfindkey), TRUE);
+	}
+	else
+	{
+		gtk_entry_set_text (GTK_ENTRY (user), "");
+		gtk_widget_set_sensitive (GTK_WIDGET (user), FALSE);
+		gtk_entry_set_text (GTK_ENTRY (host), gtk_combo_box_text_get_active_text (GTK_COMBO_BOX_TEXT (combobox)));
+		gtk_widget_set_sensitive (GTK_WIDGET (host), FALSE);
+		gtk_entry_set_text (GTK_ENTRY (port), "");
+		gtk_widget_set_sensitive (GTK_WIDGET (port), FALSE);
+		gtk_entry_set_text (GTK_ENTRY (privkey), "");
+		gtk_widget_set_sensitive (GTK_WIDGET (privkey), FALSE);
+		gtk_widget_set_sensitive (GTK_WIDGET (btnfindkey), FALSE);
+	}
+}
+
+void cb_btn_findkey_clicked (GtkButton *button, gpointer user_data)
+{
+	GtkWidget *dialog;
+	GtkFileChooserAction action = GTK_FILE_CHOOSER_ACTION_OPEN;
+	gint res;
+
+	dialog = gtk_file_chooser_dialog_new ("Locate Private Key",
+	                                      GTK_WINDOW (maindialog), action,
+	                                      "_Cancel", GTK_RESPONSE_CANCEL,
+	                                      "_Select", GTK_RESPONSE_ACCEPT,
+	                                      NULL);
+
+	gtk_file_chooser_set_current_folder (GTK_FILE_CHOOSER (dialog), sshdir);
+
+	res = gtk_dialog_run (GTK_DIALOG (dialog));
+	if (res == GTK_RESPONSE_ACCEPT)
+	{
+		char *filename;
+		GtkFileChooser *chooser = GTK_FILE_CHOOSER (dialog);
+		filename = gtk_file_chooser_get_filename (chooser);
+		GtkWidget *privkey = GTK_WIDGET (gtk_builder_get_object (builder, "entry_privkey"));
+		gtk_entry_set_text (GTK_ENTRY (privkey), filename);
+		g_free (filename);
+	}
+
+	gtk_widget_destroy (dialog);
+}
+
 void redir_addedit(GtkButton *button, gint editid)
 {
 	GtkWidget *choicetype, *inputport1, *inputhost, *inputport2, *redirlist;
@@ -444,8 +524,8 @@ tundg_choice_type_changed_cb (GtkComboBox *combobox, gpointer user_data)
 		{
 			gtk_entry_set_text (GTK_ENTRY (host), "n/a");
 			gtk_entry_set_text (GTK_ENTRY (port2), "n/a");
-			gtk_editable_set_editable (GTK_EDITABLE (host), FALSE);
-			gtk_editable_set_editable (GTK_EDITABLE (port2), FALSE);
+			gtk_widget_set_sensitive (GTK_WIDGET (host), FALSE);
+			gtk_widget_set_sensitive (GTK_WIDGET (port2), FALSE);
 		}
 		else
 		{
@@ -453,8 +533,8 @@ tundg_choice_type_changed_cb (GtkComboBox *combobox, gpointer user_data)
 			{
 				gtk_entry_set_text (GTK_ENTRY (host), "");
 				gtk_entry_set_text (GTK_ENTRY (port2), "");
-				gtk_editable_set_editable (GTK_EDITABLE (host), TRUE);
-				gtk_editable_set_editable (GTK_EDITABLE (port2), TRUE);
+				gtk_widget_set_sensitive (GTK_WIDGET (host), TRUE);
+				gtk_widget_set_sensitive (GTK_WIDGET (port2), TRUE);
 			}
 		}
 	}
@@ -501,6 +581,7 @@ void on_dockletmenu_tunnel_activate (GtkMenuItem *menuitem, gpointer user_data)
 		if (selid == id)
 			gstm_interface_enablebuttons (!active);
 	}
+	gstm_docklet_menu_refresh ();
 }
 void on_dockletmenu_about_activate (GtkMenuItem *menuitem, gpointer user_data)
 {

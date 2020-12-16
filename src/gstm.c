@@ -122,24 +122,20 @@ gstm_activate (GApplication *application)
 	//	set window icon
 	GdkPixbuf *pbicon = create_pixbuf ("gSTM.png");
 	gtk_window_set_icon (GTK_WINDOW (maindialog), pbicon);
+	g_object_unref (pbicon);
 
 	//	set banner
 	GdkPixbuf *pbbanner = create_pixbuf ("STMbanner.png");
 	gtk_image_set_from_pixbuf (banner, pbbanner);
+	g_object_unref (pbbanner);
 	
 	//	create the notification area icon
 	gstm_docklet_create();
 
 	/*	if there's a notification area AND there are one or more 'autostart'
-	 *	tunnels then maindialog is hidden (ie 'start minimized to tray')
-	 * TODO: Transition away from depreceated GtkStatusIcon functions
-	 * AppIndicator is one option if left/right mouseclick events can be done.
-	 * Disabling warnings for this section in the meantime.	*/
-	#pragma GCC diagnostic push
-	#pragma GCC diagnostic ignored "-Wdeprecated-declarations"
-	if ((a_cnt == 0) || !gtk_status_icon_is_embedded (ci))
+	 *	tunnels then maindialog is hidden (ie 'start minimized to tray') */
+	if ((a_cnt == 0) || !(IS_APP_INDICATOR(ci) && APP_INDICATOR_STATUS_ACTIVE == app_indicator_get_status(ci)))
 		gtk_widget_show_all (GTK_WIDGET (maindialog));
-	#pragma GCC diagnostic pop
 
 	//	load saved window size, if any
 	gstm_load_window_size ();
@@ -153,8 +149,6 @@ gstm_activate (GApplication *application)
 
 static void gstm_init (Gstm *object)
 {
-	object->priv = G_TYPE_INSTANCE_GET_PRIVATE (object, GSTM_TYPE_APPLICATION, GstmPrivate);
-
 	gSTMtunnels = NULL;
 	tunnelCount = 0;
 	activeCount = 0;
@@ -237,12 +231,11 @@ void gstm_populate_treeview (GtkWidget *dialog, const char *objname,
                              struct sshtunnel **STMtunnels, int tcnt)
 {
 	GtkTreeIter iter;
-	GdkPixbuf *pixbuf_red, *pixbuf_green; //*pixbuf_yellow, 
+	GdkPixbuf *pixbuf_red, *pixbuf_green;
 	int i;
 
-	pixbuf_red = create_pixbuf ("red.xpm");
-	//pixbuf_yellow = create_pixbuf ("yellow.xpm");
-	pixbuf_green = create_pixbuf ("green.xpm");
+	pixbuf_red = create_pixbuf_scaled ("red.svg", GTK_ICON_SIZE_MENU);
+	pixbuf_green = create_pixbuf_scaled ("green.svg", GTK_ICON_SIZE_MENU);
 
 	for (i = 0; i < tcnt; i++)
 	{
@@ -262,6 +255,9 @@ void gstm_populate_treeview (GtkWidget *dialog, const char *objname,
 			
 		}
 	}
+
+	g_object_unref (pixbuf_red);
+	g_object_unref (pixbuf_green);
 
 	//sort it
 	gtk_tree_sortable_set_sort_column_id (GTK_TREE_SORTABLE(tunnellist_store),

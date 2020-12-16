@@ -21,6 +21,7 @@
 
 #include <sys/types.h>
 #include <dirent.h>
+#include <glib.h>
 
 #include "main.h"
 #include "conffile.h"
@@ -38,22 +39,27 @@ int activeCount = 0;
 gboolean noerrors = FALSE;
 
 void gstm_free1tunnel(struct sshtunnel *tun) {
-	int j;
-	if (tun!=NULL) {
+	if (tun != NULL) {
 		free(tun->name);
 		free(tun->host);
 		free(tun->port);
 		free(tun->login);
+		free(tun->privkey);
+		free(tun->maxrestarts);
 		free(tun->fn);
-		if (tun->defcount>0 && tun->portredirs!=NULL) {
-			for (j=0; j<tun->defcount; j++) {
+
+		if ((tun->defcount > 0) && (tun->portredirs != NULL)) {
+			for (int j = 0; j < tun->defcount; j++) {
 				free(tun->portredirs[j]->type);
 				free(tun->portredirs[j]->port1);
 				free(tun->portredirs[j]->host);
 				free(tun->portredirs[j]->port2);
+				free(tun->portredirs[j]);
 			}
+
 			free(tun->portredirs);
 		}
+
 		free(tun);
 	}
 }
@@ -131,6 +137,7 @@ int gstm_tunnel_add(const char *tname)
 			tun->restart = FALSE;
 			tun->notify = FALSE;
 			tun->maxrestarts = malloc(3); strcpy ((char *)tun->maxrestarts, "9");
+			tun->preset = FALSE;
 			tun->active = FALSE;
 			tun->sshpid = 0;
 			tun->fn = malloc (strlen (fname) + 1); strcpy (tun->fn, fname);
@@ -142,11 +149,12 @@ int gstm_tunnel_add(const char *tname)
 				gSTMtunnels[tunnelCount] = tun;
 				
 				//put in interface
-				pixbuf_red = create_pixbuf ("red.xpm");
+				pixbuf_red = create_pixbuf_scaled ("red.svg", GTK_ICON_SIZE_MENU);
 				gtk_list_store_append (tunnellist_store, &iter);
 				gtk_list_store_set (tunnellist_store, &iter, COL_ACTIVE,
 				                    pixbuf_red, COL_NAME, tun->name, COL_ID,
 				                    tunnelCount, -1);
+				g_object_unref (pixbuf_red);
 				ret = tunnelCount;
 				tunnelCount += 1;
 				
@@ -297,6 +305,16 @@ gboolean gstm_tunnel2file(struct sshtunnel *st, const char *fn) {
 			gstm_interface_error("Error at xmlTextWriterWriteElement: maxrestarts");
 			return ret;
 		}
+		/* preset element */
+		if (st->preset) {
+			rc = xmlTextWriterWriteElement(writer, BAD_CAST "preset", BAD_CAST "1");
+		} else {
+			rc = xmlTextWriterWriteElement(writer, BAD_CAST "preset", BAD_CAST "0");
+		}
+		if (rc < 0) {
+			gstm_interface_error("Error at xmlTextWriterWriteElement: preset");
+			return ret;
+		}
 
 		for(i=0; i<st->defcount;i++) {
 			/* port redirect */
@@ -363,66 +381,80 @@ gboolean gstm_tunnel_name_exists(const char *tname) {
 int gstm_readfiles(char *dir, struct sshtunnel ***tptr) {
 	struct dirent **entrylist=NULL;
 	struct sshtunnel **mptr, *fptr=NULL;
+
 	char *sptr=NULL;
 	int len=0, scnt=0, listlen=0, l=0;
-	
+
 	listlen = scandir(dir, &entrylist, 0, alphasort);
-	
+
 	if (listlen<0) {
 		fprintf(stderr,"** unable to open gSTM directory (%s)",dir);
 		free(dir);
 		exit(EXIT_FAILURE);
+
 	} else {
 		while (l<listlen) {		
 			len = strlen(entrylist[l]->d_name);
+
 			if (len<6) {
+				free(entrylist[l]);
 				l++;
 				continue;
 			}
+
 			sptr = entrylist[l]->d_name + (len-5);
+
 			if (strcmp(sptr,".gstm")==0) {
 				*tptr = realloc(*tptr, (scnt+1)*sizeof(struct sshtunnel *));
+
 				if (*tptr==NULL) {
 					fprintf(stderr,"** out of memory");
 					free(dir);
 					exit(EXIT_FAILURE);
 				}
+
 				mptr = *tptr;
 				mptr[scnt] = malloc(sizeof(struct sshtunnel));
+
 				if (mptr[scnt]==NULL) {
 					fprintf(stderr,"** out of memory");
 					free(tptr);
 					free(dir);
 					exit(EXIT_FAILURE);
 				}
+
 				fptr = mptr[scnt];
 				sptr = malloc(strlen(dir)+1+strlen(entrylist[l]->d_name)+1);
 				sprintf(sptr, "%s/%s", dir, entrylist[l]->d_name);
-				if (gstm_file2tunnel(sptr,fptr)) {
+
+				if (gstm_file2tunnel(sptr,fptr))
 					scnt+=1;
-				}
-				free(sptr);
+
+				free (sptr);
 			}
+
 			free(entrylist[l]);
 			l++;
 		}
+
 		free(entrylist);
 	}
-			
+
 	return scnt;
 }
 
 void gstm_freetunnels(struct sshtunnel ***tptr, int cnt) {
 	struct sshtunnel **tunnels;
-	int i;
-	if (tptr!=NULL) {
+
+	if (tptr != NULL) {
 		tunnels = *tptr;
-		if (tunnels!=NULL) {
-			for (i=0; i<cnt; i++) {
-				if (tunnels[i]!=NULL) {
+
+		if (tunnels != NULL) {
+			for (int i = 0; i < cnt; i++) {
+				if (tunnels[i] != NULL)
 					gstm_free1tunnel(tunnels[i]);
-				}
 			}
+
 			free(tunnels);
 		}
 	}
@@ -439,7 +471,8 @@ int gstm_file2tunnel(char *file, struct sshtunnel *tunnel) {
 	
 	// build an XML tree from the file;
 	doc = xmlParseFile(file);
-	if (doc == NULL) return(retval);
+	if (doc == NULL)
+		return(retval);
 		
 	// check the document is of the right kind
 	cur = xmlDocGetRootElement(doc);
@@ -469,6 +502,7 @@ int gstm_file2tunnel(char *file, struct sshtunnel *tunnel) {
 	tunnel->active = FALSE;
 	tunnel->autostart = FALSE;
 	tunnel->restart = FALSE;
+	tunnel->preset = FALSE;
 	tunnel->notify = TRUE;
 	tunnel->sshpid=0;
 	tunnel->fn = malloc(strlen(file)+1); strcpy(tunnel->fn,file);
@@ -525,6 +559,16 @@ int gstm_file2tunnel(char *file, struct sshtunnel *tunnel) {
 					free(tmprest);
 					tmprest = NULL;
 				}
+				else if (strcmp ((char *)cur->name, "preset") == 0 && tmp)
+				{
+					tmprest = malloc (strlen ((char *)tmp) + 1);
+					strcpy ((char *)tmprest, (char *)tmp);
+					if (strcmp ((char *)tmprest, "1") == 0) {
+					tunnel->preset = TRUE;
+					}
+					free(tmprest);
+					tmprest = NULL;
+				}
 				else if (strcmp ((char *)cur->name, "notify") == 0 && tmp)
 				{
 					tmpnotify = malloc (strlen ((char *)tmp) + 1);
@@ -561,57 +605,114 @@ int gstm_file2tunnel(char *file, struct sshtunnel *tunnel) {
 		strcpy ((char *)tunnel->maxrestarts, "9");
 	}
 
+	xmlFree (tmpauto);
+	xmlFree (tmprest);
+	xmlFree (tmpnotify);
+	xmlFreeDoc(doc);
+
 	retval=1;
 	return(retval);
 }
 
 int gstm_addtunneldef2tunnel(xmlDocPtr doc, xmlNodePtr def, struct sshtunnel *tunnel, int idx) {
-	int halt=0;
-	int retval=0;
-	struct portredir *tdef, **temp;
-	xmlChar *tmp;
-	
+	int halt = 0;
+	int retval = 0;
+	struct portredir *tdef;
+
 	tunnel->portredirs = realloc(tunnel->portredirs, (idx+1)*sizeof(struct tunneldef *));
-	if (tunnel->portredirs==NULL) {
+
+	if (tunnel->portredirs == NULL) {
 		fprintf(stderr,"** out of memory");
-		//clean up?!
 		exit(EXIT_FAILURE);
 	}
-	temp = tunnel->portredirs;
-	temp[idx] = malloc(sizeof(struct portredir));
-	if (temp[idx]==NULL) {
+
+	tunnel->portredirs [idx] = malloc(sizeof(struct portredir));
+
+	if (tunnel->portredirs [idx] == NULL) {
 		fprintf(stderr,"** out of memory");
-		//cleanup?!
 		exit(EXIT_FAILURE);
 	}
-	tdef = temp[idx];
-	tdef->type=malloc(1); tdef->type[0]='\0';
-	tdef->port1=malloc(1); tdef->port1[0]='\0';
-	tdef->host=malloc(1); tdef->host[0]='\0';
-	tdef->port2=malloc(1); tdef->port2[0]='\0';
+
+	tdef = tunnel->portredirs [idx];
+	tdef->type	= malloc(1);	tdef->type[0]	= '\0';
+	tdef->port1	= malloc(1);	tdef->port1[0]	= '\0';
+	tdef->host	= malloc(1);	tdef->host[0]	= '\0';
+	tdef->port2	= malloc(1);	tdef->port2[0]	= '\0';
 
 	while (def && !halt) {
-		if (!xmlIsBlankNode(def)) {
-			tmp = xmlNodeListGetString(doc, def->xmlChildrenNode, 1);
+		if (!xmlIsBlankNode (def)) {
+			xmlChar *tmp = xmlNodeListGetString(doc, def->xmlChildrenNode, 1);
+
 			if ((strcmp ((char *)def->name, "type") == 0) && tmp) {
 				tdef->type = realloc(tdef->type, strlen ((char *)tmp) + 1);
 				strcpy ((char *)tdef->type, (char *)tmp);
+
 			} else if ((strcmp ((char *)def->name, "port1") == 0) && tmp) {
 				tdef->port1 = realloc (tdef->port1, strlen ((char *)tmp) + 1);
-				strcpy ((char *)tdef->port1, (char *)xmlNodeListGetString(doc, def->xmlChildrenNode, 1));
+				xmlChar *tmp2 = xmlNodeListGetString(doc, def->xmlChildrenNode, 1);
+				strcpy ((char *)tdef->port1, (char *)tmp2);
+				xmlFree (tmp2);
+
 			} else if ((strcmp ((char *)def->name, "host") == 0) && tmp) {
 				tdef->host = realloc (tdef->host, strlen ((char *)tmp) + 1);
 				strcpy ((char *)tdef->host, (char *)tmp);
+
 			} else if ((strcmp ((char *)def->name, "port2") == 0) && tmp) {
 				tdef->port2 = realloc (tdef->port2, strlen ((char *)tmp) + 1);
 				strcpy ((char *)tdef->port2, (char *)tmp);
-			} else {
-				// ??
+
 			}
 			xmlFree(tmp);
+
 		}
 		def = def->next;
+
 	}
+
 	retval = 1;
+
 	return retval;
+}
+
+// Scan ~/.ssh/config, if it exists, and build a list of preset hosts
+void parseSSHconfig (GtkWidget *widget, gchar *host) {
+	// Clear Preset list
+	gtk_combo_box_text_remove_all (GTK_COMBO_BOX_TEXT (widget));
+
+	FILE* file = fopen(sshconfig, "r");
+
+	int counter = 0;
+	int idx = 0;
+	if (file != NULL) {
+		char line[256];
+		while (fgets(line, sizeof(line), file)) {
+			char checkHost[6];
+			strncpy (checkHost, line, 5);
+			checkHost [5] = 0;
+
+			if (strcmp (checkHost, "Host ") == 0) {
+				char hostName [255];
+				strncpy (hostName, line + 5, strlen(line));
+				hostName [strlen (hostName) - 1] = 0;
+
+				if (strcmp (hostName, "*") != 0) {
+					counter++;
+					gtk_combo_box_text_append_text (GTK_COMBO_BOX_TEXT (widget), hostName);
+
+					if (host != NULL)
+						if (strcmp (host, hostName) == 0)
+							idx = counter;
+				}
+			}
+		}
+
+		fclose(file);
+	}
+
+	if (counter)
+		gtk_combo_box_text_prepend_text (GTK_COMBO_BOX_TEXT (widget), (gchar *)"No preset selected");
+	else
+		gtk_combo_box_text_prepend_text (GTK_COMBO_BOX_TEXT (widget), (gchar *)"No presets available");
+
+	gtk_combo_box_set_active (GTK_COMBO_BOX (widget), idx);
 }

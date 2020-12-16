@@ -33,7 +33,7 @@ Launching gstm from a desktop environment's menu system using the included gstm.
 
 Building an rpm package from a release tarball or git repo:  after above steps run `make dist && rpmbuild -ta gstm-VERSION.tar.gz`.
 
-Building a deb package from a release tarball or git repo:  after above steps run `make dist && mv gstm-VERSION.tar.gz ../gstm_VERSION.orig.tar.gz && debuild -i -us -uc`.
+Building a deb package from a release tarball or git repo:  after above steps run `make dist && mv gstm-VERSION.tar.gz ../gstm_VERSION.orig.tar.gz && cd .. && tar -xvf gstm_VERSION.orig.tar.gz && cd gstm-VERSION && debuild -i -us -uc`.
 
 ##### Bugs and Issues
 Bugs can be reported using GitHub's Issues tab. Before opening a new issue, try reproducing the problem after building the lastest source from the master branch. Also, take a look through the closed issues to see if it's been reported before. This is doubly important if you're using packages from the ppa; Those tend to lag a bit behind.

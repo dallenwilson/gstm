@@ -34,6 +34,8 @@
 Gstm *app;
 
 char *gstmdir = NULL;
+char *sshdir = NULL;
+char *sshconfig = NULL;
 char *gstmpixmaps = NULL;
 char *gstmui = NULL;
 
@@ -66,6 +68,14 @@ int main (int argc, char *argv[])
 	
 	g_object_unref (app);
 
+	xmlCleanupParser ();
+
+	free (gstmdir);
+	free (gstmpixmaps);
+	free (sshdir);
+	free (sshconfig);
+	free (gstmui);
+
 	return status;
 }
 
@@ -81,7 +91,7 @@ void init_config ()
 
 	// get HOME variable and construct gSTM dir
 	gstmdir = malloc (strlen (getenv ("HOME")) + 6 + 1);
-	
+
 	if (!gstmdir)
 	{
 		fprintf (stderr, "** out of memory\n");
@@ -89,6 +99,7 @@ void init_config ()
 	}
 	
 	strcpy (gstmdir, getenv ("HOME"));
+
 	strcat (gstmdir, "/.gSTM");
 
 	// check if gSTM dir exists or create it
@@ -115,6 +126,28 @@ void init_config ()
 			}
 		}
 	}
+
+	// get HOME variable and construct sshconfig file path
+	sshdir = malloc (strlen (getenv ("HOME")) + 6 + 1);
+	sshconfig = malloc (strlen (getenv ("HOME")) + 12 + 1);
+
+	if (!sshdir)
+	{
+		fprintf (stderr, "** out of memory\n");
+		exit (EXIT_FAILURE);
+	}
+
+	strcpy (sshdir, getenv ("HOME"));
+	strcat (sshdir, "/.ssh/");
+
+	if (!sshconfig)
+	{
+		fprintf (stderr, "** out of memory\n");
+		exit (EXIT_FAILURE);
+	}
+
+	strcpy (sshconfig, sshdir);
+	strcat (sshconfig, "config");
 }
 
 //	Find location of pixmaps and glade ui file
@@ -131,13 +164,15 @@ void init_paths ()
 	if (dir)
 	{
 		closedir (dir);
-		gstmpixmaps = malloc (strlen (tempdir));
+		gstmpixmaps = malloc (strlen (tempdir) + 1);
 		strcpy (gstmpixmaps, tempdir);
 
 		gstmui = malloc (strlen (PACKAGE_SRC_DIR) + strlen ("/gstm.ui") + 1);
 		strcpy (gstmui, PACKAGE_SRC_DIR);
 		strcat (gstmui, "/gstm.ui");
 	}
+
+	free (tempdir);
 
 	//	If not, check if system data exists
 	if (!gstmpixmaps)
