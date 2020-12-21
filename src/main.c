@@ -38,6 +38,7 @@ char *sshdir = NULL;
 char *sshconfig = NULL;
 char *gstmpixmaps = NULL;
 char *gstmui = NULL;
+char *gstmicon = NULL;
 
 int main (int argc, char *argv[])
 {
@@ -75,6 +76,7 @@ int main (int argc, char *argv[])
 	free (sshdir);
 	free (sshconfig);
 	free (gstmui);
+	free (gstmicon);
 
 	return status;
 }
@@ -150,7 +152,7 @@ void init_config ()
 	strcat (sshconfig, "config");
 }
 
-//	Find location of pixmaps and glade ui file
+//	Locate pixmaps directory, glade UI file and icon file.
 void init_paths ()
 {
 	//	Check if local data exists
@@ -166,6 +168,10 @@ void init_paths ()
 		closedir (dir);
 		gstmpixmaps = malloc (strlen (tempdir) + 1);
 		strcpy (gstmpixmaps, tempdir);
+
+		gstmicon = malloc (strlen (gstmpixmaps) + strlen ("gSTM.png") + 1);
+		strcpy (gstmicon, gstmpixmaps);
+		strcat (gstmicon, "gSTM.png");
 
 		gstmui = malloc (strlen (PACKAGE_SRC_DIR) + strlen ("/gstm.ui") + 1);
 		strcpy (gstmui, PACKAGE_SRC_DIR);
@@ -185,6 +191,10 @@ void init_paths ()
 			gstmpixmaps = malloc (strlen (PACKAGE_DATA_DIR) + strlen ("/pixmaps/") + 1);
 			strcpy (gstmpixmaps, PACKAGE_DATA_DIR);
 			strcat (gstmpixmaps, "/pixmaps/");
+
+			gstmicon = malloc (strlen (gstmpixmaps) + strlen ("gSTM.png") + 1);
+			strcpy (gstmicon, gstmpixmaps);
+			strcat (gstmicon, "gSTM.png");
 
 			gstmui = malloc (strlen (PACKAGE_DATA_DIR) + strlen ("/ui/gstm.ui") + 1);
 			strcpy (gstmui, PACKAGE_DATA_DIR);

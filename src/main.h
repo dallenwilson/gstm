@@ -28,6 +28,7 @@ extern char *sshdir;
 extern char *sshconfig;
 extern char *gstmpixmaps;
 extern char *gstmui;
+extern char *gstmicon;
 
 void signalexit					(int sig_num);
 void init_paths					();

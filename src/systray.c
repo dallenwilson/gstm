@@ -30,14 +30,13 @@
 #include "main.h"
 #include "support.h"
 
-//GtkStatusIcon *ci = NULL;
 AppIndicator *ci = NULL;
 
 void gstm_docklet_create ()
 {
 	//	Create systray icon
-	//	AppIndicator alternative
-	ci = app_indicator_new ("gSTM", "gSTM", APP_INDICATOR_CATEGORY_APPLICATION_STATUS);
+	ci = app_indicator_new ("gSTM", gstmicon, APP_INDICATOR_CATEGORY_APPLICATION_STATUS);
+
 	g_assert (IS_APP_INDICATOR (ci));
 	g_assert (G_IS_OBJECT (ci));
 	gstm_docklet_menu_refresh();
