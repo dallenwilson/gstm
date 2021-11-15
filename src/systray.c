@@ -32,6 +32,13 @@
 
 //GtkStatusIcon *ci = NULL;
 AppIndicator *ci = NULL;
+bool docklet_connected = FALSE;
+
+static void gstm_docklet_connection_changed_cb(AppIndicator* indicator, gboolean connected,
+                                              gpointer user_data)
+{
+	docklet_connected = connected;
+}
 
 void gstm_docklet_create ()
 {
@@ -40,8 +47,14 @@ void gstm_docklet_create ()
 	ci = app_indicator_new ("gSTM", "gSTM", APP_INDICATOR_CATEGORY_APPLICATION_STATUS);
 	g_assert (IS_APP_INDICATOR (ci));
 	g_assert (G_IS_OBJECT (ci));
+	g_signal_connect(G_OBJECT(ci), APP_INDICATOR_SIGNAL_CONNECTION_CHANGED, G_CALLBACK(gstm_docklet_connection_changed_cb), 0);
 	gstm_docklet_menu_refresh();
 	app_indicator_set_status (ci, APP_INDICATOR_STATUS_ACTIVE);
+}
+
+bool gstm_docklet_active ()
+{
+	return docklet_connected;
 }
 
 void gstm_toggle_mainwindow ()
