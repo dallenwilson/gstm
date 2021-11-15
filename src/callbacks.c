@@ -64,7 +64,7 @@ void on_maindialog_size_allocate (GtkWidget *widget, GtkAllocation *allocation)
 gboolean maindialog_delete_event_cb (GtkWidget *widget, GdkEvent *event, gpointer user_data)
 {
 	gstm_terminate();
-	return FALSE;
+	return TRUE;
 }
 void btn_start_clicked_cb (GtkButton *button, gpointer user_data)
 {
