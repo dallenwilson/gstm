@@ -19,6 +19,7 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
+#include <stdbool.h>
 #include <gtk/gtk.h>
 #include <libappindicator/app-indicator.h>
 
@@ -29,3 +30,4 @@ void gstm_toggle_mainwindow ();
 void gstm_docklet_activated_cb (GtkWidget *widget, gpointer user_data);
 void gstm_docklet_menu_refresh ();
 GtkMenu* gstm_docklet_menu_regen ();
+bool gstm_docklet_active ();

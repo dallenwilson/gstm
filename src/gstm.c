@@ -134,7 +134,7 @@ gstm_activate (GApplication *application)
 
 	/*	if there's a notification area AND there are one or more 'autostart'
 	 *	tunnels then maindialog is hidden (ie 'start minimized to tray') */
-	if ((a_cnt == 0) || !(IS_APP_INDICATOR(ci) && APP_INDICATOR_STATUS_ACTIVE == app_indicator_get_status(ci)))
+	if ((a_cnt == 0) || !gstm_docklet_active())
 		gtk_widget_show_all (GTK_WIDGET (maindialog));
 
 	//	load saved window size, if any
