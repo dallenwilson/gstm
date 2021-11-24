@@ -1,5 +1,4 @@
 [Desktop Entry]
-Encoding=UTF-8
 Name=gSTM
 GenericName=gSTM
 Comment=Manage SSH tunnel connections
@@ -7,4 +6,4 @@ Exec=setsid gstm
 Icon=gSTM
 Terminal=false
 Type=Application
-Categories=Application;GTK;GNOME;Network;
+Categories=Network;RemoteAccess;
