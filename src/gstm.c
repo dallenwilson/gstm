@@ -59,6 +59,8 @@ GtkImage *banner = NULL;
 
 GtkListStore *tunnellist_store = NULL;
 
+static bool initial_activation_done = FALSE;
+
 /* Create a new window loading a file */
 static void
 gstm_new_window (GApplication *app)
@@ -100,6 +102,12 @@ gstm_new_window (GApplication *app)
 static void
 gstm_activate (GApplication *application)
 {
+	if (initial_activation_done) {
+		// Just show the main window
+		gtk_window_present (GTK_WINDOW (maindialog));
+		return;
+	}
+
 	int a_cnt = 0;
 
 	gstm_init ((Gstm *)app);
@@ -145,6 +153,7 @@ gstm_activate (GApplication *application)
 
 	//ready for action
 	gstm_interface_showinfo("gSTM ready for action.");
+	initial_activation_done = TRUE;
 }
 
 static void gstm_init (Gstm *object)
