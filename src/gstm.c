@@ -172,7 +172,6 @@ gstm_new (void)
 {
 	return g_object_new (gstm_get_type (),
 	                     "application-id", "org.gtk.gstm",
-	                     "flags", G_APPLICATION_HANDLES_OPEN,
 	                     NULL);
 }
 
