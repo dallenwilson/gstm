@@ -1,7 +1,9 @@
 ## Process this file with automake to produce Makefile.in
 ## Created by Anjuta
 
-SUBDIRS = src pixmaps po gAskpass
+SUBDIRS = src pixmaps gAskpass
+
+ACLOCAL_AMFLAGS = -I m4
 
 dist_doc_DATA = \
 	README \
@@ -11,23 +13,13 @@ dist_doc_DATA = \
 	INSTALL \
 	NEWS
 
-INTLTOOL_FILES = intltool-extract.in \
-	intltool-merge.in \
-	intltool-update.in
-
 EXTRA_DIST = \
 	gstm.spec \
 	gstm.desktop \
 	README.md \
 	autogen.sh \
 	gstm.anjuta \
-	debian \
-	$(INTLTOOL_FILES)
-
-DISTCLEANFILES = intltool-extract \
-	intltool-merge \
-	intltool-update \
-	po/.intltool-merge-cache
+	debian
 
 desktopdir = $(datadir)/applications
 desktop_DATA = gstm.desktop
