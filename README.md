@@ -25,7 +25,7 @@ Note: The first connection to a new, previously-unseen ssh server that is config
 - For everyone else, release tarballs are available from Github.
 
 ##### Building from Source
-If you're building from a release tarball, you'll need automake, pkg-config, gtk3, glib, and libxml2 along with their associated dev packages. The configure script and makefiles are included in the tarball, so just run `./configure && make`.
+If you're building from a release tarball, you'll need automake, pkg-config, gtk3, glib, libxml2, and libappindicator3 along with their associated dev packages. The configure script and makefiles are included in the tarball, so just run `./configure && make`.
 
 Building direct from the git repo, you'll need the above packages as well as autoconf (>=2.69). There is a bash script (autogen.sh) to handle the autoconf/automake work and generate the configure script and various makefiles. Run it, then the usual stuff: `./autogen.sh && ./configure && make`.
 
