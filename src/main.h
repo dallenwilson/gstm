@@ -32,5 +32,8 @@ extern char *gstmui;
 void signalexit					(int sig_num);
 void init_paths					();
 void init_config				();
+bool init_oldConfig				();
+bool check_newConfig			();
+void init_newConfig				();
 void gstm_store_window_size		();
 void gstm_load_window_size		();
