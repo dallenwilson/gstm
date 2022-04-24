@@ -84,71 +84,135 @@ void signalexit(int sig_num)
         gstm_quit();
 }
 
-//	Find .gSTM from user's home directory if available
+//	Locate gSTM and ssh config directories
 void init_config ()
+{
+	// Check if old config location (~/.gSTM/) exists, if so migrate to new
+	// location (~/.config/gSTM/).
+	if (!check_newConfig())
+	{
+		fprintf(stderr, "Did not find new config dir (~/.config/gSTM/)\n");
+		if (init_oldConfig())
+		{
+			fprintf(stderr, "Found legacy config dir (~/.gSTM/)\n");
+			// Read in data from old config location
+			int tCount = gstm_readfiles (gstmdir, &gSTMtunnels);
+
+			// Reset gstmdir to new config location
+			init_newConfig();
+
+			// Save data to new location
+			if (tCount > 0)
+			{
+				fprintf (stderr,"Found %i tunnels, migrating to new location (~/.config/gSTM/)\n",tCount);
+				for (int tid = 0; tid < tCount; tid++)
+				{
+					fprintf (stderr, "- Migrating %s...\n", gSTMtunnels[tid]->name);
+					free (gSTMtunnels[tid]->fn);
+					gSTMtunnels[tid]->fn = malloc (strlen (gstmdir) + 1 + strlen ((char *)gSTMtunnels[tid]->name) + 7 + 1);
+					gSTMtunnels[tid]->fn = gstm_name2filename ((char *)gSTMtunnels[tid]->name);
+					gstm_tunnel2file (gSTMtunnels[tid], gSTMtunnels[tid]->fn);
+				}
+			}
+
+			// Free all tunnel-related things, will be re-populated later
+			gstm_freetunnels(&gSTMtunnels, tCount);
+			tCount=0;
+			if (tunnellist_store)
+				g_object_unref (tunnellist_store);
+
+			fprintf(stderr, "Migration complete; Please manually delete ~/.gSTM/ once you verify everything is working.\n");
+		}
+	}
+
+	init_newConfig();
+
+	// get HOME variable and construct sshconfig file path
+	sshdir = malloc (strlen (getenv ("HOME")) + 6 + 1);
+	strcpy (sshdir, getenv ("HOME"));
+	strcat (sshdir, "/.ssh/");
+
+	sshconfig = malloc (strlen (getenv ("HOME")) + 12 + 1);
+	strcpy (sshconfig, sshdir);
+	strcat (sshconfig, "config");
+}
+
+bool init_oldConfig()
 {
 	struct stat sb;
 
 	// get HOME variable and construct gSTM dir
 	gstmdir = malloc (strlen (getenv ("HOME")) + 6 + 1);
-
-	if (!gstmdir)
-	{
-		fprintf (stderr, "** out of memory\n");
-		exit (EXIT_FAILURE);
-	}
-	
 	strcpy (gstmdir, getenv ("HOME"));
-
 	strcat (gstmdir, "/.gSTM");
 
 	// check if gSTM dir exists or create it
 	if (access (gstmdir, W_OK))
+		return false;
+	else
 	{
-		
-		// can't access it, although it might exist try to create it
+		// check if it is really a directory ;)
+		stat (gstmdir, &sb);
+		if (!S_ISDIR (sb.st_mode))
+			return false;
+	}
+
+	return true;
+}
+
+bool check_newConfig()
+{
+	char *tempDir = malloc (strlen (getenv ("HOME")) + 13 + 1);
+	strcpy (tempDir, getenv ("HOME"));
+    strcat (tempDir, "/.config/gSTM");
+
+	if (access (tempDir, W_OK))
+	{
+		free (tempDir);
+		return false;
+	}
+
+	free (tempDir);
+	return true;
+}
+
+void init_newConfig()
+{
+    struct stat sb;
+
+	if (gstmdir != NULL)
+		free (gstmdir);
+
+    gstmdir = malloc (strlen (getenv ("HOME")) + 13 + 1);
+    strcpy (gstmdir, getenv ("HOME"));
+    strcat (gstmdir, "/.config");
+
+	if (access (gstmdir, W_OK))
 		mkdir (gstmdir, 0755);
 
-		if (access (gstmdir, W_OK))
-		{
-			//still can't access it :(
-			fprintf(stderr, "** .gSTM directory in your HOME directory is not accessible\n");
-			exit (EXIT_FAILURE);
-		}
-		else
-		{
-			// check if it is really a directory ;)
-			stat (gstmdir, &sb);
-			if (!S_ISDIR (sb.st_mode))
-			{
-				fprintf (stderr, "** a file called .gSTM exists in your HOME directory, please delete it.\n");
-				exit (EXIT_FAILURE);
-			}
-		}
-	}
-
-	// get HOME variable and construct sshconfig file path
-	sshdir = malloc (strlen (getenv ("HOME")) + 6 + 1);
-	sshconfig = malloc (strlen (getenv ("HOME")) + 12 + 1);
-
-	if (!sshdir)
+	strcat (gstmdir, "/gSTM");
+	if (access (gstmdir, W_OK))
 	{
-		fprintf (stderr, "** out of memory\n");
-		exit (EXIT_FAILURE);
-	}
+        mkdir (gstmdir, 0755);
 
-	strcpy (sshdir, getenv ("HOME"));
-	strcat (sshdir, "/.ssh/");
-
-	if (!sshconfig)
-	{
-		fprintf (stderr, "** out of memory\n");
-		exit (EXIT_FAILURE);
-	}
-
-	strcpy (sshconfig, sshdir);
-	strcat (sshconfig, "config");
+        if (access (gstmdir, W_OK))
+        {
+            fprintf(stderr, "** ~/.config/gSTM directory is not accessible\n");
+            exit (EXIT_FAILURE);
+        }
+        else
+        {
+            // check if it is really a directory ;)
+            stat (gstmdir, &sb);
+            if (!S_ISDIR (sb.st_mode))
+            {
+                fprintf (stderr, "** a file (~/.config/gSTM) exists in your HOME directory, please delete it.\n");
+                exit (EXIT_FAILURE);
+            }
+        }
+    }
 }
+
 
 //	Find location of pixmaps and glade ui file
 void init_paths ()

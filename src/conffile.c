@@ -388,7 +388,7 @@ int gstm_readfiles(char *dir, struct sshtunnel ***tptr) {
 	listlen = scandir(dir, &entrylist, 0, alphasort);
 
 	if (listlen<0) {
-		fprintf(stderr,"** unable to open gSTM directory (%s)",dir);
+		fprintf(stderr,"** unable to open gSTM directory (%s)\n",dir);
 		free(dir);
 		exit(EXIT_FAILURE);
 
