@@ -22,6 +22,7 @@
 #ifndef _CONFFILE_H
 #define _CONFFILE_H
 
+#include <stdbool.h>
 #include <gtk/gtk.h>
 #include <libxml/xmlmemory.h>
 #include <libxml/parser.h>
