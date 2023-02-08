@@ -21,6 +21,7 @@
 
 #include "conffile.h"
 #include "gstm.h"
+#include <stdbool.h>
 
 extern Gstm *app;
 extern char *gstmdir;
