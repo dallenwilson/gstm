@@ -15,7 +15,6 @@ autom4te.cache
 /aclocal.m4
 /compile
 /config.guess
-/config.h.in
 /config.log
 /config.status
 /config.sub
@@ -24,7 +23,7 @@ autom4te.cache
 /depcomp
 /install-sh
 /missing
-/stamp-h1
+stamp-h1
 /build-aux/
 
 # https://www.gnu.org/software/libtool/
@@ -48,6 +47,7 @@ valgrind/
 .deps/
 Makefile
 config.h
+config.h.in
 *.o
 src/gstm
 po/POTFILES

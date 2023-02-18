@@ -19,10 +19,15 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
+#include "config.h"
 #include <stdbool.h>
 #include <gtk/gtk.h>
-#include <libappindicator/app-indicator.h>
 
+#ifdef AYATANA
+	#include <libayatana-appindicator/app-indicator.h>
+#else
+	#include <libappindicator/app-indicator.h>
+#endif
 extern AppIndicator *ci;
 
 void gstm_docklet_create ();

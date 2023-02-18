@@ -19,9 +19,15 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
+#include "config.h"
 #include <gtk/gtk.h>
 #include <glib/gi18n.h>
-#include <libappindicator/app-indicator.h>
+
+#ifdef AYATANA
+    #include <libayatana-appindicator/app-indicator.h>
+#else
+    #include <libappindicator/app-indicator.h>
+#endif
 
 #include "systray.h"
 #include "conffile.h"
