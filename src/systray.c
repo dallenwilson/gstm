@@ -25,6 +25,10 @@
 
 #ifdef AYATANA
     #include <libayatana-appindicator/app-indicator.h>
+    // See https://github.com/AyatanaIndicators/libayatana-appindicator/pull/59
+    #ifndef IS_APP_INDICATOR
+        #define IS_APP_INDICATOR APP_IS_INDICATOR
+    #endif
 #else
     #include <libappindicator/app-indicator.h>
 #endif
